@@ -119,37 +119,6 @@
         },
         onLoad (options){
             this.loadCb();
-            let that = this,
-                productManage = that.$parent.globalData.productManage,
-                id = productManage.id,
-                period_of_use = productManage.period_of_use || {},
-                start_date = period_of_use.start_date || this.$azmUtil.date_formate(new Date(), 'YYYY-MM-DD'),
-                end_date = this.$azmUtil.formatTime(start_date, {Y: 1, spacer: '-'}, 'YYYY-MM-DD'),
-                start_time = null,
-                end_time = null,
-                limit_end_date = this.$azmUtil.formatTime(start_date, {M: 6, spacer: '-'}, 'YYYY-MM-DD'),
-                isTheTerm = period_of_use.isTheTerm || 0;
-            if (isTheTerm) {
-                end_date = end_date || period_of_use.end_date;
-            }
-            if (period_of_use.start_time) {
-                start_time = period_of_use.start_time.split(':');
-            }
-            if (period_of_use.end_time) {
-                end_time = period_of_use.end_time.split(':');
-            }
-            this.start_date = start_date;
-            this.end_date = end_date;
-            this.isTheTerm = isTheTerm;
-            if (start_time) {
-                this.start_time = start_time;
-            }
-            if (end_time) {
-                this.end_time = end_time;
-            }
-            this.limit_start_date = start_date;
-            this.limit_end_date = limit_end_date;
-            this.days = this.$azmUtil.date_range(start_date, end_date, 'DD').length;
         },
         onShow(){
             if (this.data.isShow && this.data.isRefresh) {
@@ -194,19 +163,37 @@
         loadCb () {
             let that = this,
                 options = that.data.options,
+                PrevPage = that.__getPrevPage(),
                 productManage = that.$parent.globalData.productManage,
-                intro = productManage.intro || [],
-                label = productManage.label || [],
-                period_of_use = productManage.period_of_use || {},
-                item_brand = productManage.item_brand || [],
-                taboo_crowd = productManage.taboo_crowd || '',
-                other_instructions = productManage.other_instructions || '';
-            that.intro = intro;
-            that.label = this.$azmUtil.unique(label);
-            that.period_of_use = period_of_use;
-            that.item_brand = item_brand;
-            that.taboo_crowd = taboo_crowd;
-            that.other_instructions = other_instructions;
+                id = productManage.id,
+                period_of_use = PrevPage.data.period_of_use || {},
+                start_date = period_of_use.start_date || this.$azmUtil.date_formate(new Date(), 'YYYY-MM-DD'),
+                end_date = this.$azmUtil.formatTime(start_date, {Y: 1, spacer: '-'}, 'YYYY-MM-DD'),
+                start_time = null,
+                end_time = null,
+                limit_end_date = this.$azmUtil.formatTime(start_date, {M: 6, spacer: '-'}, 'YYYY-MM-DD'),
+                isTheTerm = period_of_use.isTheTerm || 0;
+            if (isTheTerm) {
+                end_date = end_date || period_of_use.end_date;
+            }
+            if (period_of_use.start_time) {
+                start_time = period_of_use.start_time.split(':');
+            }
+            if (period_of_use.end_time) {
+                end_time = period_of_use.end_time.split(':');
+            }
+            this.start_date = start_date;
+            this.end_date = end_date;
+            this.isTheTerm = isTheTerm;
+            if (start_time) {
+                this.start_time = start_time;
+            }
+            if (end_time) {
+                this.end_time = end_time;
+            }
+            this.limit_start_date = start_date;
+            this.limit_end_date = limit_end_date;
+            this.days = this.$azmUtil.date_range(start_date, end_date, 'DD').length;
         }
 
         methods = {
@@ -242,7 +229,7 @@
                     start_time = this.data.start_time,
                     end_time = this.data.end_time,
                     note = this.data.note;
-                if (isTheTerm) {
+                if (!isTheTerm) {
                     end_date = this.$azmUtil.formatTime(start_date, {
                         Y: 1,
                         spacer: '-'

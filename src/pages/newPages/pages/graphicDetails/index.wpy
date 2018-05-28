@@ -104,8 +104,8 @@
         loadCb () {
             let that = this,
                 options = that.data.options,
-                productManage = that.$parent.globalData.productManage,
-                intro = productManage.intro;
+                PrevPage = that.__getPrevPage(),
+                intro = PrevPage.data.intro;
             this.intro = intro || [];
         }
 
