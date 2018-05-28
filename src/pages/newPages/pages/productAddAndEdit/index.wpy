@@ -47,7 +47,7 @@
                         <text class="azm-label">产品类别</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
-                          @tap="goTo('/pages/newPages/pages/productCategory/index')">
+                          @tap="route('/pages/newPages/pages/productCategory/index')">
                         <block wx:if="{{category_id && category_id.length>0}}">
                             <view class="zan-ellipsis azm-cell__ft_bd">
                                 <block wx:for="{{category_id}}" wx:key="{{index}}">
@@ -69,7 +69,7 @@
                         <text class="azm-label">产品主图</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
-                          @tap="goTo('/pages/product2/pages/mainpic/index')">
+                          @tap="route('/pages/product2/pages/mainpic/index')">
                         <block wx:if="{{cover && cover.length>0}}">
                             <view class="azm-cell__ft_bd">
                                 <image class="azm-image" src="{{imageUrl + cover[0]}}" mode="aspectFill"></image>
@@ -108,7 +108,7 @@
                         <text class="azm-label">服务流程</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
-                          @tap="goTo('/pages/newPages/pages/productServiceProcess/index')">
+                          @tap="route('/pages/newPages/pages/productServiceProcess/index')">
                         <block wx:if="{{service_flow && service_flow.length>0}}">
                             <text class="azm-not_perfection azm-color_primary">已完善</text>
                         </block>
@@ -124,7 +124,7 @@
                         <text class="azm-label">产品细节</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
-                          @tap="goTo('/pages/newPages/pages/productDetails/index')">
+                          @tap="route('/pages/newPages/pages/productDetails/index')">
                         <view class="flexBox">
                             <view class="flexBox-item fb-17 azm-text_left">越完善度排名越高(选填)</view>
                             <view class="flexBox-item fb-all">
@@ -149,11 +149,12 @@
                     <view class="azm-cell__bd flexBox-item">
                         <text class="azm-label">参加活动</text>
                     </view>
-                    <view class="azm-cell__ft flexBox-item fb-all">
+                    <view class="azm-cell__ft flexBox-item fb-all"
+                          @tap="route('/pages/product2/pages/groupActivity/index')">
                         <view class="flexBox">
                             <view class="flexBox-item fb-17 azm-text_left">目前可参加拼团(选填)</view>
                             <view class="flexBox-item fb-all">
-                                <block wx:if="{{isProductDetails}}">
+                                <block wx:if="{{group_num && group_price}}">
                                     <text class="azm-not_perfection azm-color_primary">已完善</text>
                                 </block>
                                 <block wx:else>
@@ -184,6 +185,7 @@
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page productsIndex",
@@ -212,12 +214,15 @@
             item_brand: [],//使用物料（商品）
             taboo_crowd: '',//禁忌人群
             other_instructions: '',//其它说明
+            group_num: '',//成团要求数量
+            group_price: '',//成团价格
+            is_valid: true//是否有效
         },
-        onLoad (options){
+        onLoad (options) {
             this.$parent.globalData.productManage = {};
             this.loadCb()
         },
-        onShow(){
+        onShow () {
             let productManage = this.$parent.globalData.productManage;
             if (this.data.isShow && this.data.isRefresh) {
                 for (let k in productManage) {
@@ -225,11 +230,11 @@
                 }
             }
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -275,11 +280,11 @@
         }
 
         methods = {
-            bindinputChang(k, e){
+            bindinputChang (k, e) {
                 let value = e.detail.value;
                 this[k] = value;
             },
-            goTo(url){
+            route (url) {
                 this.$azmUtil.go(url);
             }
         }

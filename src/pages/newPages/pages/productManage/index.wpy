@@ -11,83 +11,95 @@
                 </block>
             </view>
         </view>
-        <block wx:for="{{items[tabList.selectedId]}}" wx:key="{{i}}" wx:for-item="v" wx:for-index="i">
-            <block wx:for="{{v}}" wx:key="{{item.id}}">
-                <view class="t-refund">
-                    <view class="t-topStatus flexBox">
-                        <view class="t-shopName flexBox-item fb-all">产品ID：{{item.item_no}}</view>
-                        <view class="flexBox-item fb-all azm-text_right">
-                            <view class="t-statusBar" wx:if="{{tabList.selectedId == 1}}">审核未通过</view>
-                            <view class="t-statusBar" wx:if="{{item.is_group == 1}}">拼团</view>
+        <block wx:if="{{items[tabList.selectedId].length>0}}">
+            <block wx:for="{{items[tabList.selectedId]}}" wx:key="{{i}}" wx:for-item="v" wx:for-index="i">
+                <block wx:for="{{v}}" wx:key="{{item.id}}">
+                    <view class="t-refund">
+                        <view class="t-topStatus flexBox">
+                            <view class="t-shopName flexBox-item fb-all">产品ID：{{item.item_no}}</view>
+                            <view class="flexBox-item fb-all azm-text_right">
+                                <view class="t-statusBar" wx:if="{{tabList.selectedId == 1}}">审核未通过</view>
+                                <view class="t-statusBar" wx:if="{{item.is_group == 1}}">拼团</view>
+                            </view>
                         </view>
-                    </view>
-                    <view class="t-item-info pr" :class="{'touch-move-active' :item.isTouchMove}">
-                        <view class="pr flexBox" style="flex-wrap: nowrap;width: 100%">
-                            <view class="flexBox-item left">
-                                <view class='azm-group-num' wx:if="{{item.group_num > 0}}">{{item.group_num}}人团</view>
-                                <image class='t-shopPhoto' src="{{imageUrl + item.cover}}" mode="aspectFill"></image>
+                        <view class="t-item-info pr" :class="{'touch-move-active' :item.isTouchMove}">
+                            <view class="pr flexBox" style="flex-wrap: nowrap;width: 100%">
+                                <view class="flexBox-item left">
+                                    <view class='azm-group-num' wx:if="{{item.group_num > 0}}">{{item.group_num}}人团
+                                    </view>
+                                    <image class='t-shopPhoto' src="{{imageUrl + item.cover}}"
+                                           mode="aspectFill"></image>
+                                </view>
+                                <view class="flexBox-item fb-all right">
+                                    <view class="zan-ellipsis t-shopTitle">
+                                        【{{item.category}}】{{item.title}}sdhklafhnkjahfkjahdfkjlah
+                                    </view>
+                                    <view class="zan-ellipsis azm-money" wx:if="{{item.group_num > 0}}">
+                                        <text class="azm-TeamworkMoner">拼团价</text>
+                                        <text class='t-ShopUnit'>￥</text>
+                                        <text class='t-ShopPrice'>{{item.group_price}}</text>
+                                        <text class='t-shop-price'>门市价 ￥{{item.price}}</text>
+                                    </view>
+                                    <view class="zan-ellipsis azm-money" wx:else>
+                                        <text class='t-ShopUnit'>￥</text>
+                                        <text class='t-ShopPrice'>{{item.price}}</text>
+                                        <text class='t-shop-price'>门市价 ￥{{item.market_price}}</text>
+                                    </view>
+                                    <view class="zan-ellipsis t-shopNum">
+                                        <text>上架时间</text>
+                                        <text>{{item.create_time}}</text>
+                                    </view>
+                                </view>
+                            </view>
+                            <view class="azm-item-info_del" catchtap="del" data-id="{{item.id}}"
+                                  data-shopid="{{item.shop_id}}"
+                                  data-index="{{index}}">删除
+                            </view>
+                        </view>
+                        <view class="t-shopCompile flexBox">
+                            <view class="flexBox-item left" wx:if="{{tabList.selectedId != 0}}">
+                                <button size="mini" plain hover-class="none" class="azm-btn azm-del"
+                                        catchtap="deleteItem({{item}})">删除
+                                </button>
                             </view>
                             <view class="flexBox-item fb-all right">
-                                <view class="zan-ellipsis t-shopTitle">
-                                    【{{item.category}}】{{item.title}}sdhklafhnkjahfkjahdfkjlah
-                                </view>
-                                <view class="zan-ellipsis azm-money" wx:if="{{item.group_num > 0}}">
-                                    <text class="azm-TeamworkMoner">拼团价 </text>
-                                    <text class='t-ShopUnit'>￥</text>
-                                    <text class='t-ShopPrice'>{{item.group_price}}</text>
-                                    <text class='t-shop-price'>门市价 ￥{{item.price}}</text>
-                                </view>
-                                <view class="zan-ellipsis azm-money" wx:else>
-                                    <text class='t-ShopUnit'>￥</text>
-                                    <text class='t-ShopPrice'>{{item.price}}</text>
-                                    <text class='t-shop-price'>门市价 ￥{{item.market_price}}</text>
-                                </view>
-                                <view class="zan-ellipsis t-shopNum">
-                                    <text>上架时间 </text>
-                                    <text>{{item.create_time}}</text>
-                                </view>
+                                <block wx:if="{{tabList.selectedId == 0}}">
+                                    <button size="mini" plain hover-class="none" class="azm-btn"
+                                            catchtap="downItem({{item}})">下架
+                                    </button>
+                                </block>
+                                <block wx:elif="{{tabList.selectedId == 1}}">
+                                    <button size="mini" plain hover-class="none" class="azm-btn"
+                                            catchtap="shelfItem({{item}})">上架
+                                    </button>
+                                </block>
+                                <button size="mini" plain hover-class="none" class="azm-btn t-compile"
+                                        catchtap="editAuth({{item}})">
+                                    编辑
+                                </button>
+                                <block wx:if="{{tabList.selectedId == 2}}">
+                                    <button size="mini" plain hover-class="none" class="azm-btn"
+                                            catchtap="editAuth({{item}})">
+                                        撤销申请
+                                    </button>
+                                    <button size="mini" plain hover-class="none" class="azm-btn"
+                                            catchtap="editAuth({{item}})">
+                                        提交审核
+                                    </button>
+                                </block>
                             </view>
                         </view>
-                        <view class="azm-item-info_del" catchtap="del" data-id="{{item.id}}"
-                              data-shopid="{{item.shop_id}}"
-                              data-index="{{index}}">删除
-                        </view>
                     </view>
-                    <view class="t-shopCompile flexBox">
-                        <view class="flexBox-item left" wx:if="{{tabList.selectedId != 0}}">
-                            <button size="mini" plain hover-class="none" class="azm-btn azm-del"
-                                    catchtap="deleteItem({{item}})">删除
-                            </button>
-                        </view>
-                        <view class="flexBox-item fb-all right">
-                            <block wx:if="{{tabList.selectedId == 0}}">
-                                <button size="mini" plain hover-class="none" class="azm-btn"
-                                        catchtap="downItem({{item}})">下架
-                                </button>
-                            </block>
-                            <block wx:elif="{{tabList.selectedId == 1}}">
-                                <button size="mini" plain hover-class="none" class="azm-btn"
-                                        catchtap="shelfItem({{item}})">上架
-                                </button>
-                            </block>
-                            <button size="mini" plain hover-class="none" class="azm-btn t-compile"
-                                    catchtap="editAuth({{item}})">
-                                编辑
-                            </button>
-                            <block wx:if="{{tabList.selectedId == 2}}">
-                                <button size="mini" plain hover-class="none" class="azm-btn"
-                                        catchtap="editAuth({{item}})">
-                                    撤销申请
-                                </button>
-                                <button size="mini" plain hover-class="none" class="azm-btn"
-                                        catchtap="editAuth({{item}})">
-                                    提交审核
-                                </button>
-                            </block>
-                        </view>
-                    </view>
-                </view>
+                </block>
             </block>
+        </block>
+        <block wx:else>
+            <view class="azm-empty_area">
+                <view class="empty-img">
+                    <image src="/imgs/emptyorders.png"/>
+                </view>
+                <view class="empty-txt">没有找到记录</view>
+            </view>
         </block>
         <view class="t-issue" catchtap="addItem">
             +发布产品
@@ -99,6 +111,7 @@
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page productsIndex",
@@ -131,10 +144,10 @@
             startX: 0, //开始坐标
             startY: 0
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb()
         },
-        onShow(){
+        onShow () {
 
         },
         onPullDownRefresh () {
@@ -239,7 +252,7 @@
         }
 
         methods = {
-            bindTapChang(i){
+            bindTapChang (i) {
                 let that = this,
                     page = that.data.pages[i];
                 if (that.tabList.selectedId == i) return;
@@ -267,21 +280,21 @@
              * 新增与编辑产品
              * @param item
              **/
-            editItem(item) {
+            editItem (item) {
                 this.addItem(null, item.id);
             },
             /**
              * 上架产品
              * @param item
              **/
-            shelfItem(item){
+            shelfItem (item) {
 
             },
             /**
              * 下架产品
              * @param item
              **/
-            downItem(item) {
+            downItem (item) {
                 let that = this,
                     id = item.id,
                     selectedId = that.data.tabList.selectedId,
@@ -304,7 +317,7 @@
              * 删除产品
              * @param item
              */
-            deleteItem(item){
+            deleteItem (item) {
                 let that = this;
                 that.confirm("是否删除产品，删除后将不能恢复？", () => {
                     this.showLoading();
@@ -538,7 +551,6 @@
             font-size: 30*1rpx;
             line-height: 56*1rpx;
             text-align: center;
-            margin-top: 16*1rpx;
             &.t-compile {
                 color: #fff;
                 background-color: #ff8000;

@@ -51,6 +51,24 @@
         }
     }
 
+    .azm-empty_area {
+        text-align: center;
+        padding-top: 156*1rpx;
+        padding-bottom: 156*1rpx;
+        .empty-img {
+            text-align: center;
+            & > image {
+                width: 191*1rpx;
+                height: 190*1rpx;
+            }
+        }
+        .empty-txt {
+            font-size: 30*1rpx;
+            color: #999999;
+            padding-top: 40*1rpx;
+        }
+    }
+
     .azm-cells__title + .azm-cells {
         margin-top: 0;
     }
@@ -460,6 +478,7 @@
                         "pages/mainpic/index",
                         "pages/preview/index",
                         "pages/editText/index",
+                        "pages/groupActivity/index",
                     ]
                 }
             ],

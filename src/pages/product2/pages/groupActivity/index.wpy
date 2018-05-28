@@ -1,0 +1,228 @@
+<template>
+    <view class="productGroupActivity">
+        <form report-submit="true" @submit="bindSubmit">
+            <view class="container-main">
+                <view class="hr24"/>
+                <view class="pp1">
+                    <view class="flex border-b">
+                        <view class="label">
+                            <view class="ib">拼团人数</view>
+                        </view>
+                        <view class="flex-con"></view>
+                        <view class="left">
+                            <view class="ib {{group_num==2?'selected':''}}" @tap="toggleGroupNum(2)">
+                                <text>2人团</text>
+                                <image src="/imgs/{{group_num==2?'checked':'circle'}}.png"/>
+                            </view>
+                            <view class="ib {{group_num==3?'selected':''}}" @tap="toggleGroupNum(3)">
+                                <text>3人团</text>
+                                <image src="/imgs/{{group_num==3?'checked':'circle'}}.png"/>
+                            </view>
+                            <view class="ib {{group_num==5?'selected':''}}" @tap="toggleGroupNum(5)">
+                                <text>5人团</text>
+                                <image src="/imgs/{{group_num==5?'checked':'circle'}}.png"/>
+                            </view>
+                        </view>
+                    </view>
+                    <view class="flex border-b">
+                        <view class="label">拼团价格</view>
+                        <view class="flex-con">
+                            <input placeholder="请填写拼团价格" value="{{group_price}}" @input="setField('group_price')"
+                                   type="digit"/>
+                        </view>
+                    </view>
+                    <view class="flex">
+                        <view class="label"> 是否有效</view>
+                        <view class="flex-con">
+                            <switch type="switch" checked="{{is_valid}}" bindchange="changeValid"/>
+                        </view>
+                    </view>
+                </view>
+                <view class="pp2">
+                    <view>*拼团价格：优惠力度不得少于日均价格的10%</view>
+                    <view>
+                        <view class="flex">
+                            <view class="label"> *日均价格：</view>
+                            <view class="flex-con">产品近一个月的交易原价（交易原价=交易最终价格+包括优惠卷，买单等各种优惠折扣金额）的日平均数。</view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view class="azm-footer">
+                <button class="azm-btn azm-btn_submit" plain="true" formType="submit">确 定</button>
+            </view>
+        </form>
+    </view>
+    <toast></toast>
+    <popup @popupSubmit.user="bindLabelSubmit"></popup>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    import toast from "../../../../components/toast";
+    import popup from "../../../../components/popup";
+    import c from "../../../../wxs/common.wxs";
+
+    const appPage = new utilPage({
+        data: {
+            text: "Page product2GroupActivity",
+            hasMoreData: false,//是否有更多
+            group_num: "",
+            is_valid: true,
+            group_price: ""
+        },
+        onLoad (options) {
+            this.loadCb()
+        },
+        onShow () {
+            if (this.data.isShow && this.data.isRefresh) {
+            }
+        },
+        onPullDownRefresh () {
+            let that = this
+        },
+
+        onReachBottom () {
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        components = {
+            toast,
+            popup
+        };
+        config = {
+            navigationBarTitleText: "选择拼团规格",
+            navigationBarBackgroundColor: "#fff",
+            backgroundColor: "#fff",
+            navigationBarTextStyle: "black",
+            backgroundTextStyle: "dark"
+        };
+        wxs = {
+            c
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            try {
+                let that = this,
+                    options = that.data.options,
+                    prevPage = this.__getPrevPage(),
+                    data = {
+                        group_num: prevPage.data.group_num,
+                        group_price: prevPage.data.group_price,
+                        is_valid: prevPage.data.is_valid
+                    };
+                if (data) {
+                    this.group_num = data.group_num;
+                    this.group_price = data.group_price;
+                    this.is_valid = data.is_valid || false;
+                }
+            } catch (e) {
+
+            }
+        }
+
+        methods = {
+            changeValid (e) {
+                this['is_valid'] = e.detail.value;
+            },
+            setField (field, e) {
+                this[field] = e.detail.value;
+            },
+            toggleGroupNum (num) {
+                this.group_num = num;
+            },
+            bindSubmit (e) {
+                let that = this,
+                    _this2 = that.__getPrevPage(),
+                    data = {
+                        group_num: that.data.group_num,
+                        group_price: that.data.group_price,
+                        is_valid: that.data.is_valid
+                    };
+                if (!data.group_num) {
+                    this.$alert("请输入拼团人数");
+                    return;
+                }
+                if (!data.group_price) {
+                    this.$alert("请输入拼团价格");
+                    return;
+                }
+                _this2.group_num = data.group_num;
+                _this2.group_price = data.group_price;
+                _this2.is_valid = data.is_valid;
+                _this2.$apply();
+                that.$azmUtil.go(-1);
+            }
+        }
+    }
+</script>
+
+<style lang="less">
+    .productGroupActivity {
+        .container-main {
+            .pp2 {
+                padding: 39*1rpx 30*1rpx;
+                line-height: 40*1rpx;
+                font-size: 28*1rpx;
+                color: #999999;
+            }
+            .pp1 {
+                padding-left: 30*1rpx;
+                background-color: #fff;
+                .ib {
+                    margin-right: 37*1rpx;
+                }
+                & > .flex {
+                    padding: 30*1rpx 30*1rpx 30*1rpx 0;
+                    font-size: 32*1rpx;
+                    color: #282828;
+                }
+                & > .flex:last-child {
+                    padding-top: 22*1rpx;
+                    padding-bottom: 22*1rpx;
+                }
+                .selected {
+                    color: #ff8000;
+                }
+                image {
+                    width: 35*1rpx;
+                    height: 35*1rpx;
+                    position: relative;
+                    top: -2*1rpx;
+                    left: -127*1rpx;
+                }
+                .label {
+                    width: 176*1rpx;
+                }
+            }
+            button.btn-account {
+                font-size: 32*1rpx;
+                position: fixed;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                height: 100*1rpx;
+                line-height: 100*1rpx;
+            }
+        }
+    }
+
+    page {
+        background-color: #f4f4f4;
+    }
+</style>
+ 
