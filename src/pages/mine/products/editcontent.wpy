@@ -1,0 +1,71 @@
+<template lang="pug">
+view.form-area
+    view.container1    
+        textarea.textarea(placeholder="请在这里输入文字~" value="{{content}}" @input="setField('content')")
+        button.btn-primary(type="default" @tap="doSubmit" hover-class="tapmode") 提 交
+</template>
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "详情介绍"
+  };
+  mixins = [baseMixin];
+  data = {
+    content: ""
+  };
+  onLoad(options) {
+    let idx = parseInt(options.idx);
+    this.idx = idx;
+    if (idx != -1) {
+      this.content = this.strContent =  this.$noticePage("getTextContent", { idx }) || "";
+      this.$apply();
+    }
+  }
+  methods = {
+    setField(name, e) {
+      this.strContent = e.detail.value.trim();
+    },
+    doSubmit() {
+      this.content = this.strContent;
+      if (!this.content) {
+        return this.$alert("请输入文字");
+      }
+      this.$noticePage("setTextContent", {
+        idx: this.idx,
+        content: this.content
+      });
+      this.$back();
+    }
+  };
+}
+</script>
+
+<style lang="less">
+.btn-primary {
+  margin-top: 101rpx;
+}
+.textarea {
+  background-color: #fff;
+}
+page {
+  background-color: #f4f4f4;
+}
+.pic-item {
+  width: 216rpx;
+  height: 216rpx;
+}
+button.fixed-btn {
+  position: fixed;
+  left: 0;
+  height: 100rpx;
+  line-height: 98rpx;
+  right: 0;
+  bottom: 0;
+}
+.pic-list {
+  padding-top: 35rpx;
+}
+</style>
+

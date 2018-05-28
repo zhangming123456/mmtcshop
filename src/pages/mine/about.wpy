@@ -1,0 +1,85 @@
+<template lang='pug'>
+view.text-center.p1.bg-white
+    image(src='{{avatar}}' class='qrcode')
+    view.p1-inner 美美天成商户端小程序
+        view.text-center.p1-inner-version v1.0.0
+view.hr24
+view.list-item.bg-white.border-b
+    view.flex(@tap="makeCall")
+        view.flex-con.fz32.text282828  官方客服
+        view.fz30.text282828  400-184-8008
+        image(src="/imgs/gt.png" class='icon-gt')
+view.list-item.bg-white.border-b(style="padding:0 30rpx 0 3rpx")
+    view.flex 
+        view.flex-con 
+            button.contact-btn(open-type="contact" plain="true" hover-class="tapmode") 在线客服
+        view
+            image.gt(src="/imgs/gt.png" style="top:-3rpx;position:relative")        
+</template>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class  extends wepy.page {
+    config = {
+      navigationBarTitleText: '关于我们'
+    };
+    data = {
+        avatar:''
+    };
+    mixins = [baseMixin];
+    onLoad(){
+        this.avatar = this.absUrl('/little/shop/qrcode.jpg')
+    };
+    methods={
+        makeCall(){
+            wx.makePhoneCall({
+                phoneNumber: '400-184-8008' //仅为示例，并非真实的电话号码
+            })
+        }
+    }
+}
+</script>
+
+<style lang="less">
+page{
+    background-color: #f4f4f4;
+}
+.qrcode{
+    width: 280rpx;
+	height: 280rpx;
+}
+.p1{
+    padding-top: 84rpx;
+    padding-bottom: 82rpx;
+}
+.p1-inner{
+    font-size: 30rpx;
+    color: #999999;
+    padding-top: 31rpx;
+}
+.p1-inner-version{
+    padding-top: 6rpx;
+}
+.list-item {
+      padding: 30rpx;
+      image.gt {
+        width: 15rpx;
+        height: 27rpx;
+        vertical-align: middle;
+        position: relative;
+        top: 0;
+      }
+      .manager-name {
+        font-size: 28rpx;
+        color: #999999;
+        padding-right: 20rpx;
+      }
+    }
+
+button.contact-btn{
+  text-align: left;  
+  border:none;
+  font-size:30rpx; 
+}
+</style>

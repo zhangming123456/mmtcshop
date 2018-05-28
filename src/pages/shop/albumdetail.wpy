@@ -1,0 +1,132 @@
+<template lang="pug">
+view.main-item
+    view.header
+        view.flex
+            view.flex-con(wx:if="{{is_cover}}")
+                view.is-cover-txt 封面
+            //- view.flex-con.text-right.txt-num 1/1
+    image.album-img(src="{{m1.absUrl(img)}}" mode="aspectFill")
+
+view.footer-area
+    view.p30.text-right.border-t
+        button.btn1(hover-class="tapmode" @tap="deleteImg") 删除
+        button.btn2(hover-class="tapmode" @tap="setAsCover") 设为封面
+</template>
+<script>
+import wepy from "wepy";
+import m1 from "../../wxs/common.wxs";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  mixins = [baseMixin];
+  wxs = {
+    m1
+  };
+  data = {
+    img:''
+  }; 
+  onLoad(opts){
+    let title = decodeURIComponent(opts.title)
+    wx.setNavigationBarTitle({
+      title
+    })
+    this.img = decodeURIComponent(opts.img)
+    this.type_id = decodeURIComponent(opts.type_id)
+    this.idx = decodeURIComponent(opts.idx)
+    this.is_cover = parseInt(opts.is_cover) == 1?true:false
+  };
+  methods = {
+    deleteImg() {
+      this.confirm('确定删除该图片吗？',()=>{
+        this.$noticePage('removeImg',{
+          idx:this.idx
+        });
+        this.$back()
+      });
+    },
+    setAsCover() {
+        this.showLoading();
+        this.$post('/shopapi/shop/setAsImageTypeCover',{
+            type_id:this.type_id,
+            cover:this.img
+        },()=>{
+            this.toast('设置封面成功',()=>{
+                this.$noticePage('setPicCover',{                  
+                  cover:this.img
+                })                
+                this.$back()
+            });            
+        },()=>{
+            this.hideLoading();
+        })
+    },
+    showPicDetail() {
+      this.$goto("albumdetail");
+    }
+  };
+  config = {
+    navigationBarTitleText: ""
+  };
+}
+</script>
+<style lang="less">
+page {
+  background-color: #000000;
+}
+button.disabled {
+  background-color: rgba(255, 128, 0, 0.3);
+}
+.album-img {
+  width: 750rpx;
+  height: 864rpx;
+}
+
+.btn2 {
+  margin-left: 30rpx;
+  color: #ffffff;
+  background-color: #ff8000;
+}
+.btn1 {
+  color: #ff8000;
+  border: solid 1px #ff8000;
+  background-color: transparent;
+}
+.btn1,
+.btn2 {
+  height: 72rpx;
+  display: inline-block;
+  padding: 0;
+  font-size: 34rpx;
+  border-radius: 5rpx;
+  line-height: 72rpx;
+  width: 179rpx;
+  text-align: center;
+}
+.header {
+  padding: 30rpx 0;
+  color: #999999;
+  font-size: 30rpx;
+}
+.footer-area {
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.is-cover-txt {
+  font-size: 26rpx;
+  color: white;
+  height: 52rpx;
+  line-height: 52rpx;
+  padding-left: 30rpx;
+  box-sizing: border-box;
+  border-radius: 0px 26px 26px 0px;
+  background-color: #ff8000;
+  width: 99rpx;
+}
+.txt-num {
+  padding-right: 30rpx;
+}
+</style>
+
+

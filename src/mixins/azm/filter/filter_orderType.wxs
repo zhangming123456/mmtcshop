@@ -1,0 +1,583 @@
+"use strict";
+var ORDER_STATUS = {
+        s3: {
+            str: '待支付',
+            statusStr: '待支付'
+        },
+        s4: {
+            str: '待支付',
+            statusStr: '反结账'
+        },
+        s5: {
+            str: '待接单',
+            statusStr: '待接单'
+        },
+        s6: {
+            str: '退款中',
+            statusStr: '退款中'
+        },
+        s7: {
+            str: '已退款',
+            statusStr: '已退款'
+        },
+        s8: {
+            str: '已取消',
+            statusStr: '订单已取消'
+        },
+        s11: {
+            str: '已完成',
+            statusStr: '商家已接单'
+        },
+        s12: {
+            str: '已关闭',
+            statusStr: '商家已拒单'
+        },
+        s13: {
+            str: '已完成',
+            statusStr: '拒单成功退款失败'
+        },
+        S0: {
+            str: '已完成',
+            statusStr: '订单已完成'
+        }
+    },
+    BTN_LIST = [
+        {
+            name: '查看详情',
+            nameStr: '买单',
+            color: 'primary',
+            type: 0,
+            icon: 'iconfont icon-xiangqingye-zaixianmaidan'
+        },
+        {
+            name: '立即加菜',
+            nameStr: '加菜',
+            color: 'primary',
+            type: 1,
+            icon: 'iconfont icon-jiacai'
+        },
+        {
+            name: '再来一单',
+            nameStr: '再来一单',
+            color: 'primary',
+            type: 2,
+            icon: ''
+        },
+        {
+            name: '呼叫',
+            nameStr: '呼叫',
+            color: 'primary',
+            type: 3,
+            icon: 'iconfont icon-fuwuhujiao'
+        },
+        {
+            name: '查看详情',
+            nameStr: '买单',
+            color: 'disabled',
+            disabled: true,
+            type: 0,
+            icon: 'iconfont icon-xiangqingye-zaixianmaidan'
+        },
+        {
+            name: '立即加菜',
+            nameStr: '加菜',
+            color: 'disabled',
+            disabled: true,
+            type: 1,
+            icon: 'iconfont icon-jiacai'
+        },
+    ];
+
+var one_year = 31536000000,
+    one_month = 2678400000,
+    one_day = 86400000,
+    one_hour = 3600000,
+    one_minute = 60000,
+    one_second = 1000;
+// dateTime = +new Date('2017-09-25 09:01:01'),
+// one_year = dateTime - +new Date('2016-09-25 09:01:01'),
+// one_month = dateTime - +new Date('2017-08-25 09:01:01'),
+// one_day = dateTime - +new Date('2017-09-24 09:01:01'),
+// one_hour = dateTime - +new Date('2017-09-25 08:01:01'),
+// one_minute = dateTime - +new Date('2017-09-25 09:00:01'),
+// one_second = dateTime - +new Date('2017-09-25 09:01:00');
+// 31536000000 2678400000 86400000 90000000 86460000 1000
+// console.log(one_year, one_month, one_day, one_hour, one_minute, one_second);
+
+
+function getOrderType(data, type) {
+    var orderType = 0,
+        orderName = '堂食';
+    if (data.consumerType == 2) {
+        orderType = 1;
+        orderName = '外卖'
+    } else if (data.consumerType == 0) {
+        if (data.payType == 0 && data.dinnerType == 1) {
+            orderType = 2;
+            orderName = '自助取餐'
+        } else if (data.payType == 1) {
+            orderType = 3;
+            orderName = '餐后付款'
+        }
+    }
+    if (1 == type) {
+        return orderType
+    } else if (2 == type) {
+        return {orderName, orderType}
+    } else {
+        return orderName
+    }
+}
+
+function getOrderStatus(data, type) {
+    var orderType = getOrderType(data, 1);
+    data.status = data.status || data.consumerStatus;
+    if (data.finishTime) {
+        return ORDER_STATUS.S0
+    } else {
+        if (11 == data.status && 2 === orderType) {
+            return {
+                str: '待叫号',
+                statusStr: '制作中，待叫号',
+                icon: ''
+            }
+        } else if (3 == data.status && 3 === orderType) {
+            if (0 == data.orderStatus) {
+                return {
+                    str: '已开单',
+                    statusStr: '商家已开单'
+                }
+            } else if (1 == data.orderStatus) {
+                return ORDER_STATUS['s5']
+            } else if (2 == data.orderStatus) {
+                return {
+                    str: '已拒单',
+                    statusStr: '商家已拒单'
+                }
+            } else if (3 == data.orderStatus) {
+                return {
+                    str: '已接单',
+                    statusStr: '商家已接单'
+                }
+            } else {
+                return {
+                    str: '用餐中',
+                    statusStr: '用餐中'
+                }
+            }
+        } else if (5 == data.status && 3 === orderType) {
+            return ORDER_STATUS.S0
+        } else {
+            return ORDER_STATUS['s' + data.status]
+        }
+    }
+}
+
+function getFoodBtnList(data, type) {
+    var orderType = getOrderType(data, 1),
+        status = data.status || data.consumerStatus,
+        childStatus = data.orderStatus;
+    //0默认，1待确认，2拒绝, 3接受
+    if (3 === orderType) {
+        if (5 <= status) {
+            return [BTN_LIST[2]]
+        } else if (1 == type) {
+            if (childStatus === 2) {
+                return [BTN_LIST[4]]
+            } else if (childStatus === 1) {
+                return [BTN_LIST[4]]
+            } else {
+                return [BTN_LIST[0]]
+            }
+        } else {
+            if (childStatus === 2) {
+                return [BTN_LIST[4], BTN_LIST[5], BTN_LIST[3]]
+            } else if (childStatus === 1) {
+                return [BTN_LIST[4], BTN_LIST[1], BTN_LIST[3]]
+            } else {
+                return [BTN_LIST[0], BTN_LIST[1], BTN_LIST[3]]
+            }
+        }
+    } else {
+        if (5 <= status) {
+            return [BTN_LIST[2]]
+        } else if (1 == type) {
+            return [BTN_LIST[0]]
+        }
+    }
+}
+
+var one_year = 31536000000,
+    one_month = 2678400000,
+    one_day = 86400000,
+    one_hour = 3600000,
+    one_minute = 60000,
+    one_second = 1000;
+
+function _getDate(date) {
+    var _date = getDate(),
+        reg1 = getRegExp('-', 'g'),
+        reg2 = getRegExp('\s', 'g');
+    if (isDateTime(date)) {
+        // _date = Date.parse(date)
+        _date = getDate(date.replace(reg1, '/'));
+        // console.log(_date, '____wxs___getDate____');
+        // if (isNaN(_date)) {
+        //     date = date.trim().replace(reg2, 'T');
+        //     _date = getDate(date);
+        // }
+    } else if (isNumberOrNaN(date)) {
+        _date = getDate(+date)
+    } else if (isDate(date)) {
+        _date = date
+    }
+    return _date
+}
+
+function date_filter(input, fmt, config) {
+    if (!fmt) {
+        fmt = 'YYYY-MM-DD HH:mm:ss'
+    }
+    var d = getDate();
+    if (input) {
+        d = _getDate(input);
+    }
+    var timer = 0;
+    if (config && config.Y) {
+        timer += +config.y * one_year;
+    }
+    if (config && config.M) {
+        timer += +config.M * one_month;
+    }
+    if (config && config.D) {
+        timer += +config.D * one_day;
+    }
+
+    if (config && config.h) {
+        timer += +config.h * one_hour;
+    }
+    if (config && config.m) {
+        timer += +config.m * one_minute;
+    }
+    if (config && config.s) {
+        timer += +config.s * one_second;
+    }
+    if (timer > 0) {
+        d = _getDate(+d + timer)
+    }
+    // console.log(d, '__wxs_date_filter__');
+    var year = d.getFullYear();
+    var month = (+d.getMonth() + 1) < 10 ? '0' + (+d.getMonth() + 1) : +d.getMonth() + 1;
+    var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate();
+    var hour = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+    var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+    var seconds = d.getSeconds() < 10 ? '0' + d.getSeconds() : d.getSeconds();
+    if (fmt === 'YYYY-MM-DD HH:mm:ss') {
+        return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds
+    } else if (fmt === 'YYYY-MM-DD HH:mm') {
+        return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes
+    } else if (fmt === 'YYYY-MM-DD') {
+        return year + '-' + month + '-' + day
+    } else if (fmt === 'HH:mm') {
+        return hour + ':' + minutes
+    } else if (fmt === 'HH') {
+        return hour
+    }
+}
+
+function segmentation(time, selectDate, leadTime, flag) {
+    var arr = [],
+        list = time.split('~'),
+        hour1 = list[0].split(':'),
+        hour2 = list[1].split(':'),
+        obj = {},
+        _flag = true,
+        hourRange = hour2[0] - hour1[0];
+    if (typeof +leadTime !== 'number') {
+        leadTime = 60
+    }
+    // console.log(leadTime, '_____wxs_____leadTime____');
+    for (var i = 0; i <= hourRange; i++) {
+        var t1 = (+hour1[0] + i) < 10 ? '0' + (+hour1[0] + i) + ':00' : +hour1[0] + i + ':00',
+            t2 = (+hour1[0] + i) < 10 ? '0' + (+hour1[0] + i) + ':30' : +hour1[0] + i + ':30',
+            _date = getDate(selectDate),
+            dateTime1 = selectDate + ' ' + t1 + ':00',
+            dateTime2 = selectDate + ' ' + t2 + ':00',
+            currrntDate = +_getDate(date_filter(null, 'YYYY-MM-DD HH:mm', {m: leadTime})),
+            weeks = _date.getDay();
+        // console.log(flag, _date, _getDate(date_filter(null, 'YYYY-MM-DD HH:mm', {m: leadTime})), _getDate(dateTime1), _getDate(dateTime2), '—————wxs———当前——————');
+        // console.log(_date, +_getDate(date_filter(null, 'YYYY-MM-DD HH:mm', {m: leadTime})), +_getDate(dateTime1), +_getDate(dateTime2), '—————wxs———当前——————');
+        // console.log(selectDate, date_filter(null, 'YYYY-MM-DD HH:mm', {m: leadTime}), date_filter(dateTime1, 'YYYY-MM-DD HH:mm'), date_filter(dateTime2, 'YYYY-MM-DD HH:mm'), '___wxs____selectDate______');
+        if ((+hour1[1] === 0 && i === 0) || i > 0) {
+            arr.push(
+                {
+                    text: t1,
+                    time: selectDate + ' ' + t1,
+                    weeks: weeks,
+                    d: _date,
+                    disabled: flag && currrntDate > +_getDate(dateTime1)
+                }
+            );
+            // console.log(arr[arr.length - 1].disabled, flag);
+            if (!arr[arr.length - 1].disabled && _flag) {
+                _flag = false;
+                obj.date = arr[arr.length - 1];
+            }
+        }
+        if ((+hour2[1] < 59 && i === hourRange) || i < hourRange) {
+            arr.push(
+                {
+                    text: t2,
+                    time: selectDate + ' ' + t2,
+                    weeks: weeks,
+                    d: _date,
+                    disabled: flag && currrntDate >= +_getDate(dateTime2)
+                }
+            )
+        }
+        if (i === 0) {
+            var _t = date_filter(selectDate, 'YYYY-MM-DD', {D: 1});
+            // console.log(_t, _getDate(_t), +_getDate(_t), '______wxs___明天________');
+            var _tomorrow = getDate(_t);
+            obj.tomorrow = {
+                text: arr[0].text,
+                time: date_filter(selectDate, 'YYYY-MM-DD', {D: 1}) + ' ' + arr[0].text,
+                d: _tomorrow,
+                weeks: (weeks + 1) > 7 ? 1 : weeks + 1,
+                disabled: flag && currrntDate > +_getDate(dateTime1)
+            };
+        }
+        if (!arr[arr.length - 1].disabled && _flag) {
+            _flag = false;
+            obj.date = arr[arr.length - 1];
+        }
+    }
+    obj.list = arr;
+    // console.log(JSON.stringify(obj), '_______wxs_______segmentation________');
+    return obj
+}
+
+function destineTime_filter(input, selectDate, leadTime, type) {
+    var arr = [],
+        date_regexp = getRegExp('^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$'),
+        tomorrow = null,
+        date = null,
+        _date = null,
+        flag = false;
+    if (!selectDate) {
+        selectDate = date_filter(null, 'YYYY-MM-DD');
+        flag = true
+    } else if (date_regexp.test(selectDate) && selectDate === date_filter(null, 'YYYY-MM-DD')) {
+        flag = true
+    } else if ("Date" === selectDate.constructor || "Number" === selectDate.constructor) {
+        selectDate = date_filter(selectDate, 'YYYY-MM-DD');
+        if (selectDate === date_filter(null, 'YYYY-MM-DD')) {
+            flag = true
+        }
+    } else if (isDateTime(selectDate)) {
+        selectDate = selectDate.split(' ')[0];
+        if (selectDate === date_filter(null, 'YYYY-MM-DD')) {
+            flag = true
+        }
+    }
+    // console.log(selectDate, date_filter(null, 'YYYY-MM-DD'), flag);
+    if (!input) {
+        return []
+    }
+    // console.log(input, selectDate);
+    if (input) {
+        var strArr = input.split(',');
+        if (strArr[0]) {
+            var obj1 = segmentation(strArr[0], selectDate, leadTime, flag);
+            arr[0] = {
+                text: '午市',
+                time: strArr[0],
+                list: obj1.list
+            };
+            date = obj1.date;
+            tomorrow = obj1.tomorrow
+        }
+        if (strArr[1]) {
+            var obj2 = segmentation(strArr[1], selectDate, leadTime, flag);
+            arr[1] = {
+                text: '晚市',
+                time: strArr[1],
+                list: obj2.list,
+                date: obj2.date
+            };
+            if (!tomorrow) {
+                tomorrow = obj2.tomorrow
+            }
+            if (!date) {
+                date = obj2.date
+            }
+        }
+    }
+    if (type === 1) {
+        return {tomorrow, date}
+    } else
+        return arr
+}
+
+var WEEKS = ['日', '一', '二', '三', '四', '五', '六'];
+
+function date_regexp(date) {
+    var date_regexp = getRegExp('^[1-2][0-9][0-9][0-9]-[0-1]{0,1}[0-9]-[0-3]{0,1}[0-9]$')
+    return typeof date === 'string' && date_regexp.test(date)
+}
+
+function isDateTime(str) {
+    if (typeof str === 'string') {
+        str = str.split(' ')[0]
+    }
+    return date_regexp(str)
+}
+
+function isDate(date) {
+    if (!date) return;
+    // console.log(date, '___wxs___isDate____', +getDate(), (+getDate() + '').length);
+    return "Date" === date.constructor;
+}
+
+function reserveTime_filter(input, selectDate, leadTime, type) {
+    // console.log((selectDate && isDateTime(selectDate)), type, '_________wxs___reserveTime_filter____');
+    if (selectDate && isDateTime(selectDate)) {
+        var date1 = getDate(selectDate.split(' ')[0]),
+            d = selectDate.split(' ')[0].split("-"),
+            time = selectDate.split(' ')[1],
+            weeks = getWeeks(date1);
+        return {
+            text: d[1] + "月" + d[2] + "日" + ' ' + weeks + ' ' + time,
+            time: selectDate
+        }
+    } else {
+        var date = destineTime_filter(input, null, leadTime, 1);
+        if (!date.tomorrow) return;
+        if (date.date) {
+            if (date.date.disabled) {
+                date = date.tomorrow
+            } else {
+                date = date.date
+            }
+        } else {
+            date = date.tomorrow
+        }
+        // console.log(JSON.stringify(date), '_____ty____wxs___reserveTime_filter____');
+        if (type === 1) {
+            var d = date.time.split(' ')[0].split("-"),
+                time = date.text,
+                weeks = getWeeks(date.d);
+            return {
+                text: d[1] + "月" + d[2] + "日" + ' ' + weeks + ' ' + time,
+                time: selectDate
+            }
+        } else {
+            return date
+        }
+    }
+}
+
+function rangeDate_filter(start, end, format) {
+    if (!format) {
+        format = 'YYYY-MM-DD'
+    }
+    var rs = [];
+    var startTime = getDate(start).getTime();
+    var endTime = getDate(end).getTime();
+
+    while (startTime <= endTime) {
+        rs.push(date_filter(startTime, format))
+        startTime += one_day
+    }
+    return rs
+}
+
+function getWeeks(date) {
+    if (isDate(date)) {
+        var toDay = date_filter(null, 'YYYY-MM-DD');
+        var weeks = "周" + WEEKS[date.getDay()];
+        // console.log(JSON.stringify(date), JSON.stringify(rangeDate_filter(toDay, date)), '_________wxs___getWeeks____');
+        switch (rangeDate_filter(toDay, date).length) {
+            case 1:
+                weeks = '今天';
+                break;
+            case 2:
+                weeks = '明天';
+                break;
+            case 3:
+                weeks = '后天';
+                break;
+        }
+        return weeks
+    }
+}
+
+function disabled(bol) {
+    // console.log(bol, '_____wxs___disabled___');
+    return bol;
+}
+
+function isNumberOrNaN(a) {
+    if (!!a && typeof +a === 'number' && !isNaN(+a)) {
+        return true
+    } else {
+        return false
+    }
+}
+
+function ChineseTime(time) {
+    var selectDate = null;
+    if (isNumberOrNaN(time)) {
+        time = +time;
+        selectDate = date_filter(time, 'YYYY-MM-DD HH:mm')
+    } else if (time && isDateTime(time)) {
+        selectDate = time
+    }
+
+    if (!selectDate) return;
+
+    var date1 = getDate(selectDate.split(' ')[0]),
+        d = selectDate.split(' ')[0].split("-"),
+        time = selectDate.split(' ')[1],
+        weeks = getWeeks(date1);
+    return {
+        text: d[1] + "月" + d[2] + "日" + ' ' + weeks + ' ' + time,
+        time: selectDate
+    }
+}
+
+function phoneReplace(phone) {
+    var reg = getRegExp('(\\d{3})\\d{4}(\\d{4})');
+    if (isNumberOrNaN(phone)) {
+        return phone.replace(reg, '$1****$2')
+    } else {
+        return ''
+    }
+}
+
+function setSex(sex) {
+    if (isNumberOrNaN(sex)) {
+        sex = +sex;
+        if (sex === 1) {
+            return '  先生'
+        } else if (sex === 2) {
+            return '  女士'
+        }
+    } else {
+        return ''
+    }
+}
+
+module.exports = {
+    OrderType: getOrderType,
+    OrderStatus: getOrderStatus,
+    FoodBtnList: getFoodBtnList,
+    DateFilter: date_filter,
+    DestineTimeFilter: destineTime_filter,
+    reserveTime: reserveTime_filter,
+    rangeDate: rangeDate_filter,
+    disabled: disabled,
+    ChineseTime: ChineseTime,
+    phoneReplace: phoneReplace,
+    setSex: setSex,
+};

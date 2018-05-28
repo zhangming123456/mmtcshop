@@ -1,0 +1,149 @@
+/* 底部 */
+
+.button-holder {
+    height: 100rpx;
+}
+
+.button {
+    height: 100rpx;
+    width: 100%;
+    background-color: rgb(255, 128, 0);
+    line-height: 100rpx;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    position: fixed;
+    bottom: 0;
+    border-radius: 0
+}
+
+.touch-item {
+    font-size: 14rpx;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1rpx solid #eee;
+    border-left: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.touch-item:nth-child(1) {
+    border-top: 1rpx solid #eee;
+}
+
+.content {
+    width: 100%;
+    height: 183rpx;
+    margin-right: 0;
+    -webkit-transition: all 0.4s;
+    transition: all 0.4s;
+    -webkit-transform: translateX(90px);
+    transform: translateX(90px);
+    margin-left: -90px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.message {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin-top: 29rpx;
+    margin-left: 32rpx;
+}
+
+.message .name {
+    font-size: 32rpx;
+}
+
+.message .seat {
+    font-size: 26rpx;
+    color: #666666;
+    margin-left: 10rpx;
+}
+
+.message .place {
+    font-size: 24rpx;
+    color: #666666;
+    margin-top: 15rpx;
+}
+
+.starBox {
+    margin-top: 18rpx;
+    /* width: 290rpx; */
+    height: 40rpx;
+}
+
+.star {
+    width: 32rpx;
+    height: 31rpx;
+    padding-left: 8rpx;
+}
+
+.seat image {
+    vertical-align: none
+}
+
+.star:nth-child(1) {
+    padding: 0;
+}
+
+.starBox .grade {
+    padding-left: 18rpx;
+    font-size: 28rpx;
+    color: rgb(102, 102, 102);
+    /* line-height: 32rpx; */
+    position: relative;
+    top: 10rpx;
+}
+
+/* 删除 */
+
+.del {
+    background-color: orangered;
+    width: 140rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 30rpx;
+    justify-content: center;
+    color: #fff;
+    -webkit-transform: translateX(90px);
+    transform: translateX(90px);
+    -webkit-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+.touch-move-active .content,
+.touch-move-active .del {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+
+/* 用户头像 */
+
+.userHead {
+    width: 112rpx;
+    height: 112rpx;
+    border-radius: 50%;
+    margin-top: 35rpx;
+    margin-left: 30rpx;
+}
+
+.statementBox {
+    position: absolute;
+    top: 425rpx;
+    left: 308rpx;
+}
+
+.statement {
+    width: 191rpx;
+    height: 190rpx;
+    margin-left: -41rpx;
+}
+
+.statementBox .statementText {
+    font-size: 30rpx;
+    color: #999999;
+    margin-top: 35rpx;
+    margin-left: -66rpx;
+}

@@ -1,0 +1,165 @@
+<style lang="less">
+    .container-main {
+        .footer-area-before {
+            height: 116*1rpx;
+        }
+        .footer-area {
+            background-color: #fff;
+            position: fixed;
+            color: #ff8000;
+            left: 0;
+            font-size: 28*1rpx;
+            box-sizing: border-box;
+            height: 116*1rpx;
+            right: 0;
+            bottom: 0;
+            image {
+                position: relative;
+                top: -2*1rpx;
+            }
+            padding: 0 30*1rpx;
+            padding-top: 30*1rpx;
+            button {
+                display: inline-block;
+                font-size: 28*1rpx;
+                width: 150*1rpx;
+            }
+            .preview-btn {
+                background-color: transparent;
+                border-radius: 5*1rpx;
+                border: solid 1px #ff8000;
+                color: #ff8000;
+                height: 56*1rpx;
+                padding: 0;
+                line-height: 54*1rpx;
+                text-align: center;
+                margin-right: 20*1rpx;
+            }
+            .sure-btn {
+                padding: 0;
+                background-color: #ff8000;
+                border-radius: 5*1rpx;
+                border: solid 1px #ff8000;
+                height: 56*1rpx;
+                color: white;
+                line-height: 54*1rpx;
+                text-align: center;
+            }
+        }
+        .empty-area {
+            text-align: center;
+            padding-top: 185*1rpx;
+            .empty-area-text {
+                padding-top: 39*1rpx;
+                font-size: 28*1rpx;
+                color: #999999;
+                view {
+                    padding-top: 20*1rpx;
+                }
+            }
+        }
+        .remove-btn {
+            width: 35*1rpx;
+            height: 35*1rpx;
+            position: absolute;
+            right: -14*1rpx;
+            top: -14*1rpx;
+        }
+        .edit-img {
+            width: 100%;
+            height: 448*1rpx;
+            border-radius: 5*1rpx;
+            margin-bottom: 34*1rpx;
+            margin-top: 34*1rpx;
+        }
+        .edit-block {
+            position: relative;
+        }
+        .text-block {
+            font-size: 30*1rpx;
+            color: #282828;
+            line-height: 1.5em;
+        }
+        .edit-area {
+            padding: 42*1rpx 30*1rpx 30*1rpx 30*1rpx;
+        }
+    }
+
+    .pen-img {
+        width: 191*1rpx;
+        height: 190*1rpx;
+    }
+</style>
+<template>
+    <view class="container-main">
+        <view class="empty-area" wx:if="{{!preview.length}}">
+            <image class="pen-img" src="/imgs/pen.png"/>
+            <view class="empty-area-text"> 您还没有添加任何内容</view>
+        </view>
+        <view class="edit-area" wx:else>
+            <block wx:for="{{preview}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                <view class="edit-block text-block" wx:if="{{item.type=='text'}}">{{item.content}}</view>
+                <view class="edit-block" wx:else>
+                    <image class="edit-img" mode="aspectFill" style="{{item.height?'height:'+ item.height +'rpx':''}}"
+                           src="{{imageUrl + item.content}}"/>
+                </view>
+            </block>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import c from "../../../../wxs/common.wxs";
+    const appPage = new utilPage({
+        data: {
+            text: "Page preview",
+            hasMoreData: false,//是否有更多
+            preview: []
+        },
+        onLoad (options){
+            this.loadCb();
+        },
+        onShow(){
+
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "图文预览"
+        };
+        wxs = {
+            c
+        };
+
+        loadCb (options) {
+            let preview = this.$parent.globalData.preview || "";
+            if (preview) {
+                try {
+                    this.preview = preview;
+                    this.$apply();
+                } catch (e) {
+
+                }
+            }
+        }
+    }
+</script>

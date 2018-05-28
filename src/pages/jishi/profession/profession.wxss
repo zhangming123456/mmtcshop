@@ -1,0 +1,90 @@
+.container {
+    height: 100%;
+}
+
+.profession {
+    flex-wrap: wrap;
+    height: 91rpx;
+}
+
+.profession .box text {
+    font-size: 32rpx;
+    margin-left: 30rpx;
+    line-height: 91rpx;
+}
+
+.profession .box {
+    border: 1px solid #eeeeee;
+    width: 100%;
+    height: 91rpx;
+}
+
+.data {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profession .box .sign {
+    width: 35rpx;
+    height: 35rpx;
+    margin-right: 26rpx;
+}
+
+label {
+    display: block;
+    width: 100%;
+    height: 91rpx;
+    border-bottom: 1rpx solid #eeeeee;
+}
+
+/* 点击字体实现变色 */
+
+.normal {
+    color: black;
+}
+
+.active {
+    color: #ff8000;
+}
+
+/* 点击图片显示隐藏 */
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+/* 底部 */
+
+.bottom {
+    position: fixed;
+    height: 100rpx;
+    width: 100%;
+    background-color: #ffffff;
+    bottom: 0rpx;
+    display: flex;
+    justify-content: center;
+}
+
+.bottom .delete {
+    color: #ff8000;
+    text-align: center;
+    line-height: 100rpx;
+    width: 50%;
+    height: 100%;
+    border: 1rpx solid #ff8000;
+}
+
+.bottom .true {
+    width: 50%;
+    height: 100%;
+    background-color: #ff8000;
+    border: 1px solid #ff8000;
+    color: #ffffff;
+    text-align: center;
+    line-height: 100rpx;
+}

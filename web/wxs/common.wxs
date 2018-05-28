@@ -1,0 +1,7 @@
+var host = 'https://app.mmtcapp.com';
+module.exports.absUrl = function(url){
+    if(url.indexOf('://') === -1){
+        return host+url
+    }
+    return url
+}

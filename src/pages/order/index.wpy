@@ -1,0 +1,545 @@
+<template lang="pug">
+    view.main
+        view.header
+            view.toolbar1#topNavBar
+                view.flex.rel(style="z-index:100")
+                    view.flex-con(class="{{bigIndex==0?'active':''}}" @tap="toggleType(0)") 项目订单
+                    view.flex-con(class="{{bigIndex==1?'active':''}}" @tap="toggleType(1)") 拼团订单
+                    view.flex-con(class="{{bigIndex==2?'active':''}}" @tap="toggleType(2)") 买单订单
+                view.toolbar1-inner(class="{{'toolbar1-inner-'+bigIndex}}")
+                    image.left-img(src="/imgs/left.png")
+            view#toolbar0
+                view.toolbar2(wx:if="{{bigIndex==0}}")
+                    view.flex
+                        view.flex-con(@tap="toggleInnerType(0,0)" class="{{innerIndex[0]==0?'active':''}}")  全部
+                        view.flex-con(@tap="toggleInnerType(0,1)" class="{{innerIndex[0]==1?'active':''}}")  待付款
+                        view.flex-con(@tap="toggleInnerType(0,2)" class="{{innerIndex[0]==2?'active':''}}")  待验证
+                        view.flex-con(@tap="toggleInnerType(0,3)" class="{{innerIndex[0]==3?'active':''}}")  待写日记
+                        view.flex-con(@tap="toggleInnerType(0,4)" class="{{innerIndex[0]==4?'active':''}}")  已退款
+                    view.active-line(class="{{'active-line-0-'+innerIndex[0]}}")
+
+            view#toolbar1
+                view.toolbar2(wx:if="{{bigIndex==1}}")
+                    view.flex
+                        view.flex-con(@tap="toggleInnerType(1,0)" class="{{innerIndex[1]==0?'active':''}}")  全部
+                        view.flex-con(@tap="toggleInnerType(1,1)" class="{{innerIndex[1]==1?'active':''}}")  拼团中
+                        view.flex-con(@tap="toggleInnerType(1,2)" class="{{innerIndex[1]==2?'active':''}}")  拼团成功
+                        view.flex-con(@tap="toggleInnerType(1,3)" class="{{innerIndex[1]==3?'active':''}}")  团单失效
+                    view.active-line(class="{{'active-line-1-'+innerIndex[1]}}")
+
+        view.content
+            view.content-item(wx:if="{{bigIndex==0}}" style="{{'margin-top:186rpx'}}")
+                view.search-area
+                    view.search-box.text-center(@tap="showSearchWin")
+                        image(src="/imgs/search.png")
+                        view.ib 查找订单
+                datalist0(fetchurl="/shopapi/shop_manager/itemOrderList")
+                    block(slot="item-template" wx:if="{{item.is_refund || item.count == item.count_refund}}")
+                        view.order-item(wx:for="{{item.items}}" wx:for-item="i" wx:key="{{i.id}}")
+                            view.p30.border-b
+                                view.flex
+                                    view.flex-con.order-no 订单号:{{item.order_no}}
+                            view.p30.border-b(@tap="goRefundDetail({{i.id}})")
+                                view.flex.flex-stretch
+                                    view
+                                        image(src="{{m1.absUrl(i.cover)}}" mode="aspectFill").item-cover
+                                    view.pl20.flex-con
+                                        view.flex
+                                            view.flex-con.item-title {{i.title}}
+                                            view.item-status(wx:if="{{i.item_status}}") {{i.item_status}}
+                                        view.price-area.flex
+                                            view.price-unit ￥
+                                            view.price-num {{i.price}}  
+                                            view.flex-con.market-price 门市价 ￥{{i.market_price}}
+                                        view.item-count 数量：{{i.num}}
+                    block(slot="item-template" wx:else)
+                        view.order-item
+                            view.p30.border-b
+                                view.flex
+                                    view.flex-con.order-no 订单号:{{item.order_no}}
+                                    view.order-status {{item.order_status}}
+                            view.p30.border-b(wx:for="{{item.items}}" wx:for-item="i" wx:key="i.id" @tap="showOrderDetail({{item.id}})")
+                                view.flex.flex-stretch
+                                    view
+                                        image(src="{{m1.absUrl(i.cover)}}" mode="aspectFill").item-cover
+                                    view.pl20.flex-con
+                                        view.flex
+                                            view.flex-con.item-title {{i.title}}
+                                            view.item-status(wx:if="{{i.item_status}}") {{i.item_status}}
+                                        view.price-area.flex
+                                            view.price-unit ￥
+                                            view.price-num {{i.price}}
+                                            view.flex-con.market-price 门市价 ￥{{i.market_price}}
+                                        view.item-count 数量：{{i.num}}
+                            view.total-sum.text-right 合计：￥{{item.total}} {{item.discount_money > 0?'(订单优惠-￥'+ item.discount_money +')':''}}
+            view.content-item(wx:elif="{{bigIndex==1}}" style="{{'margin-top:186rpx'}}")
+                view.search-area
+                    view.search-box.text-center(@tap="showSearchWin")
+                        image(src="/imgs/search.png")
+                        view.ib 查找订单
+                datalist1(fetchurl="/shopapi/shop_manager/groupOrderList" autoload="false")
+                    view.order-item(slot="item-template")
+                        view.p30.border-b
+                            view.flex
+                                view.flex-con.order-no 团单ID:{{item.id_no}}
+                                view.order-status {{item.order_status}}
+                        view.p30(@tap="showGroupDetail({{item.id}})")
+                            view.flex.flex-stretch
+                                view.rel.item-cover-wrap
+                                    image(src="{{m1.absUrl(item.cover)}}").item-cover
+                                    view.group-num {{item.num}}人团
+                                view.pl20
+                                    view.flex
+                                        view.flex-con.item-title {{item.title}}
+                                    view.price-area.flex
+                                        view.price-txt 拼团价：
+                                        view.price-unit ￥
+                                        view.price-num {{item.price}}
+                                        view.flex-con.market-price 门市价 ￥{{item.origin_price}}
+                                    block(wx:if="{{item.left_num>0}}")
+                                        view.item-count 还差
+                                            view.left-count
+                                                view.left-num {{item.left_num}}
+                                                view 人成团
+                                        view.left-time-wrap.flex(wx:if="{{item.left_time}}")
+                                            view 剩余时间：
+                                            view.left-item {{item.left_time}}
+                                    view(wx:else).item-count 满{{item.num}}人团
+
+            view.content-item(wx:elif="{{bigIndex==2}}" style="{{'margin-top:94rpx'}}")
+                view.search-area
+                    view.search-box.text-center(@tap="showSearchWin")
+                        image(src="/imgs/search.png")
+                        view.ib 查找订单
+                datalist2(fetchurl="/shopapi/shop_manager/buyOrderList" autoload="false")
+                    view.order-item(slot="item-template")
+                        view.p30.border-b
+                            view.flex
+                                view.flex-con.order-no 订单号:{{item.order_no}} 
+                                view.order-status 交易完成
+                        view.p30.border-b(@tap="showOrderDetail({{item.id}})")
+                            view.flex
+                                view.flex-con.item-price-area.flex
+                                    view.item-price-unit ￥
+                                    view.item-price-total {{item.total}}
+                                view.item-status 买单订单
+                            view.discount-area.flex(wx:if="{{item.discount_txt}}")
+                                view {{item.discount_txt}}
+                                view.source-pay 原付款：￥{{item.origin_total}}
+
+</template>
+<script>
+    import wepy from "wepy";
+    import baseMixin from "../../mixins/base";
+    import m1 from "../../wxs/common.wxs";
+    import datalist from "../../components/datalist";
+    export default class extends wepy.page {
+        mixins = [baseMixin];
+        wxs = {
+            m1
+        };
+        components = {
+            datalist0: datalist,
+            datalist1: datalist,
+            datalist2: datalist
+        };
+        data = {
+            bigIndex: 0,
+            innerIndex: [0, 0, 0, 0]
+        };
+
+        onReachBottom () {
+            this.$invoke("datalist" + this.bigIndex, "onReachBottom");
+        }
+
+        doSearchOrder (e) {
+            let value = e.detail.value.trim();
+            let type = e.currentTarget.dataset.type || 0;
+            this.$invoke("datalist" + type, "addFilter", "kw", value).loadData();
+        }
+
+        onPullDownRefresh () {
+            this.$invoke("datalist" + this.bigIndex, "onPullDownRefresh");
+        }
+
+        onReachBottom () {
+            this.$invoke("datalist" + this.bigIndex, "onReachBottom");
+        }
+
+        methods = {
+            showGroupDetail(id) {
+                this.$goto("groupdetail?id=" + id);
+            },
+            showOrderDetail(id, item_id) {
+                this.$goto(`detail?id=${id}`);
+            },
+            goRefundDetail(id) {
+                this.$goto(`refundDetail/index?id=${id}`);
+            },
+            showGroupDetail(id) {
+                this.$goto("groupdetail?id=" + id);
+            },
+            //调接口
+            toggleType(type) {
+                this.bigIndex = type;
+                if (type) {
+                    if (!this.loadedFlag[type]) {
+                        this.$invoke("datalist" + type, "loadData");
+                        this.loadedFlag[type] = true;
+                    }
+                }
+            },
+            toggleInnerType(type, innerType) {
+                this.innerIndex[type] = innerType;
+                this.$invoke(
+                    "datalist" + type,
+                    "addFilter",
+                    "type",
+                    innerType
+                ).loadData();
+            },
+            showSearchWin() {
+                this.$goto("/pages/home/search");
+            }
+        };
+        config = {
+            navigationBarTitleText: "订单管理",
+            enablePullDownRefresh: true,
+            navigationBarBackgroundColor: "#2c2e3e",
+            navigationBarTextStyle: "white"
+        };
+
+        counterTime () {
+        }
+
+        onLoad () {
+            this.methods.toggleType.call(this, 0);
+            this.loadedFlag = {};
+        }
+    }
+</script>
+<style lang='less'>
+    .empty-area {
+        text-align: center;
+        padding-top: 156*1rpx;
+        padding-bottom: 156*1rpx;
+        .empty-img {
+            text-align: center;
+            & > image {
+                width: 191*1rpx;
+                height: 190*1rpx;
+            }
+        }
+        .empty-txt {
+            font-size: 30*1rpx;
+            color: #999999;
+            padding-top: 40*1rpx;
+        }
+    }
+
+    .loading-more {
+        text-align: center;
+        padding: 30*1rpx 0;
+        color: #999;
+        font-size: 24*1rpx;
+        clear: both;
+    }
+
+    .nomore-img {
+        width: 127*1rpx;
+        height: 134*1rpx;
+    }
+
+    .toolbar1 {
+        text-align: center;
+        font-size: 30*1rpx;
+        justify-content: center;
+        background-color: #2c2e3e;
+        position: relative;
+        color: white;
+    }
+
+    .header {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: #fff;
+        z-index: 200;
+    }
+
+    .toolbar1-inner {
+        position: absolute;
+        left: 0;
+        bottom: -1*1rpx;
+    }
+
+    .item-cover {
+        width: 188*1rpx;
+        height: 188*1rpx;
+    }
+
+    .order-item {
+        background-color: #fff;
+        margin-bottom: 24*1rpx;
+    }
+
+    .toolbar1-inner-0 {
+        left: -50*1rpx;
+    }
+
+    .toolbar1-inner-1 {
+        left: 222*1rpx;
+    }
+
+    .toolbar1-inner-2 {
+        left: 495*1rpx;
+    }
+
+    .toolbar1-inner .left-img {
+        width: 310*1rpx;
+        height: 90*1rpx;
+    }
+
+    .active-line {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 61*1rpx;
+        height: 3*1rpx;
+        background-color: #ff8000;
+    }
+
+    .active-line-0-0 {
+        left: 47*1rpx;
+    }
+
+    .active-line-0-1 {
+        left: 197*1rpx;
+    }
+
+    .left-time-wrap {
+        justify-content: flex-start;
+        font-size: 28*1rpx;
+        color: #999;
+        padding-top: 20*1rpx;
+    }
+
+    .order-no {
+        font-size: 28*1rpx;
+        color: #999999;
+    }
+
+    .order-status {
+        color: #999999;
+        font-size: 28*1rpx;
+    }
+
+    .active-line-0-2 {
+        left: 347*1rpx;
+    }
+
+    .active-line-0-3 {
+        left: 497*1rpx;
+    }
+
+    .active-line-0-4 {
+        left: 647*1rpx;
+    }
+
+    .active-line-1-0 {
+        left: 63*1rpx;
+    }
+
+    .active-line-1-1 {
+        left: 250*1rpx;
+    }
+
+    .active-line-1-2 {
+        left: 437*1rpx;
+    }
+
+    .active-line-1-3 {
+        left: 624*1rpx;
+    }
+
+    .search-box {
+        padding: 24*1rpx 30*1rpx;
+        background-color: #f4f4f4;
+    }
+
+    .search-input {
+        height: 76*1rpx;
+        line-height: 76*1rpx;
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 5px;
+        border: solid 1px #eeeeee;
+        text-align: center;
+        font-size: 26*1rpx;
+    }
+
+    .toolbar1 .flex-con {
+        padding: 32*1rpx 0;
+        /* background-color: #2c2e3e; */
+    }
+
+    .flex-con .dianBox {
+        width: 20*1rpx;
+        height: 20*1rpx;
+        border-radius: 50%;
+        background-color: red;
+        position: absolute;
+        left: 438*1rpx;
+        top: 20*1rpx;
+    }
+
+    .toolbar1 .active {
+        color: #ff8000;
+        /* background-color: #fff; */
+    }
+
+    .toolbar2 {
+        font-size: 32*1rpx;
+        background-color: #fff;
+        text-align: center;
+        position: relative;
+    }
+
+    .toolbar2 .active {
+        color: #ff8000;
+    }
+
+    .toolbar2 .flex-con {
+        padding: 30*1rpx 0;
+    }
+
+    .item-title {
+        font-size: 30*1rpx;
+        color: #282828;
+    }
+
+    .item-status {
+        color: #ff8000;
+        font-size: 22*1rpx;
+        display: block;
+        border-radius: 10*1rpx;
+        line-height: 1;
+        border: solid 1px #ff8000;
+        padding: 4*1rpx 7*1rpx;
+    }
+
+    .price-area {
+        padding: 30*1rpx 0 24*1rpx 0;
+        align-items: flex-end;
+    }
+
+    .price-unit {
+        color: #ff8000;
+        font-size: 26*1rpx;
+    }
+
+    .item-count {
+        font-size: 28*1rpx;
+        color: #999999;
+    }
+
+    .market-price {
+        font-size: 28*1rpx;
+        color: #999999;
+        text-decoration: line-through;
+    }
+
+    .price-num {
+        font-size: 40*1rpx;
+        color: #ff8000;
+        margin-right: 20*1rpx;
+    }
+
+    page {
+        background-color: #f4f4f4;
+    }
+
+    .total-sum {
+        font-size: 30*1rpx;
+        color: #ff8000;
+        padding: 30*1rpx;
+    }
+
+    .item-price-area {
+        align-items: flex-end;
+        color: #ff8000;
+        font-size: 24*1rpx;
+    }
+
+    .item-price-total {
+        font-size: 40*1rpx;
+    }
+
+    .source-pay {
+        text-decoration: line-through;
+        color: #999;
+        padding-top: 20*1rpx;
+        font-size: 28*1rpx;
+        margin-left: 20*1rpx;
+    }
+
+    .discount-area {
+        align-items: flex-end;
+        color: #999;
+        font-size: 28*1rpx;
+    }
+
+    .left-count,
+    .left-count view {
+        display: inline;
+    }
+
+    .left-num,
+    .left-item {
+        color: #ff8000;
+    }
+
+    .price-txt {
+        font-size: 28*1rpx;
+        color: #999;
+    }
+
+    .group-num {
+        height: 30*1rpx;
+        line-height: 30*1rpx;
+        border-radius: 0px 0px 5px 0px;
+        padding: 0 8*1rpx;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: #fd0f5d;
+        font-size: 20*1rpx;
+        color: #ffffff;
+    }
+
+    .search-box {
+        background-color: #ffffff;
+        padding: 24*1rpx 0;
+        border: solid 1px #eeeeee;
+        border-radius: 5*1rpx;
+    }
+
+    .search-box image {
+        width: 30*1rpx;
+        height: 30*1rpx;
+        margin-right: 10*1rpx;
+    }
+
+    .item-box-row-last .price .ib {
+        font-size: 45*1rpx;
+        display: inline;
+    }
+
+    .search-area {
+        font-size: 26*1rpx;
+        padding: 24*1rpx 30*1rpx;
+        background-color: #f4f4f4;
+        color: #999999;
+    }
+</style>

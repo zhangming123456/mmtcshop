@@ -1,0 +1,234 @@
+<template>
+<view class="container-main">
+  <view class="p30 rel bg-white">
+    <view class="flex">
+      <image class="avatar" src="{{m1.absUrl(info.avatar)}}" mode="aspectFill"/>
+      <view class="pl30">
+        <view class="nickname-wrap flex">
+          <view class="nickname">{{info.nickname}}</view>
+          <image class="level-img" src="/imgs/level.png"/>
+          <view class="level-text">{{info.level}}</view>
+        </view>
+        <view class="pt20 user-intro">{{info.intro}}</view>
+      </view>
+    </view>
+    <button class="send-letter" bindtap="sendLetter"> 私信TA</button>
+  </view>
+  <view class="hr24"/>
+  <view class="border-b plist">       
+    <view class="flex">
+      <view class="label">成员身份</view>
+      <view class="flex-con text-right">{{info.is_leader?'团长':'团员'}}</view>
+    </view>
+    <view class="flex">
+      <view class="label black">实付款</view>
+      <view class="flex-con text-right money">￥{{info.money}}</view>
+    </view>
+  </view>
+  <view class="border-b plist">
+    <view>订单ID：{{info.order_no}}</view>
+    <view>付款时间：{{info.payed_time}}</view>
+    <view>拼团状态：{{info.group_status}}</view>
+    <view>交易状态：
+      <view class="order-status">{{info.pay_status}}</view>
+    </view>
+  </view>
+</view>
+</template>
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+import m1 from "../../wxs/common.wxs";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "成员订单详情",
+    navigationBarBackgroundColor: "#fff",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "black"
+  };
+  wxs = {
+    m1
+  };
+  data = {
+    info: {}
+  };
+  mixins = [baseMixin];
+  onLoad(opts) {
+    let id = opts.id || 50;
+    if (id) {
+      this.$get("/shopapi/shop_manager/groupMemberDetail?id=" + id, info => {
+        this.info = info;
+      });
+    }
+  }
+  methods = {
+    sendLetter() {
+      this.$alert("美美正在加急开发中，敬请期待~");
+    },
+    showItemDetail(id) {
+      this.$goto("/pages/mine/products/detail?id=" + id);
+    }
+  };
+  onPullDownRefresh() {}
+
+  onReachBottom() {}
+}
+</script>
+
+<style lang="less">
+page {
+  background-color: #f4f4f4;
+}
+.empty-area {
+  text-align: center;
+  padding-top: 156rpx;
+  padding-bottom: 156rpx;
+  .empty-img {
+    text-align: center;
+    & > image {
+      width: 191rpx;
+      height: 190rpx;
+    }
+  }
+  .empty-txt {
+    font-size: 30rpx;
+    color: #999999;
+    padding-top: 40rpx;
+  }
+}
+.loading-more {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #999;
+  font-size: 24rpx;
+  clear: both;
+}
+.nomore-img {
+  width: 127rpx;
+  height: 134rpx;
+}
+.black {
+  color: #282828;
+  font-size: 30rpx;
+}
+image.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+}
+.money {
+  color: #ff8000;
+  font-size: 30rpx;
+}
+.nickname {
+  color: #ff8000;
+  font-size: 32rpx;
+  margin-right: 20rpx;
+}
+image.level-img {
+  width: 29rpx;
+  height: 26rpx;
+}
+.level-text {
+  color: #ffc548;
+  padding-top: 20rpx;
+  font-size: 28rpx;
+  position: relative;
+
+  top: -6rpx;
+}
+button.send-letter {
+  width: 111rpx;
+  padding: 0;
+  margin: 0;
+  height: 46rpx;
+  line-height: 46rpx;
+  background-color: #ff8000;
+  color: #fff;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  position: absolute;
+  right: 30rpx;
+  bottom: 30rpx;
+}
+.items {
+  background-color: #fff;
+}
+.item-cover {
+  width: 188rpx;
+  height: 188rpx;
+}
+.cover-wrap {
+  padding: 30rpx;
+}
+.info-wrap {
+  padding: 30rpx 30rpx 30rpx 0;
+}
+.item-title {
+  font-size: 30rpx;
+  color: #282828;
+  line-height: 1.2em;
+}
+.item-status {
+  height: 34rpx;
+  font-size: 22rpx;
+  color: #ff8000;
+  padding: 0 7rpx;
+  line-height: 34rpx;
+  background-color: #ff8000;
+  border-radius: 10px;
+  border: solid 1px #ff8000;
+}
+.price-area {
+  padding: 30rpx 0;
+  align-items: flex-end;
+}
+.item-count {
+  font-size: 28rpx;
+  color: #999999;
+}
+.price-unit {
+  color: #ff8000;
+  font-size: 26rpx;
+}
+.price-num {
+  font-size: 40rpx;
+  color: #ff8000;
+  margin-right: 20rpx;
+}
+.market-price {
+  font-size: 28rpx;
+  color: #999999;
+  text-decoration: line-through;
+}
+.plist,
+.flex-title {
+  background-color: #fff;
+}
+.plist {
+  padding: 15rpx 30rpx;
+  line-height: 50rpx;
+  font-size: 26rpx;
+  color: #999999;
+}
+.flex-title {
+  padding: 25rpx 30rpx;
+}
+.flex-label {
+  font-size: 30rpx;
+  color: #282828;
+}
+.flex-price {
+  font-size: 34rpx;
+  color: #ff8000;
+}
+.order-status {
+  display: inline;
+  color: #282828;
+}
+.user-intro {
+  font-size: 28rpx;
+  color: #999999;
+}
+</style>
+ 

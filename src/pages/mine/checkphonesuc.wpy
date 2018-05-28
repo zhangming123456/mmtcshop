@@ -1,0 +1,57 @@
+<template lang="pug">
+view.container1.text-center
+    image.ok-icon(src="/imgs/suc.png")
+    view.p0 申请成功
+    view.p1  美美天成已成功收到提现指令，您可以到
+        view.p1_inner 提现记录中查看详情~
+</template>
+
+<style lang="less">
+.container1{
+    padding-top: 97rpx;
+    padding-bottom: 112rpx;
+    background-color: #fff;
+}
+page{
+    	background-color: #f4f4f4;
+
+}
+.p1{
+    padding-top: 21rpx;
+    font-size: 28rpx;
+    color: #999999;
+    line-height: 1.8em;
+}
+.ok-icon{
+    width: 105rpx;
+    height: 105rpx;
+}
+.p0{
+    padding-top: 39rpx;
+    	font-size: 36rpx;
+	color: #333333;
+
+}
+ 
+</style>
+
+
+<script>
+import wepy from 'wepy'
+export default class extends wepy.page {
+    config = {
+        navigationBarTitleText: '申请成功'
+    }
+    data = {
+        
+    }
+    methods = {
+        setField(field,e){
+          this[field] = e.detail.value;
+        },
+        doLogin(){
+            
+        }
+    }    
+}   
+</script>

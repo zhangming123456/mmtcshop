@@ -1,0 +1,518 @@
+<style lang="less">
+    @import "./lib/iconfont/iconfont.less";
+    @import "./styles/index.less";
+    @import "./styles/common.less";
+    @import "./lib/animate.wxss";
+    @import "./lib/zanui/index.wxss";
+    @import "./lib/weui/weui.wxss";
+
+    page {
+        box-sizing: border-box;
+    }
+
+    .azm-color_primary {
+        color: #ff8000;
+    }
+
+    .azm-text_left {
+        text-align: left !important;
+    }
+
+    .azm-text_right {
+        text-align: right;
+    }
+
+    button.azm-btn {
+        height: auto;
+        line-height: 1;
+        font-size: 32*1rpx;
+        vertical-align: middle;
+    }
+
+    .azm-footer {
+        position: fixed;
+        height: 98*1rpx;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        line-height: 98*1rpx;
+        text-align: center;
+        box-sizing: border-box;
+        border-top: 1px solid #f4f4f4;
+        color: #fff;
+        z-index: 100;
+        .azm-btn_submit {
+            border: none;
+            border-radius: 0;
+            background-color: #ff8000;
+            height: inherit;
+            line-height: inherit;
+            color: #fff;
+        }
+    }
+
+    .azm-cells__title + .azm-cells {
+        margin-top: 0;
+    }
+
+    .azm-cells:nth-child(1) {
+        margin-top: 0;
+    }
+
+    .azm-cells {
+        position: relative;
+        margin-top: 25*1rpx;
+        box-sizing: border-box;
+        background-color: #FFFFFF;
+        line-height: 1.47058824;
+        font-size: 32*1rpx;
+        overflow: hidden;
+        &::before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            height: 1px;
+            border-top: 1px solid #e5e5e5;
+            color: #e5e5e5;
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transform: scaleY(0.5);
+            transform: scaleY(0.5);
+            z-index: 2;
+        }
+        &::after {
+            content: " ";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 1px;
+            border-bottom: 1px solid #e5e5e5;
+            color: #e5e5e5;
+            -webkit-transform-origin: 0 100%;
+            transform-origin: 0 100%;
+            -webkit-transform: scaleY(0.5);
+            transform: scaleY(0.5);
+            z-index: 2;
+        }
+        .azm-cell {
+            padding: 25*1rpx 30*1rpx;
+            position: relative;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            box-sizing: border-box;
+            > view {
+                box-sizing: border-box;
+            }
+            &::before {
+                content: " ";
+                position: absolute;
+                left: 0;
+                top: 0;
+                right: 0;
+                height: 1px;
+                border-top: 1px solid #e5e5e5;
+                color: #e5e5e5;
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transform: scaleY(0.5);
+                transform: scaleY(0.5);
+                left: 15px;
+                z-index: 2;
+            }
+            &:nth-child(1):before {
+                border-top: none;
+            }
+            .azm-cell__bd {
+                width: 167*1rpx;
+                flex-basis: 167*1rpx;
+            }
+            .azm-cell__ft {
+                text-align: right;
+                font-size: 30*1rpx;
+                padding-right: 49*1rpx;
+                position: relative;
+                color: #999999;
+                .azm-icon_left {
+                    font-size: 32*1rpx;
+                    padding-right: 16*1rpx;
+                }
+                .azm-not_perfection {
+                    font-size: 28*1rpx;
+                }
+                .azm-icon_right {
+                    position: absolute;
+                    top: 50%;
+                    right: 0;
+                    transform: translateY(-50%);
+                    font-size: 30*1rpx;
+                    color: #939393;
+                }
+            }
+        }
+
+    }
+
+    .azm-font-8 {
+        font-size: 8*2rpx;
+    }
+
+    .azm-font-10 {
+        font-size: 10*2rpx;
+    }
+
+    .azm-font-12 {
+        font-size: 12*2rpx;
+    }
+
+    .azm-font-14 {
+        font-size: 14*2rpx;
+    }
+
+    .azm-font-16 {
+        font-size: 16*2rpx;
+    }
+
+    .azm-font-18 {
+        font-size: 18*2rpx;
+    }
+
+    .azm-font-20 {
+        font-size: 20*2rpx;
+    }
+
+    .azm-font-22 {
+        font-size: 22*2rpx;
+    }
+
+    .azm-font-24 {
+        font-size: 24*2rpx;
+    }
+
+    .azm-font-30 {
+        font-size: 30*2rpx;
+    }
+
+    .pr {
+        position: relative;
+    }
+
+    .i {
+        display: inline;
+    }
+
+    .wxParse-img {
+        margin-top: 20*1rpx;
+    }
+
+    .line-through {
+        text-decoration: line-through;
+    }
+
+    .h100 {
+        height: 100%;
+    }
+
+    .w100 {
+        width: 100%;
+    }
+
+    .flexBox {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-around;
+        width: 100%;
+        &-start {
+            justify-content: flex-start;
+        }
+        &-end {
+            justify-content: flex-end;
+        }
+        &-center {
+            justify-content: center;
+        }
+        &-between {
+            justify-content: space-between;
+        }
+        &-around {
+            justify-content: space-around;
+        }
+        /*主轴为水平方向，起点在左端。*/
+        &-row {
+            flex-direction: row;
+        }
+        /*主轴为水平方向，起点在右端。*/
+        &-row__reverse {
+            flex-direction: row-reverse;
+        }
+        /*主轴为垂直方向，起点在上沿。*/
+        &-column {
+            flex-direction: column;
+        }
+        /*主轴为垂直方向，起点在下沿。*/
+        &-column__reverse {
+            flex-direction: column-reverse;
+        }
+        .flexBox-item {
+            position: relative;
+            box-sizing: border-box;
+            white-space: normal;
+            min-width: 0;
+            word-break: break-all;
+            &.fb-all {
+                -webkit-box-flex: 1;
+                -webkit-flex: 1;
+                flex: 1
+            }
+            &.fb-1 {
+                .fb(flex-basis, 1);
+            }
+            &.fb-2 {
+                .fb(flex-basis, 2);
+            }
+            &.fb-3 {
+                .fb(flex-basis, 3);
+            }
+            &.fb-4 {
+                .fb(flex-basis, 4);
+            }
+            &.fb-5 {
+                .fb(flex-basis, 5);
+            }
+            &.fb-6 {
+                .fb(flex-basis, 6);
+            }
+            &.fb-7 {
+                .fb(flex-basis, 7);
+            }
+            &.fb-8 {
+                .fb(flex-basis, 8);
+            }
+            &.fb-9 {
+                .fb(flex-basis, 9);
+            }
+            &.fb-10 {
+                .fb(flex-basis, 10);
+            }
+            &.fb-11 {
+                .fb(flex-basis, 11);
+            }
+            &.fb-12 {
+                .fb(flex-basis, 12);
+            }
+            &.fb-13 {
+                .fb(flex-basis, 13);
+            }
+            &.fb-14 {
+                .fb(flex-basis, 14);
+            }
+            &.fb-15 {
+                .fb(flex-basis, 15);
+            }
+            &.fb-16 {
+                .fb(flex-basis, 16);
+            }
+            &.fb-17 {
+                .fb(flex-basis, 17);
+            }
+            &.fb-18 {
+                .fb(flex-basis, 18);
+            }
+            &.fb-19 {
+                .fb(flex-basis, 19);
+            }
+            &.fb-20 {
+                .fb(flex-basis, 20);
+            }
+            &.fb-21 {
+                .fb(flex-basis, 21);
+            }
+            &.fb-22 {
+                .fb(flex-basis, 22);
+            }
+            &.fb-23 {
+                .fb(flex-basis, 23);
+            }
+            &.fb-24 {
+                .fb(flex-basis, 24);
+            }
+        }
+    }
+
+    .azm-group-num {
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 20*1rpx;
+        color: #fff;
+        text-align: center;
+        padding-left: 11.125*1rpx;
+        padding-right: 11.125*1rpx;
+        height: 32*1rpx;
+        line-height: 32*1rpx;
+        background-image: linear-gradient(90deg, #ff5ea2 0%, #ed3980 70%, #db135e 83%, #e82b8d 100%), linear-gradient(#fd0f5d, #fd0f5d);
+        background-blend-mode: normal, normal;
+        border-radius: 0 0 5*1rpx 0
+    }
+</style>
+
+<script>
+    import wepy from "wepy";
+    import "wepy-async-function";
+
+    export default class extends wepy.app {
+        config = {
+            pages: [
+                "pages/home/index",
+                "pages/home/result",
+                "pages/home/orderinfo",
+                "pages/home/scanerr",
+                "pages/home/checkpwd",
+                "pages/home/haschecked",
+                "pages/home/checksuc",
+                "pages/home/search",
+                "pages/order/index",
+                "pages/order/memberdetail",
+                "pages/order/groupdetail",
+                "pages/order/detail",
+                "pages/order/refundDetail/index",
+                "pages/shop/index",
+                "pages/shop/shopDetail",
+                "pages/shop/address_detail",
+                "pages/shop/time",
+                "pages/shop/tags",
+                "pages/shop/albumdetail",
+                "pages/shop/album",
+                "pages/shop/mainpic",
+                "pages/shop/editTelephone",
+                "pages/shop/editHomephone",
+                "pages/shop/editintro",
+                "pages/jishi/index",
+                "pages/jishi/occupations/occupations",
+                "pages/jishi/add/add",
+                "pages/jishi/detail/details",
+                "pages/jishi/profession/profession",
+                "pages/mine/index",
+                "pages/mine/withdraw",
+                "pages/mine/products/create",
+                "pages/mine/products/editdetail",
+                "pages/mine/products/editcontent",
+                "pages/mine/products/preview",
+                "pages/mine/products/classes",
+                "pages/mine/products/group",
+                "pages/mine/products/index",
+                "pages/mine/products/detail",
+                "pages/mine/products/pics",
+                "pages/mine/addaccount",
+                "pages/mine/alterpwdcheckphone",
+                "pages/mine/products/mainpic",
+                "pages/mine/products/joinact",
+                "pages/mine/products/reback",
+                "pages/mine/alterphone",
+                "pages/mine/account",
+                "pages/mine/withdrawprogress",
+                "pages/mine/withdrawitem",
+                "pages/mine/checkphonesuc",
+                "pages/mine/checkphone",
+                "pages/mine/withdrawdetail",
+                "pages/mine/withdrawrecords",
+                "pages/mine/advise",
+                "pages/mine/about",
+//                "pages/product/productmanage/productmanage",
+                "pages/product/shopclassify/shopclassify",
+                "pages/product/shopdetail/shopdetail",
+                "pages/product/productdetail/productdetail",
+                "pages/product/goods/goods",
+                "pages/product/usetime/usetime",
+                "pages/product/productadd/productadd",
+                "pages/product/serve/serve",
+
+                "pages/alterpwd",
+                "pages/bindphone",
+                "pages/login",
+                "pages/common/404"
+            ],
+            subPackages: [
+                {
+                    "root": "pages/newPages",
+                    "pages": [
+                        "pages/productManage/index",
+                        "pages/productAddAndEdit/index",
+                        "pages/productCategory/index",
+                        "pages/productServiceProcess/index",
+                        "pages/productDetails/index",
+                        "pages/productPeriodOfUse/index",
+                        "pages/productItemBrand/index",
+                        "pages/graphicDetails/index",
+                    ]
+                },
+                {
+                    "root": "pages/product2",
+                    "pages": [
+                        "pages/mainpic/index",
+                        "pages/preview/index",
+                        "pages/editText/index",
+                    ]
+                }
+            ],
+            window: {
+                backgroundTextStyle: "light",
+                navigationBarBackgroundColor: "#fff",
+                navigationBarTitleText: "商家后台",
+                navigationBarTextStyle: "black"
+            },
+            tabBar: {
+                selectedColor: "#ff8000",
+                backgroundColor: "#ffffff",
+                list: [
+                    {
+                        pagePath: "pages/home/index",
+                        iconPath: "/imgs/order11.png",
+                        selectedIconPath: "/imgs/order12.png",
+                        text: "订单验证"
+                    },
+                    {
+                        pagePath: "pages/order/index",
+                        iconPath: "/imgs/order21.png",
+                        selectedIconPath: "/imgs/order22.png",
+                        text: "订单管理"
+                    },
+                    {
+                        iconPath: "/imgs/mine1.png",
+                        selectedIconPath: "/imgs/mine2.png",
+                        pagePath: "pages/mine/index",
+                        text: "我的"
+                    }
+                ]
+            },
+            networkTimeout: {
+                request: 10000,
+                downloadFile: 10000
+            }
+        };
+
+        constructor () {
+            super();
+        }
+
+        globalData = {
+            events: {},
+            services: {},
+            productManage: {},
+            $$pages: []
+        };
+
+        getPreviousPage (count = 1) {
+            let page = this.__prevPage__;
+            return page
+        }
+    }
+</script>

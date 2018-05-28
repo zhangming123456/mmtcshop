@@ -1,0 +1,111 @@
+<template lang="pug">
+view.container-main
+    view.hr24.bg-f4
+    view.list-item.border-b
+        view.flex
+            view.label 开户名称
+            view.flex-con 
+                input(type="text" value="{{username}}" @input="setField('username')" placeholder='请填写个人或对公账户开户名称')
+    view.list-item.border-b
+        view.flex
+            view.label 开户银行
+            view.flex-con
+                input(type="text" value="{{bank_name}}" placeholder='请填写真实信息'  @input="setField('bank_name')")
+    view.list-item.border-b
+        view.flex
+            view.label 身份证号
+            view.flex-con
+                input(type="text" value="{{identity_no}}" placeholder='请填写真实信息' @input="setField('identity_no')")
+    view.list-item.border-b
+        view.flex
+            view.label 银行账号
+            view.flex-con
+                input(type="text" value="{{car_no}}" placeholder='请填写真实信息' @input="setField('car_no')")
+    view.btn-area
+        button.btn-primary.bg-primary(type="default" @tap="bindBank" hover-class="tapmode")  绑定账户
+</template>
+
+<style lang="less">
+.list-item {
+  padding: 30rpx;
+  font-size: 30rpx;
+  color: #282828;
+  .label {
+    width: 153rpx;
+  }
+}
+.btn-area {
+  padding: 66rpx 30rpx;
+}
+</style>
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "提现账户"
+  };
+  onLoad(options) {
+    this.forSave = options.forSave || 0;
+    if (this.forSave == 1) {
+      this.$get("/shopapi/money/getBankOfPublic", info => {
+        this.username = info.username;
+        this.bank_name = info.bank_name;
+        this.car_no = info.car_no;
+        this.identity_no = info.identity_no;
+      });
+    }
+  }
+  mixins = [baseMixin];
+  data = {
+    username:'',
+    car_no:'',
+    bank_name:'',
+    identity_no:'',
+  };
+  methods = {
+    setField(field, e) {
+      this[field] = e.detail.value.trim();
+    },
+    bindBank() {
+      if (!this.username) {
+        this.$alert("开户名称不能空");
+        return;
+      }
+      if (!this.bank_name) {
+        this.$alert("开户银行不能空");
+        return;
+      }
+      if (!this.identity_no) {
+        this.$alert("身份证号码不能空");
+        return;
+      }
+      if (!this.car_no) {
+        this.$alert("银行账号不能空");
+        return;
+      }
+      this.showLoading();
+      this.$post(
+        "/shopapi/money/saveBank",
+        {
+          forSave: this.forSave,
+          username: this.username,
+          bank_name: this.bank_name,
+          identity_no: this.identity_no,
+          car_no: this.car_no
+        },
+        info => {
+          this.$alert("绑定成功", () => {
+            this.$back(2);
+          });
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
+    }
+  };
+}
+</script>

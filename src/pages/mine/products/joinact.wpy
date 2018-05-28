@@ -1,0 +1,64 @@
+<style lang="less">
+page {
+  background-color: #f4f4f4;
+}
+.container-main {
+  .gt-img {
+    width: 15rpx;
+    height: 25rpx;
+    margin-left: 20rpx;
+  }
+  .pp1 {
+    padding-left: 30rpx;
+    background-color: #fff;
+    & > .flex {
+      padding: 30rpx 30rpx 30rpx 0;
+      font-size: 32rpx;
+      color: #282828;
+    }
+    margin-top: 24rpx;
+    .yuan {
+      font-size: 26rpx;
+      color: #ff8000;
+      margin-left: 9rpx;
+    }
+    .price {
+      color: #ff8000;
+      font-size: 40rpx;
+      margin-left: 7rpx;
+    }
+  }
+}
+</style> 
+<template lang="pug">
+view.container-main         
+    view.pp1
+        view.flex
+            view  拼团特惠
+            view.flex-con.text-right
+                view.text999.fz30.i 拼团价
+                view.i.yuan ￥
+                view.i.price 368
+            view
+                image.gt-img(src='/imgs/gt.png')
+</template>
+
+
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "参与活动"
+  };
+  mixins = [baseMixin];
+  data = {};
+  methods = {
+    addAccount() {
+      this.$goto("addaccount");
+    }
+  };
+}
+</script>

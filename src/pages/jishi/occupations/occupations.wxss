@@ -1,0 +1,105 @@
+
+page{
+    background-color: #f4f4f4;
+}
+
+.container{
+    height: 100%;
+    background-color: skyblue ;
+}
+
+/* 职位名称 */
+.name {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 91rpx;
+    width: 100%;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+}
+
+.ename {
+    width: 25%;
+    height: 100%;
+}
+
+.ename text {
+    font-size: 32rpx;
+    line-height: 91rpx;
+    margin-left: 30rpx;
+}
+
+.input {
+    width: 75%;
+    height: 100%;
+    font-size: 30rpx;
+}
+
+.input input {
+    height: 100%;
+    line-height: 91rpx;
+}
+
+/* 推荐专业 */
+.recommend{
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.recommend .recommendText {
+    position: absolute;
+    font-size: 32rpx;
+    left: 50rpx;
+    top: 80rpx;
+}
+
+.dian {
+    width: 6rpx;
+    height: 23rpx;
+    background-color: #ff8000;
+    border-radius: 40%;
+    position: absolute;
+    top: 90rpx;
+    left: 30rpx;
+}
+
+
+.option{
+    width: 700rpx;
+    height: 100%;
+    position: absolute;
+    top: 140rpx;
+    left: 31rpx;
+    display: flex;
+    justify-content: first baseline;
+    flex-wrap: wrap;
+}
+
+.option .box{
+    height: 56rpx;
+    font-size: 30rpx;
+    color: #999999;
+    border: 1rpx solid #999999;
+    margin-right: 21rpx;
+    margin-top: 24rpx; 
+    text-align: center;
+    line-height: 56rpx;
+    border-radius: 5%;
+    padding:0px 10px 0px 10px;
+}
+
+
+/* 底部 */
+button{
+    width: 100%;
+    height: 100rpx;
+    background-color: #ff8000;
+    font-size: 36rpx;
+    color: #ffffff;
+    position: fixed;
+    bottom: 0rpx;
+    text-align: center;
+    line-height: 100rpx;
+}

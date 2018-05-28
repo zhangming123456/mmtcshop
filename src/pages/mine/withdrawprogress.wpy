@@ -1,0 +1,192 @@
+<template>
+<view>
+  <view class="p1">
+    <view class="left-money flex-con">
+      <view class="left-money-price">{{info.money}}</view>
+      <view class="left-money-yuan">元</view>
+    </view>
+    <view class="text-center">
+      <view class="p1-inner">
+        <view class="left-icons">
+          <image class="suc-icon" src="/imgs/follow.png"/>
+          <view class="text-center">
+            <view class="suc-line"/>
+          </view>
+          <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'redclose'}}.png"/>
+          <block  wx:if="{{info.status==3}}">
+            <view class="text-center">
+              <view class="suc-line"/>
+            </view>
+            <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'redclose'}}.png"/>
+          </block>
+          <block wx:else>
+            <view class="text-center">
+              <view class="gray-line"/>
+            </view>
+            <image class="more-icon" src="/imgs/more.png"/>
+          </block>
+        </view>
+        <view class="tip-items">
+          <view class="tip-item">打款指令生成
+            <view class="tip-item-desc">{{info.create_time}}</view>
+          </view>
+          <view class="tip-item {{info.status==2||info.status==0?'nopassed':''}}">美美天成支付审核
+            <view class="tip-item-desc" wx:if="{{info.status==2}}">审核未通过</view>
+            <view class="tip-item-desc" wx:elif="{{info.status==1 || info.status==3}}">审核已通过</view>
+            <view class="tip-item-desc" wx:elif="{{info.status==0}}">审核中</view>
+          </view>
+          <view class="tip-item {{info.status==3||info.status==1?'nopassed':''}}">美美天成支付
+            <view class="tip-item-desc" wx:if="{{info.status==3}}">已打款</view>
+            <view class="tip-item-desc" wx:else>待支付</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <block wx:if="{{info.status!=3}}">
+    <view class="caption-title">修改建议</view>
+    <view class="caption-content">你绑定账号有误,请修改后点击下方按钮重新提现。</view>
+    <view class="container1">
+      <view class="form-area"> 
+        <view class="button-area">
+          <button class="btn-primary" type="default" hover-class="tapmode" bindtap="cashAgain">重新提现</button>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+</template>
+
+<style lang="less">
+.caption-content {
+  font-size: 28rpx;
+  line-height: 1.8em;
+  background-color: #ffffff;
+  padding: 30rpx;
+}
+.p1 {
+  padding-top: 98rpx;
+  background-color: #fff;
+}
+.p1-inner {
+  overflow: hidden;
+  display: inline-block;
+  .left-icons {
+    float: left;
+    margin-right: 34rpx;
+  }
+  .suc-line {
+    width: 5rpx;
+    height: 110rpx;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -7rpx;
+    background-color: #fed501;
+  }
+  .gray-line {
+    width: 0;
+    vertical-align: middle;
+    height: 109rpx;
+    margin-top: -7rpx;
+    display: inline-block;
+    border-right: dashed 5rpx #999999;
+  }
+  .left-icons image {
+    vertical-align: top;
+  }
+  .tip-items {
+    float: left;
+    text-align: left;
+  }
+  .suc-icon,
+  .more-icon {
+    width: 28rpx;
+    height: 28rpx;
+  }
+  .redclose-icon {
+    width: 28rpx;
+    height: 28rpx;
+  }
+  padding-bottom: 45rpx;
+  .tip-item {
+    padding-bottom: 59rpx;
+    font-size: 32rpx;
+  }
+  .tip-item:last-child {
+    padding-bottom: 0;
+  }
+  .nopassed {
+    font-size: 32rpx;
+    color: #f37c3d;
+  }
+  .tip-item-desc {
+    padding-top: 18rpx;
+    font-size: 28rpx;
+  }
+}
+
+page {
+  background-color: #f4f4f4;
+}
+
+.container1 {
+  padding-top: 0;
+}
+.left-money {
+  padding-bottom: 82rpx;
+  text-align: center;
+  .left-money-price {
+    font-size: 75rpx;
+    color: #ff8000;
+    display: inline;
+    padding-right: 17rpx;
+  }
+  .left-money-yuan {
+    display: inline;
+    font-size: 32rpx;
+    color: #ff8000;
+  }
+}
+</style>
+
+
+<script>
+import baseMixin from "../../mixins/base";
+import wepy from "wepy";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "进度详情"
+  };
+  mixins = [baseMixin];
+  data = {
+    info: {}
+  };
+  onLoad(opts) {
+    let id = opts.id;
+    if (id) {
+      this.showLoading();
+      this.$get(
+        "/shopapi/money/withdrawStep",
+        {
+          id
+        },
+        res => {
+          this.info = res;
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
+    }
+  }
+  methods = {
+    cashAgain() {
+      this.$goto("/pages/mine/checkphone");
+    },
+    setField(field, e) {
+      this[field] = e.detail.value;
+    },
+    doLogin() {}
+  };
+}
+</script>

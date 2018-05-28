@@ -1,0 +1,45 @@
+<template lang='pug'>
+view.container1.text-center
+    image.avatar(src='/imgs/404.png')
+    view.txt 好像是网络问题，请联网后刷新下撒~
+    view.button-area
+        button.btn-primary(type="default" @tap="refresh" hover-class="tapmode") 刷新一下
+</template>
+<script>
+import wepy from "wepy";
+export default class Alterpwd extends wepy.page {
+    config = {
+      navigationBarTitleText: '网路异常'
+    }
+    methods = {
+        refresh(){
+
+        }
+    }
+}
+</script>
+
+<style lang="less">
+
+.avatar{ 
+    width: 394rpx;
+	height: 296rpx;
+}
+.container1{
+    padding-top: 183rpx;
+    .txt{
+        font-size: 28rpx;
+        color: #999999;
+        padding-top: 28rpx;
+    }
+}
+.button-area {
+    padding-top: 142rpx;
+}
+button.btn-primary{
+    border: solid 1px #ff8000;
+	font-size: 32rpx;
+	color: #ff8000;
+    background-color: transparent;
+}
+</style>

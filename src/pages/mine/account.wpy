@@ -1,0 +1,74 @@
+<template lang="pug">
+view.container-main
+    view.hr24.bg-f4
+    view.list-item.border-b
+        view.flex
+            view 开户名称
+            view.flex-con.text-right   {{info.username}}
+    view.list-item.border-b
+        view.flex
+            view 开户银行
+            view.flex-con.text-right   {{info.bank_name}}
+    view.list-item.border-b
+        view.flex
+            view 身份证号
+            view.flex-con.text-right   {{info.identity_no}}
+    view.list-item.border-b
+        view.flex
+            view 银行账号
+            view.flex-con.text-right   {{info.car_no}}
+    button.btn-account.bg-primary.btn-block(type="default" hover-class="tapmode" @tap="addAccount")  更换账户
+</template>
+
+<style lang="less">
+.list-item {
+  padding: 30rpx;
+  font-size: 30rpx;
+  color: #282828;
+}
+button.btn-account {
+  font-size: 32rpx;
+  position: fixed;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 100rpx;
+  line-height: 100rpx;
+}
+</style>
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "提现账户"
+  };
+  mixins = [baseMixin];
+  data = {
+    info: {}
+  };
+  onShow() {
+    this.$get(
+      "/shopapi/money/getBank",
+      info => {
+        this.info = info;
+      },
+      () => {
+      }
+    );
+  }
+  methods = {
+    setBank(bank_info) {
+      this.info = bank_info;
+      this.$apply();
+    },
+    addAccount() {
+      // this.$goto('addaccount?forSave=1');
+      // return;
+      this.$goto('alterpwdcheckphone?mode=3&path='+encodeURIComponent('addaccount?forSave=1')+'&title='+encodeURIComponent('更换提现账户')) // for addcount
+    }
+  };
+}
+</script>

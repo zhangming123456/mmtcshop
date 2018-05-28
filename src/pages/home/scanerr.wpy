@@ -1,0 +1,100 @@
+<template lang='pug'>
+view.container1.text-center.form-area
+    image.avatar(src='/imgs/fail.png')
+    view.title 验证失败
+    view.txt Ops，验证码没有匹配上哦
+    view.txt 重新再试一次吧
+    view.button-area
+        button.btn-origin(type="default" @tap="scanAgain" hover-class="tapmode") 继续扫码验证
+        button.btn-outed(type="default" @tap="checkValid" hover-class="tapmode") 尝试输入验证 
+</template>
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class Alterpwd extends wepy.page {
+  config = {
+    navigationBarTitleText: "验证结果"
+  };
+  data = {
+    order: {}
+  };
+  mixins = [baseMixin];  
+  methods = {
+    scanAgain() {
+       wx.scanCode({
+        success: res => {
+          let result = res.result;
+          if (result) {
+            let parts = result.split(":");
+            if (parts[0] == "pwd") {
+              let pwd = parts[1]; 
+              this.showLoading();
+              this.$post(
+                "/shopapi/verification/see",
+                {
+                  pwd
+                },
+                info => {
+                  this.$redirectTo(
+                    "orderinfo?info=" + encodeURIComponent(JSON.stringify(info))
+                  );
+                },
+                () => {
+                  this.hideLoading();
+                }
+              );
+            }
+          }            
+        }        
+      });
+    },
+    checkValid() {
+        this.$goto("/pages/home/checkpwd");
+    }
+  };
+}
+</script>
+
+<style lang="less">
+.avatar {
+  width: 104rpx;
+  height: 104rpx;
+}
+.container1 {
+  padding-top: 97rpx;
+  .txt {
+    font-size: 28rpx;
+    color: #999999;
+    padding-top: 28rpx;
+  }
+}
+button.btn-outed{   
+    margin-top:40rpx;
+    background-color: #fff;
+    	color: #ff8000;
+
+    border: solid 1px #ff8000;
+}
+.button-area {
+  padding-top: 127rpx;
+}
+.title {
+  font-size: 36rpx;
+  color: #333333;
+
+  padding-top: 39rpx;
+}
+.pay-info {
+  padding-top: 29rpx;
+  font-size: 28rpx;
+  color: #282828;
+}
+.price-money {
+  font-size: 50rpx;
+  color: #ff8000;
+}
+.price-area {
+  color: #ff8000;
+}
+</style>
+ 

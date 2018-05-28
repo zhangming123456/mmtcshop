@@ -1,0 +1,27 @@
+<form class="container" bindsubmit="formSubmit">
+    <view class="name">
+        <view class="ename">
+            <text>职位名称:</text>
+        </view>
+        <view class="input">
+            <input class="" name="type_id" value='{{name||""}}' type="text" placeholder="直接填写或选择下列推荐标签" />
+        </view>
+    </view>
+    <view class="recommend">
+        <view class="dian"></view>
+        <text class="recommendText">推荐专业</text>
+        <view>
+            <radio-group name="radio-group">
+                <label  class="option">
+                    <radio value="" hidden />
+                    <view class="box" bindtap='currentPro' wx:for="{{dataList}}" wx:key="{{dataList}}" data-title=' {{item.title}}'>
+                        {{item.title}}
+                    </view>
+                </label>
+            </radio-group>
+        </view>
+    </view>
+    <button form-type="submit">
+        <view class="bottom">提交</view>
+    </button>
+</form>

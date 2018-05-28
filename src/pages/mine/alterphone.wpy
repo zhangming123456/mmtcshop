@@ -1,0 +1,167 @@
+<template lang="pug">
+view.container-main
+    view.p1
+        view.flex  
+            view.img-area
+                image.suc-img(src="/imgs/suc.png")
+            view.flex-con
+                block(wx:if="{{phone}}")
+                    view.title1 已绑定手机
+                    view.title2 {{phone}}
+                block(wx:else)
+                    view.title1 未绑定手机
+    view.hr24.bg-f4
+    view.form-area.text999.fz28        
+        view.form-caption.fz30.text666 修改绑定手机：
+        view.form-item
+            view.flex
+                view.flex-con
+                    input(placeholder="请输入原手机号" @input="setField('telephone')" type="number")
+                button.ib.validbtn(hover-class="tapmode" @tap="getCheckcode"  class="{{timestr?'disabled-btn':''}}") {{timestr||'获取验证码'}}
+        input(placeholder="请输入验证码" @input="setField('checkcode')" type="number")
+        view.button-area
+            button.btn-disabled.btn-primary(type="default" @tap="modifyInfo" hover-class="tapmode") 修改绑定
+</template>
+
+<style lang="less">
+.form-area {
+  padding: 40rpx;
+}
+.p1 {
+  padding: 55rpx 40rpx 40rpx 40rpx;
+}
+.img-area {
+  padding-right: 29rpx;
+}
+.suc-img {
+  width: 105rpx;
+  height: 105rpx;
+}
+.title1 {
+  font-size: 32rpx;
+  color: #282828;
+}
+.title2 {
+  font-size: 30rpx;
+  color: #999999;
+  padding-top: 22rpx;
+}
+button.validbtn {
+  width: 184rpx;
+  height: 60rpx;
+  line-height: 58rpx;
+  color: #ff8000;
+  text-align: center;
+  font-size: 28rpx;
+  padding: 0;
+  margin-right: 20rpx;
+  border: solid 1px #ff8000;
+  background-color: transparent;
+}
+button.disabled-btn {
+  border: solid 1px #999999;
+  color: #999999;
+  font-size: 24rpx;
+}
+</style>
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "绑定手机号码"
+  };
+  mixins = [baseMixin];
+  data = {
+    phone: "",
+    timestr: ""
+  };
+
+  onLoad() {
+    this.showLoading();
+    this.$get(
+      "/shopapi/shop/getBindedPhone",
+      info => {
+        if (!info) {
+          this.$redirectTo("alterpwdcheckphone?mode=1");
+          return;
+        }
+        this.phone = info;
+      },
+      () => {
+        this.hideLoading();
+      }
+    );
+  }
+  methods = {
+    getCheckcode() {
+      if (!this.telephone) {
+        this.$alert("请输入手机号码");
+        return;
+      }
+      if (!this.isPhone(this.telephone)) {
+        this.$alert("请输入正确的手机号码");
+        return;
+      }
+      if (this.timestr) {
+        return;
+      }
+      this.$post("/api/index/getCheckCode?docheck=1", {
+        telephone: this.telephone
+      });
+      this.start_time = new Date().getTime();
+      startcount.call(this);
+      function w(v) {
+        return v < 10 ? "0" + v : v;
+      }
+      function startcount() {
+        let left_seconds =
+          60 - parseInt((new Date().getTime() - this.start_time) / 1000);
+        if (left_seconds <= 0) {
+          this.timestr = "";
+          this.$apply();
+          return;
+        }
+        this.timestr = w(left_seconds) + "秒后可重发";
+        this.$apply();
+        setTimeout(() => {
+          startcount.call(this);
+        }, 1000);
+      }
+    },
+    setField(field, e) {
+      this[field] = e.detail.value;
+    },
+    modifyInfo() {
+      if (!this.telephone) {
+        this.$alert("请输入手机号码");
+        return;
+      }
+      if (!this.isPhone(this.telephone)) {
+        this.$alert("请输入正确的手机号码");
+        return;
+      }
+      if (!this.checkcode) {
+        this.$alert("请输入验证码");
+        return;
+      }
+      this.showLoading();
+      this.$post(
+        "/shopapi/shop/checkCodeAndBinedphone",
+        {
+          code: this.checkcode,
+          telephone: this.telephone
+        },
+        info => {
+          this.$goto("alterpwdcheckphone?mode=1");
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
+    }
+  };
+}
+</script>

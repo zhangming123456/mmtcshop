@@ -1,0 +1,344 @@
+<template lang="pug">
+view.main-item    
+    view.p30
+        view.flex.hot-title   
+            view.title-line
+            view.title-txt 设置每周营业日        
+        view.tags            
+            view.tag(@tap="toggleDay({{index}})" class="{{tag.selected?'selected':''}}" wx:for="{{selectedDays}}" wx:for-item="tag" wx:for-index="index" wx:key="**this")  {{tag.title}}
+view.hr24
+view.hot-tags-wrap
+    view.flex.hot-title   
+        view.title-line
+        view.title-txt 设置日营业时间
+    view.flex.picker-titles
+        view 开始时间
+        view 结束时间 
+    view.flex.picker-flex
+        view
+            picker-view(value="{{start_time}}" indicator-class="timepicker" @change="changeStartTime" class='timepicker-wrap')
+                picker-view-column
+                    view(wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" class='picker-inner-view' wx:for-item="item" wx:key="**this") {{item}}
+                picker-view-column
+                    view(wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]}}" wx:key="**this" wx:for-item="item" class='picker-inner-view') {{item}}
+        view
+            picker-view(value="{{end_time}}" @change="changeEndTime" indicator-class="timepicker" class='timepicker-wrap')
+                picker-view-column
+                    view(wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}}" wx:key="**this" class='picker-inner-view' wx:for-item="item") {{item}}
+                picker-view-column
+                    view(wx:for="{{[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59]}}" wx:key="**this" class='picker-inner-view' wx:for-item="item") {{item}}
+        
+view.footer-area
+    view.flex
+        button.btn1(hover-class="tapmode" @tap="cancelSure") 取消
+        button.btn2(hover-class="tapmode" @tap="doSure") 确认
+</template>
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+
+export default class extends wepy.page {
+  mixins = [baseMixin];
+  data = {
+    start_time: [8, 30],
+    end_time: [21, 30],    
+    selectedDays: [
+      { title: "周一", selected: 0 },
+      { title: "周二", selected: 0 },
+      { title: "周三", selected: 0 },
+      { title: "周四", selected: 0 },
+      { title: "周五", selected: 0 },
+      { title: "周六", selected: 0 },
+      { title: "周日", selected: 0 }
+    ]
+  };
+  onLoad() {      
+    this.showLoading();
+    this.$get('/shopapi/shop/getScheduleTimes',res=>{
+        let days = res.days;
+        if(days && days.length){
+            days.forEach(el => {
+                this.selectedDays[parseInt(el)].selected = true;
+            });
+        }        
+        if(res.time_info){
+            this.start_time = res.time_info.open_starttime.split(':').slice(0,2)
+            this.end_time = res.time_info.open_endtime.split(':').slice(0,2)
+        }
+        
+    },()=>{
+        this.hideLoading()
+    })
+    //get all tags
+    // this.$get(
+    //   "/shopapi/shop/getAllTags",
+    //   res => {
+    //     this.tags = res.hot_tags;
+    //     this.selectedTags = res.my_tags;
+    //   },
+    //   () => {
+    //     this.hideLoading();
+    //   }
+    // );
+  };
+  methods = {
+    changeStartTime(e) {
+      this.start_time =  e.detail.value
+    },
+    changeEndTime(e) {
+      this.end_time =  e.detail.value
+    },
+    doSure() {
+        let start_time = 0
+        this.start_time.forEach((i,idx) => {
+            start_time+=i*(1-idx)*100
+        });
+
+        let end_time = 0
+        this.end_time.forEach((i,idx) => {
+            end_time+=i*(1-idx)*100
+        });
+
+        if(start_time > end_time){
+            this.$alert('开始时间不能大于结束时间')
+            return
+        }
+        let days =[];
+        this.selectedDays.forEach((el,idx)=>{
+            if(el.selected){
+                days.push(idx)
+            }
+        })
+        if(days.length == 0){
+            this.$alert('请选择至少一个营业日')
+            return;
+        }
+        let data = {
+          days:days.join(','),
+          start_time:this.start_time.join(':'),
+          end_time:this.end_time.join(':')
+        }
+      this.$post(        
+        "/shopapi/shop/setScheduleTimes",
+        data,
+        () => {
+          this.$noticePage('setOpenTime',data)
+          this.$back();
+        }
+      );
+    },
+    cancelSure() {
+      this.$back();
+    },
+    toggleDay(index) {
+      this.selectedDays[index].selected = !this.selectedDays[index].selected;
+    }
+  };
+  config = {
+    navigationBarTitleText: "营业时间"
+  };
+}
+</script>
+<style lang="less">
+.picker-flex {
+  justify-content: space-between;
+}
+.picker-titles {
+  padding-top: 72rpx;
+  padding-bottom: 72rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #999999;
+  justify-content: space-between;
+}
+.picker-titles view {
+  width: 300rpx;
+}
+.timepicker,
+.picker-inner-view {
+  text-align: center;
+  line-height: 80rpx;
+  font-size: 40rpx;
+  height: 80rpx;
+}
+.timepicker-wrap {
+  width: 300rpx;
+  height: 400rpx;
+  display: inline-block;
+}
+.p30 {
+  padding-bottom: 0;
+}
+.title-line {
+  width: 6rpx;
+  height: 23rpx;
+  background-color: #ff8000;
+  border-radius: 2rpx;
+  display: inline-block;
+  margin-right: 14rpx;
+}
+.hot-title {
+  font-size: 32rpx;
+  padding-bottom: 30rpx;
+}
+.hot-tags {
+  margin-right: -30rpx;
+}
+.hot-tags-wrap {
+  padding: 50rpx 30rpx;
+}
+.hr24 {
+  background-color: #f4f4f4;
+  height: 24rpx;
+}
+.hot-tag {
+  height: 56rpx;
+  line-height: 56rpx;
+  font-size: 30rpx;
+  display: inline-block;
+  color: #999999;
+  padding: 0 23rpx;
+  border: solid 1px #999999;
+  margin-right: 30rpx;
+  margin-bottom: 30rpx;
+}
+.addbtn-area {
+  padding-left: 27rpx;
+}
+.tags {
+  margin-right: -30rpx;
+}
+.tags .tag {
+  height: 56rpx;
+  line-height: 56rpx;
+  background-color: transparent;
+  border-radius: 5rpx;
+  text-align: center;
+  font-size: 30rpx;
+  display: inline-block;
+  color: #999999;
+  border: solid 1px #999999;
+  position: relative;
+  margin-right: 25rpx;
+  width: 150rpx;
+
+  margin-bottom: 30rpx;
+}
+.tag.selected {
+  color: #fefefe;
+  border: solid 1px #ff8000;
+  background-color: #ff8000;
+}
+.tag-remove {
+  position: absolute;
+  right: -15rpx;
+  top: -15rpx;
+  width: 29rpx;
+  height: 29rpx;
+}
+.addbtn {
+  width: 119rpx;
+  text-align: center;
+  height: 56rpx;
+  line-height: 56rpx;
+  background-color: transparent;
+  padding: 0;
+  font-size: 30rpx;
+  color: #ff8000;
+  border-radius: 5rpx;
+  border: solid 1px #ff8000;
+}
+.main-container {
+  width: 750rpx;
+}
+.main-item {
+  width: 750rpx;
+}
+.photo-item {
+  width: 330rpx;
+  margin-bottom: 30rpx;
+}
+.photo-item-txt {
+  font-size: 30rpx;
+  color: #282828;
+  padding-top: 30rpx;
+}
+.photo-item-img {
+  width: 330rpx;
+  height: 330rpx;
+}
+.photos {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.btn2 {
+  color: #ffffff;
+  background-color: #ff8000;
+}
+.btn1 {
+  color: #ff8000;
+  border-top: solid 1px #ff8000;
+  background-color: transparent;
+}
+.btn1,
+.btn2 {
+  height: 100rpx;
+  display: inline-block;
+  font-size: 36rpx;
+  border-radius: 0;
+  line-height: 100rpx;
+  text-align: center;
+  flex: 1;
+}
+.footer-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.pic-item {
+  margin-right: 5rpx;
+  margin-bottom: 5rpx;
+}
+.pic-item,
+.pic-item-img {
+  width: 168rpx;
+  height: 168rpx;
+  position: relative;
+}
+.img-area {
+  flex-wrap: wrap;
+  // justify-content: space-between;
+}
+
+.pic-item-remove {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40rpx;
+  height: 40rpx;
+}
+.toolbar {
+  text-align: center;
+  font-size: 29rpx;
+  position: relative;
+  padding: 47rpx 0 0 0;
+}
+.toolbar .flex-con {
+  padding-bottom: 20rpx;
+}
+.active {
+  color: #ff8000;
+  font-size: 31rpx;
+}
+.footer-hr {
+  width: 129rpx;
+  height: 3px;
+  background-color: #ff8000;
+  position: absolute;
+  bottom: 0;
+  left: 124rpx;
+}
+</style>
+
+

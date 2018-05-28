@@ -1,0 +1,51 @@
+var host = 'https://app.mmtcapp.com';
+module.exports.absUrl = function (url) {
+    if (url && url.indexOf('://') === -1) {
+        return host + url
+    }
+    return url
+}
+
+module.exports.cashStatus = function (status, status2, is_display) {
+    if (is_display == 0) {
+        return '已下架';
+    }
+    if (status > 1) {
+        return ['已下架', '已上架'][parseInt(status2)]
+    }
+    return ['审核中', '审核未通过', '审核通过', '已完成'][parseInt(status)]
+}
+
+// 提现状态
+module.exports.cashStatus2 = function (status) {
+    return ['审核中', '审核通过', '审核未通过', '已打款'][parseInt(status)]
+}
+
+module.exports.toScoreAttr = function (score) {
+    score = parseInt(score)
+    if (score > 5) {
+        score = 5;
+    }
+    var rt = []
+    for (var i = 0; i < 5; i++) {
+        if (i < score) {
+            rt.push(1)
+        } else {
+            rt.push(0)
+        }
+    }
+    return rt;
+}
+
+module.exports.isSealedCategory = function (arr, item) {
+    for (var i = 0; i < arr.length; i++) {
+        if (item.id === arr[i].id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+module.exports.money = function (num) {
+    return num.toFixed(2);
+}

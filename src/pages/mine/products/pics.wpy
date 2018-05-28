@@ -1,0 +1,51 @@
+<style lang="less">
+page {
+  background-color: #fff;
+}
+.container-main {
+    padding:16rpx 30rpx;
+    overflow: hidden;
+    margin-right:-5rpx;
+}
+.avatar1{
+    width: 168rpx;
+    height: 167rpx;
+    float:left;
+    margin-left:5rpx;
+    margin-bottom: 8rpx;
+    background-color: #eeeeee;
+}
+
+</style> 
+<template lang="pug">
+view.container-main         
+    image.avatar1(src='{{url}}' @tap="showBigPic")
+</template>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "产品主图"
+  };
+  mixins = [baseMixin];
+  data = {
+      url:''
+  };
+  onLoad(options){
+    this.url = decodeURIComponent(options.url || '')    
+  };
+  methods = {
+    addAccount() {
+      this.$goto("addaccount");
+    },
+    showBigPic(){
+        wx.previewImage({
+            current: 0, // 当前显示图片的http链接
+            urls: [this.url]
+        });
+    }
+  };
+}
+</script>

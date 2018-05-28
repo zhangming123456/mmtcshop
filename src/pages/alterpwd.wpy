@@ -1,0 +1,77 @@
+<template lang='pug'>
+view.container1
+    view.form-area.text999.fz28        
+        input(placeholder="8-16位密码，至少使用两种字符组合" @input="setField('password')" type="password")
+        view.button-area
+            button.btn-primary(type="default" @tap="doLogin" hover-class="tapmode") 确认
+</template>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../mixins/base";
+export default class Alterpwd extends wepy.page {
+  mixins = [baseMixin];
+  config = {
+    navigationBarTitleText: "修改密码"
+  };
+  onLoad(options) {
+    this.mode = options.mode || 0;
+  }
+  methods = {
+    setField(field, e) {
+
+      this[field] = e.detail.value.trim();
+    },
+    doLogin() {
+      if (!this.password) {
+        this.$alert("请输入密码");
+        return;
+      }
+      let pwd = this.password;
+      if (pwd.length > 16 || pwd.length < 8) {
+        this.$alert("请输入8-16位密码");
+        return;
+      }
+      this.showLoading();
+      this.$post(
+        "/shopapi/Editpwd/login",
+        {
+          password: this.password
+        },
+        info => {
+          this.$alert(
+            "您现在可以用手机账户和新的密码登录咯~",
+            "修改成功",
+            () => {
+              if (this.mode == 1) {
+                wx.switchTab({
+                  url: "/pages/home/index"
+                });
+              } else {
+                wx.switchTab({
+                  url: "/pages/mine/index"
+                });
+              }
+            }
+          );
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
+    }
+  };
+}
+</script>
+
+<style lang="less">
+.form-area input {
+  margin-bottom: 0;
+}
+.form-area .button-area {
+  padding-top: 95rpx;
+}
+.container1 {
+  padding-top: 90rpx;
+}
+</style>

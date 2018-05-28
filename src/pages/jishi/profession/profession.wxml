@@ -1,0 +1,21 @@
+<form class="container" bindsubmit="formSubmit">
+    <view class="profession">
+        <radio-group class="box" name="professionName" >
+            <label wx:for="{{dataList}}" wx:key="{{item.id}}">
+                <radio value="{{index}}" hidden checked="{{item.id == clickId?true:false}}"/>
+                <view class="data" data-id="{{item.id}}" bindtap="changeColor"  >
+                    <text class="{{item.id == clickId?'active':''}}">{{item.title}}</text>
+                    <image  class="sign hide {{item.id == clickId?'show':''}}" src="/imgs/true.png"></image>
+                </view>
+            </label>
+        </radio-group>
+        <view class="bottom">
+            <button class="delete" hover-class="none" form-type="reset" plain>
+                <view >取消</view>
+            </button>                                   
+            <button class="true" hover-class="none" form-type="submit" plain>
+                <view >确定</view>
+            </button>
+        </view>
+    </view>
+</form>

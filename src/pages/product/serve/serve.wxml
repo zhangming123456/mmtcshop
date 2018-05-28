@@ -1,0 +1,32 @@
+<view class="t-flow">
+    <view class="t-flowItme">
+        <image class="t-clock" src="../../../imgs/clock2.png"></image>
+        <view class="t-flowText">流程</view>
+        <view class="t-delete">删除</view>
+    </view>
+
+    <veiw class="t-serve">
+        <view class="t-serveProject">服务项目</view>
+        <input class="t-serveInput" placeholder="例如卸妆、洗面等细节服务内容"/>
+    </veiw>
+
+    <veiw class="t-servenum">
+        <view class="t-serveProject">服务次数</view>
+        <input class="t-serveNum" placeholder="1"/>
+        <view class="t-num">次</view>
+        <veiw class="t-serveTime">
+            <view class="t-serveProject">服务次数</view>
+            <input class="t-serveNum" placeholder="20"/>
+            <view class="t-num">次</view>
+        </veiw>
+    </veiw>
+</view>
+
+<view class="t-add">
+    <image src="../../../imgs/add.png"></image>
+</view>
+
+
+<view class="t-issue" bindtap="changeToTest">
+    确定
+</view>

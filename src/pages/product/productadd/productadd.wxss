@@ -1,0 +1,215 @@
+page {
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+}
+
+.t-itme {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+}
+
+.t-itme:nth-child(2) {
+    border-top: none;
+    border-bottom: 1rpx solid #eeeeee;
+}
+
+.t-itme .t-itmeName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itme .t-itmeText {
+    width: 74%;
+    height: 100%;
+    font-size: 30rpx;
+}
+
+.t-itmeText input {
+    height: 100%;
+    line-height: 91rpx;
+}
+
+.t-itmeBox {
+    height: 134rpx;
+    width: 100%;
+    border-bottom: 1rpx solid #eeeeee;
+    display: flex;
+    justify-content: space-around;
+    background-color: #ffffff;
+}
+
+.t-itmeBox .t-itmePrice {
+    font-size: 30rpx;
+    color: #999999;
+    width: 50%;
+    margin-left: 30rpx;
+    margin-top: 23rpx;
+}
+
+.t-itmeBox .t-itmeDiscount {
+    font-size: 30rpx;
+    color: #999999;
+    width: 50%;
+    margin-left: 30rpx;
+    margin-top: 23rpx;
+}
+
+.t-itmeMoney {
+    color: #ff8000;
+    font-size: 32rpx;
+    margin-top: 29rpx;
+}
+
+.border-r {
+    position: relative;
+}
+
+.border-r:after {
+    content: ' ';
+    position: absolute;
+    left: auto;
+    background: #ddd;
+    right: 0;
+    top: 3rpx;
+    height: 100%;
+    bottom: 0;
+    width: 2px;
+    height: 90rpx;
+    -webkit-transform: scaleX(0.5);
+    transform: scaleX(0.5);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
+.t-itmeCategory {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 24rpx;
+}
+
+.t-itmecategory {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+}
+
+.t-itmeCategory .t-categoryName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.t-itmecategory .t-categoryName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itmecategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.t-categoryText .t-emptyicon {
+    height: 36rpx;
+    width: 36rpx;
+    margin-right: 16rpx;
+}
+
+.t-categoryText .t-arrows {
+    width: 15rpx;
+    height: 25rpx;
+    margin-right: 26rpx;
+}
+
+.t-categoryText .t-not {
+    color: #ff8000;
+    font-size: 28rpx;
+    margin-right: 19rpx;
+}
+
+.t-timeDetails {
+    margin-top: 24rpx;
+}
+
+.t-categoryText text {
+    font-size: 29rpx;
+    color: #999999;
+    margin-right: 182rpx;
+}
+
+
+.t-categoryText .t-now{
+    margin-right: 164rpx;
+}
+
+.t-ItmeCategory {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 24rpx;
+}
+
+.t-ItmeCategory .t-categoryName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-ItmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.t-button {
+    height: 98rpx;
+    background-color: #ff8000;
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98rpx;
+    text-align: center;
+}

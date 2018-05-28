@@ -1,0 +1,104 @@
+<style lang="less">
+.container-main {
+  padding: 16rpx 30rpx;
+  margin-right: -5rpx;
+  .pic-item {
+    width: 168rpx;
+    height: 167rpx;
+    position: relative;
+    background-color: #eeeeee;
+    margin-right: 5rpx;
+    margin-bottom: 8rpx;
+    float: left;
+    .pic-item-img {
+      width: 168rpx;
+      height: 167rpx;
+      background-color: #eeeeee;
+    }
+    .pic-item-close {
+      width: 29rpx;
+      height: 29rpx;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+}
+
+page {
+  background-color: #fff;
+}
+</style>
+
+<template lang="pug">
+view.container-main
+    view.pic-item
+        image.pic-item-img(src="/imgs/updatepic.png" @tap="pickImg")
+    view.pic-item(wx:if="{{img_src}}")
+        image.pic-item-img(src="{{img_src}}")
+        image.pic-item-close(src='/imgs/closegray.png' @tap="rmPic")
+
+    
+</template>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "产品主图"
+  };
+  mixins = [baseMixin];
+  data = {
+    img_src: ''
+  };
+  onLoad(options){
+      let cover = options.cover || ''
+      if(cover){
+          this.img_src = this.absUrl(cover)
+      }
+  };
+  methods = {
+    pickImg() {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: res => {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          var tempFilePaths = res.tempFilePaths;
+          this.showLoading("正在上传...");
+          wx.uploadFile({
+            url: this.absUrl("/services/uploader/uploadImg"), //仅为示例，非真实的接口地址
+            filePath: tempFilePaths[0],
+            name: "_file_",
+            complete: () => {
+              this.hideLoading();
+            },
+            success: res => {
+              var data = res.data;
+              //do something
+              if (typeof data == "string") {
+                try {
+                  data = JSON.parse(data);
+                } catch (e) {}
+              }
+              if (data.status == 1) {
+                this.img_src = this.absUrl(data.info);
+                this._img_src = data.info;
+                this.$noticePage('setCover',{_cover:this._img_src})
+                this.$apply();
+              } else {
+                this.$alert(data.info);
+              }
+            }
+          });
+        }
+      });
+    },
+    rmPic(idx) {
+        this.img_src = ''
+    }
+  };
+}
+</script>

@@ -1,0 +1,408 @@
+.details {
+  height: 100%;
+  background-color: #f4f4f4;
+}
+
+page {
+  background-color: #f4f4f4;
+}
+
+/* 技师管理 */
+
+.name {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  height: 91rpx;
+  width: 100%;
+  border-bottom: 1rpx solid #eee;
+  background-color: #fff;
+}
+
+.ename {
+  width: 25%;
+  height: 100%;
+}
+
+.ename text {
+  font-size: 32rpx;
+  line-height: 91rpx;
+  margin-left: 30rpx;
+}
+
+.input {
+  width: 75%;
+  height: 100%;
+  font-size: 30rpx;
+}
+
+.input input {
+  height: 100%;
+  line-height: 91rpx;
+}
+
+/* 工作经验 */
+
+.experience {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 91rpx;
+  width: 100%;
+  border-bottom: 1rpx solid #eee;
+  background-color: #fff;
+}
+
+.workExperience {
+  width: 25%;
+  height: 100%;
+}
+
+.workExperience text {
+  font-size: 32rpx;
+  line-height: 91rpx;
+  margin-left: 30rpx;
+}
+
+.input2 {
+  width: 65%;
+  height: 100%;
+  font-size: 30rpx;
+}
+
+.input2 input {
+  height: 100%;
+  line-height: 91rpx;
+}
+
+.year {
+  width: 10%;
+  font-size: 32rpx;
+  line-height: 91rpx;
+  text-align: center;
+}
+
+/* 性别 */
+
+.gender {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 91rpx;
+  width: 100%;
+  border-bottom: 1rpx solid #eee;
+  background-color: #fff;
+}
+
+.Gender {
+  width: 25%;
+  height: 100%;
+}
+
+.Gender text {
+  font-size: 32rpx;
+  line-height: 91rpx;
+  margin-left: 30rpx;
+}
+
+.select {
+  width: 75%;
+  height: 100%;
+  font-size: 30rpx;
+}
+
+.select .bright {
+  margin-left: 120rpx;
+}
+
+.select .man {
+  font-size: 30rpx;
+  color: #999;
+  line-height: 91rpx;
+  /* margin-left: 20rpx; */
+  line-height: 91rpx;
+}
+
+.select .girl {
+  font-size: 30rpx;
+  color: #ff8000;
+  line-height: 91rpx;
+  margin-left: 78rpx;
+}
+
+/* 技师头像 */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 91rpx;
+  width: 100%;
+  position: relative;
+  border-bottom: 1rpx solid #eee;
+  background-color: #fff;
+}
+
+.enameHead {
+  width: 25%;
+  height: 100%;
+}
+
+.enameHead text {
+  font-size: 32rpx;
+  line-height: 91rpx;
+  margin-left: 30rpx;
+}
+
+.headBox {
+  width: 75%;
+  height: 100%;
+}
+
+.headBox .picture {
+  width: 71rpx;
+  height: 71rpx;
+  border-radius: 50%;
+  position: absolute;
+  right: 76rpx;
+  top: 10rpx;
+}
+
+.headBox .arrows {
+  width: 15rpx;
+  height: 25rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 33rpx;
+}
+
+/* 所属行业 */
+
+.industry {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 91rpx;
+  width: 100%;
+  position: relative;
+  border-bottom: 1rpx solid #eee;
+  background-color: #fff;
+}
+
+.industryText {
+  width: 25%;
+  height: 100%;
+}
+
+.industryText text {
+  font-size: 32rpx;
+  line-height: 91rpx;
+  margin-left: 30rpx;
+}
+
+.industryContent {
+  width: 75%;
+  height: 100%;
+}
+
+.industryContent text {
+  font-size: 30rpx;
+  position: absolute;
+  right: 76rpx;
+  color: #999;
+  line-height: 91rpx;
+}
+
+.industryContent .arrows {
+  width: 15rpx;
+  height: 25rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 33rpx;
+}
+
+/* 所属职业 */
+
+.occupations {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 91rpx;
+  width: 100%;
+  position: relative;
+  /* border-bottom: 1rpx solid #eeeeee; */
+  background-color: #fff;
+}
+
+.OccupationsText {
+  width: 25%;
+  height: 100%;
+}
+
+.OccupationsText text {
+  font-size: 32rpx;
+  line-height: 91rpx;
+  margin-left: 30rpx;
+}
+
+.OccupationsConetent {
+  width: 75%;
+  height: 100%;
+}
+
+.OccupationsConetent text {
+  font-size: 30rpx;
+  position: absolute;
+  right: 76rpx;
+  color: #999;
+  line-height: 91rpx;
+}
+
+.OccupationsConetent .arrows {
+  width: 15rpx;
+  height: 25rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 33rpx;
+}
+
+/* 擅长的领域 */
+
+.skilled {
+  height: 160rpx;
+  width: 100%;
+  margin-top: 24rpx;
+  background-color: #fff;
+  position: relative;
+  /* top: 24rpx; */
+}
+
+.skilledBox {
+  width: 100%;
+  position: absolute;
+}
+
+.skilledText {
+  position: absolute;
+  font-size: 32rpx;
+  left: 30rpx;
+  top: 30rpx;
+}
+
+.skilledBox .number {
+  position: absolute;
+  font-size: 30rpx;
+  color: #999;
+  right: 29rpx;
+  top: 32rpx;
+}
+
+.skilled .add {
+  position: absolute;
+  width: 86rpx;
+  height: 41rpx;
+  border: 1px solid #ff8000;
+  top: 90rpx;
+  left: 31rpx;
+  color: #ff8000;
+  text-align: center;
+  line-height: 41rpx;
+}
+
+.addContentCon {
+  position: absolute;
+  top: 90rpx;
+  left: 127rpx;
+  height: 41rpx;
+  display: flex;
+}
+
+.skilled .addContent {
+   position: relative; 
+  /* width: 150rpx; */
+  height: 41rpx;
+  padding: 0 10rpx;
+  font-size: 28rpx;
+  border: 1px solid #ff8000;
+  color: #ff8000;
+  text-align: center;
+  line-height: 41rpx;
+   /* top: 90rpx;
+  left: 147rpx; */
+   margin-left: 20rpx;  
+}
+
+.addContent .cancel {
+  position: absolute;
+  width: 29rpx;
+  height: 29rpx;
+  top: -14rpx;
+  right: -15rpx;
+}
+
+/* 技师简介 */
+
+.brief {
+  height: 334rpx;
+  width: 100%;
+  background-color: #fff;
+  margin-top: 24rpx;
+  position: relative;
+}
+
+.briefText {
+  position: absolute;
+  left: 32rpx;
+  top: 29rpx;
+  font-size: 32rpx;
+}
+
+.briefContent {
+  position: absolute;
+  width: 679rpx;
+  font-size: 30rpx;
+  color: #999;
+  left: 32rpx;
+  top: 86rpx;
+}
+
+.textNumber {
+  font-size: 24rpx;
+  color: #999;
+  right: 29rpx;
+  bottom: 19rpx;
+  position: absolute;
+}
+
+/* 底部 */
+
+.bottom {
+  height: 116rpx;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bottom .delete {
+  font-size: 30rpx;
+  color: #ff8000;
+  width: 150rpx;
+  height: 56rpx;
+  border: 1px solid #ff8000;
+  text-align: center;
+  line-height: 54rpx;
+  margin-left: 40rpx;
+}
+
+.bottom .submit {
+  font-size: 30rpx;
+  color: #fff;
+  width: 150rpx;
+  height: 56rpx;
+  border: 1px solid #ff8000;
+  text-align: center;
+  line-height: 54rpx;
+  margin-right: 27rpx;
+  background-color: #ff8000;
+}

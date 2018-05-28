@@ -1,0 +1,87 @@
+<wxs src="../../../wxs/common.wxs" module="m1"/>
+<form bindsubmit="doSubmit" bindreset="doReset">
+  <view class="name">
+    <view class="ename">
+      <text>技师名称</text>
+    </view>
+    <view class="input">
+      <input name="username" bindinput="setField" data-field="username" class="" type="text" placeholder="请输入姓名" value='{{info.username}}' />
+    </view>
+  </view>
+  <view class="experience">
+    <view class="workExperience">
+      <text>工作经验</text>
+    </view>
+    <view class="input2">
+      <input name="working_year"  bindinput="setField" data-field="working_year" class="" type="number" placeholder="请输入技工年限" value='{{info.working_year}}'/>
+    </view>
+    <view class="year">年</view>
+  </view>
+  <view class="gender">
+    <view class="Gender">
+      <text>性别</text>
+    </view>
+    <view class="select">
+      <radio-group name="sex" bindchange="changeSex">
+        <label>  
+          <radio color="{{color}}" class="man" value="1" checked="{{info.sex==1}}" />男</label>
+        <label>
+          <radio color="{{color}}" class="girl" value="0" checked="{{info.sex==0}}" />女</label>
+      </radio-group>
+    </view>
+  </view>
+  <view bindtap="chooseimage" class="head" name="avatar">
+    <view class="enameHead">
+      <text>技师头像</text>
+    </view>
+    <view class="headBox">
+      <image class="picture"  src="{{m1.absUrl(info.avatar)||'/imgs/default.png'}}"></image>
+      <image class="arrows" src="/imgs/arrows.png"></image>
+    </view>
+    
+  </view>
+  <view bindtap="changeToTest" class="industry">
+    <view class="industryText">
+      <text>所属行业</text>  
+    </view>
+    <view class="industryContent">
+      <text class="">{{info.category_title||''}}</text>
+      <image class="arrows" src="/imgs/arrows.png"></image>
+    </view>
+  </view>
+  <view bindtap="occipations" class="occupations">
+    <view class="OccupationsText">
+      <text>技师职称</text>
+    </view>
+    <view class="OccupationsConetent">
+      <text class="">{{info.type_name||''}}</text>
+      <image class="arrows" src="/imgs/arrows.png"></image>
+    </view>
+  </view>
+  <view class="skilled"> 
+    <view class="skilledBox">
+      <text class="skilledText">擅长领域</text>
+      <text class="number">最多5个</text> 
+    </view>
+    <view class="add" bindtap="addGoto">+</view>
+        <view class='addContentCon'>
+          <view class="addContent" bindchange="btn_cbback_tab" wx:for="{{addName}}" wx:key="{{index}}">
+            <text>{{item}}</text>
+            <image class="cancel" src="/imgs/delete.png" bindtap='cancel' data-item="{{index}}"></image>
+          </view>
+        </view>
+  </view>
+  <view class="brief">
+    <text class="briefText">技师简介</text>
+    <textarea name="intro" class="briefContent" cursor-spacing='170' bindinput="setField" data-field="intro" maxlength="120" placeholder="写下简介，可以包含职业/活动经验，服务艺人等~" value='{{info.intro}}'></textarea>
+    <view class="textNumber">{{introlength}}/120</view>
+  </view>
+  <view class="bottom">
+    <button hover-class="none" formType="reset" plain="true" class="delete">
+      清空
+    </button>
+    <button hover-class="none" formType="submit" plain="true" class="submit">
+      提交
+    </button>
+  </view>
+</form>

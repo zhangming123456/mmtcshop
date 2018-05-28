@@ -1,0 +1,156 @@
+<style lang="less">
+    .empty-area {
+        text-align: center;
+        padding-top: 156*1rpx;
+        padding-bottom: 156*1rpx;
+        .empty-img {
+            text-align: center;
+            & > image {
+                width: 191*1rpx;
+                height: 190*1rpx;
+            }
+        }
+        .empty-txt {
+            font-size: 30*1rpx;
+            color: #999999;
+            padding-top: 40*1rpx;
+        }
+    }
+
+    .loading-more {
+        text-align: center;
+        padding: 30*1rpx 0;
+        color: #999;
+        font-size: 24*1rpx;
+        clear: both;
+    }
+
+    .nomore-img {
+        width: 127*1rpx;
+        height: 134*1rpx;
+    }
+</style>
+<template lang="pug">
+    view.item-list(wx:if="{{list && list.length}}")
+        block(wx:for="{{list}}" wx:for-item="item" wx:key="id")
+            slot(name="item-template")
+        view.loading-more
+            view(wx:if="{{nomore==0}}") 正在加载更多...
+            view.text-center(wx:elif="{{list.length >4}}")
+                view.ib
+                    view.flex
+                        //- image.nomore-img(src="/imgs/nomore.png")
+                        view 没有更多了
+    view.empty-area#sssss(wx:else)
+        slot(name="empty-template")
+            view.empty-img
+                image(src="/imgs/emptyorders.png")
+            view.empty-txt 没有找到记录
+</template>
+<script>
+    import wepy from "wepy";
+    import baseMixin from "../mixins/base";
+    export default class datalist extends wepy.component {
+        props = {
+            fetchurl: String,
+            autoload: {
+                type: String,
+                default: "true"
+            }
+        };
+        data = {
+            list: [],
+            nomore: 0
+        };
+        mixins = [baseMixin];
+
+        onPullDownRefresh () {
+            this.events.onPullDownRefresh.call(this);
+        }
+
+        onReachBottom () {
+            this.events.onReachBottom.call(this);
+        }
+
+        events = {
+            onPullDownRefresh() {
+                this.p = 1;
+                this.nomore = 0;
+                this.$get(
+                    this.fetchurl,
+                    this.extend(this.filters, {p: this.p}),
+                    info => {
+                        if (info.length < this.getPageSize()) {
+                            this.nomore = true;
+                        }
+                        this.list = info;
+                    },
+                    () => {
+                        wx.stopPullDownRefresh();
+                    }
+                );
+            },
+            onReachBottom() {
+                if (this.nomore) {
+                    return;
+                }
+                this.$get(
+                    this.fetchurl,
+                    this.extend(this.filters, {p: ++this.p}),
+                    info => {
+                        if (info.length < this.getPageSize()) {
+                            this.nomore = true;
+                        }
+                        this.list = this.list.concat(info);
+                    },
+                    () => {
+                        wx.stopPullDownRefresh();
+                    }
+                );
+            }
+        };
+
+        addFilter (key, value) {
+            this.filters[key] = value;
+            return this;
+        }
+
+        removeFilter (key) {
+            delete this.filters[key];
+            return this;
+        }
+
+        clearFilters () {
+            this.filters = {};
+        }
+
+        loadData () {
+            this.p = 1;
+            this.nomore = 0;
+            // this.showLoading();
+            ///接口调用
+            this.$get(
+                this.fetchurl,
+                this.extend(this.filters, {p: this.p}),
+                info => {
+                    if (info.length < this.getPageSize()) {
+                        this.nomore = true;
+                    }
+                    this.list = info;
+                    console.log(this.list);
+                },
+                () => {
+                    // this.hideLoading();
+                }
+            );
+        }
+
+        onLoad () {
+            this.fetchurl = this.absUrl(this.fetchurl);
+            this.filters = {};
+            if (this.autoload === "true") {
+                this.loadData();
+            }
+        }
+    }
+</script>

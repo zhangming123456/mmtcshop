@@ -1,0 +1,10 @@
+<view class='container'>
+  <form class="" bindsubmit="formSubmit">
+    <view class="container1">
+      <textarea name="username" bindconfirm="bindconfirm" adjust-position="true" class="textarea"  maxlength="120" placeholder="例：“美甲美睫”“皮肤管理”等领域标签。" ></textarea>
+      <button hover-class="none" form-type="submit" class="btn-primary">
+        提交
+      </button>
+    </view>
+  </form>
+</view>

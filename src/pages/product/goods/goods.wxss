@@ -1,0 +1,148 @@
+.t-tabBar {
+    height: 62rpx;
+    background-color: #fff2e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.t-tabBar .t-tabFill {
+    color: #ff8000;
+    font-size: 28rpx;
+    margin-left: 30rpx;
+}
+
+.t-tabBar .t-tabAdd {
+    width: 86rpx;
+    height: 41rpx;
+    border: 1rpx solid #ff8000;
+    color: #ff8000;
+    font-size: 28rpx;
+    line-height: 41rpx;
+    text-align: center;
+    margin-right: 30rpx;
+    border-radius: 10rpx;
+}
+
+.t-itme {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+}
+
+.t-itme .t-itmeName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itme .t-itmeText {
+    width: 74%;
+    height: 100%;
+    font-size: 30rpx;
+}
+
+.t-itmeText input {
+    height: 100%;
+    line-height: 91rpx;
+}
+
+.t-itmeCategory {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+}
+
+.t-itmeCategory .t-categoryName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.t-categoryText .t-emptyicon {
+    height: 36rpx;
+    width: 36rpx;
+    margin-right: 16rpx;
+}
+
+.t-categoryText .t-arrows {
+    width: 15rpx;
+    height: 25rpx;
+    margin-right: 26rpx;
+}
+
+.t-categoryText .t-not {
+    color: #ff8000;
+    font-size: 28rpx;
+    margin-right: 19rpx;
+}
+
+.t-mt24 {
+    height: 24rpx;
+    background-color: #f4f4f4;
+}
+
+.t-shopdetail {
+    margin-left: 30rpx;
+    margin-top: 30rpx;
+    font-size: 28rpx;
+    position: relative;
+    width: 224rpx;
+}
+
+.t-shopdetail .t-skii {
+    width: 220rpx;
+    height: 220rpx;
+    border: 1rpx solid #b7b7b7;
+    border-radius: 10rpx;
+}
+
+.t-shopdetail .t-title {
+    margin-left: 28rpx;
+    margin-top: 28rpx;
+}
+
+.t-shopdetail .t-shopName {
+    margin-top: 16rpx;
+    margin-left: 82rpx;
+}
+
+.t-shopdetail .t-delete {
+    width: 29rpx;
+    height: 29rpx;
+    position: absolute;
+    right: -9rpx;
+    top: -11rpx;
+}
+
+.t-button {
+    height: 98rpx;
+    background-color: #ff8000;
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98rpx;
+    text-align: center;
+}

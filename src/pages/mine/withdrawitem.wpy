@@ -1,0 +1,203 @@
+<style lang="less">
+    .container-main {
+        padding-bottom: 50*1rpx;
+        .header {
+            background-color: #2c2e3e;
+            color: white;
+            padding: 67*1rpx 30*1rpx 79*1rpx 30*1rpx;
+            .gt2 {
+                width: 13*1rpx;
+                height: 24*1rpx;
+                margin-left: 20*1rpx;
+            }
+            .left-money {
+                padding-top: 31*1rpx;
+                .left-money-price {
+                    font-size: 75*1rpx;
+                    color: #ff8000;
+                    display: inline;
+                    padding-right: 17*1rpx;
+                }
+                .left-money-yuan {
+                    display: inline;
+                    font-size: 32*1rpx;
+                    color: #ff8000;
+                }
+            }
+        }
+
+        .item-box {
+            background-color: #fff;
+            margin-bottom: 24*1rpx;
+            width: 100%;
+        }
+        .item-box-content {
+            padding: 32*1rpx 29*1rpx 28*1rpx 29*1rpx;
+        }
+        .item-box-content-title {
+            color: #ff8000;
+            font-size: 34*1rpx;
+        }
+        .item-box-row {
+            padding-top: 24*1rpx;
+            color: #999999;
+            font-size: 28*1rpx;
+        }
+        .item-box-row-last {
+            font-size: 30*1rpx;
+            color: #282828;
+            padding-top: 24*1rpx;
+        }
+        .item-box-row-last .price {
+            color: #ff8000;
+            font-size: 24*1rpx;
+        }
+        .item-box-row-last .price .ib {
+            font-size: 45*1rpx;
+            display: inline;
+        }
+        .item-box-title {
+            color: #999999;
+            font-size: 28*1rpx;
+
+            padding: 24*1rpx 30*1rpx;
+        }
+        .title1 {
+            font-size: 30*1rpx;
+        }
+        .title2 {
+            font-size: 26*1rpx;
+            padding-top: 18*1rpx;
+        }
+        .pt0 {
+            padding-top: 6*1rpx;
+        }
+        .tuan-tag {
+            height: 38*1rpx;
+            line-height: 38*1rpx;
+            padding: 0 12*1rpx;
+            background-color: #ff8000;
+            border-radius: 5*1rpx;
+            font-size: 24*1rpx;
+            color: #ffffff;
+        }
+    }
+
+    page {
+        background-color: #f4f4f4;
+    }
+
+    .item-list {
+        width: 100%;
+    }
+</style>
+<template lang='pug'>
+    view.container-main
+        view.header
+            view.flex
+                view.left-money.flex-con
+                    view.left-money-price {{info.money}}
+                    view.left-money-yuan 元
+                view(@tap="checkDetail")
+                    view.title1.text-right 美美天成支付审核
+                    view.title2 {{m1.cashStatus2(info.status)}}，点击查看详情
+                view
+                    image.gt2(src='/imgs/gt2.png')
+        view.caption-title 包含订单
+        view.item-list(wx:for="{{dataList}}" wx:key="{{item.id}}")
+            view.item-box(slot="item-template")
+                view.item-box-title.border-b 订单号：{{item.order_id}}
+                view.item-box-content
+                    view.item-box-content-title 【{{item.category_title}}】{{item.title}}
+                    view.item-box-row.flex
+                        view.flex-con 验证时间
+                        view {{item.used_date_time}}
+                    view.item-box-row.flex
+                        view.flex-con 用户
+                        view {{item.nickname}}
+
+                view.item-box-content.border-t.pt0
+                    view.item-box-row.flex
+                        view.flex-con 订单金额
+                        view ¥{{item.price}}
+                    view.item-box-row.flex
+                        view.flex-con 平台佣金
+                        view ¥{{m1.money(item.price*item.num-item.tixian_money)}}
+                    view.item-box-row-last.flex
+                        view.flex-con 结算金额
+                        view.price ￥
+                            view.ib {{item.tixian_money}}
+
+</template>
+<script>
+    import wepy from "wepy";
+    import baseMixin from "../../mixins/base";
+    import m1 from "../../wxs/common.wxs";
+    // import datalist from "../../components/datalist";
+    import datalistMixin from "../../mixins/datalist";
+    export default class extends wepy.page {
+        config = {
+            navigationBarTitleText: "提现明细",
+            navigationBarBackgroundColor: "#2c2e3e",
+            backgroundColor: "#f4f4f4",
+            navigationBarTextStyle: "white"
+        };
+        data = {
+            date: "",
+            info: {},
+            list: [],
+            dataList: []
+        };
+        mixins = [baseMixin];
+        wxs = {
+            m1
+        };
+        components = {};
+
+        onLoad (options, opts) {
+            let id = options.id || 0;
+            this.id = id;
+            this.$emit('fetchurl-data', {id});
+            let date = opts.date;
+            if (id) {
+                this.showLoading();
+                this.$get(
+                    "/shopapi/money/withdrawDetail",
+                    {
+                        id
+                    },
+                    info => {
+                        this.info = info.info;
+                        this.list = this.info.list;
+                    },
+                    () => {
+                        this.hideLoading();
+                    }
+                );
+                this.$get(
+                    "/shopapi/money/withdrawInfo",
+                    {
+                        id
+                    },
+                    info => {
+                        this.dataList = info
+                    },
+                    () => {
+
+                    }
+                );
+
+            }
+        }
+
+        methods = {
+            checkDetail() {
+                this.$goto("withdrawprogress?id=" + this.id);
+            },
+            checkValid() {
+            }
+        };
+    }
+</script>
+
+ 

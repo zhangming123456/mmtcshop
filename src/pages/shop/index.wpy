@@ -1,0 +1,412 @@
+<template lang="pug">
+view.p30.bg-white
+    view.flex(@tap="showDetail")
+        view
+            image.cover(src="{{img_src||m1.absUrl(info.cover)}}" mode="aspectFill" @tap.stop='gatPhoto')
+        view.pl30.flex-con
+            view.flex
+                view.pl20.title1 {{info.nickname}}
+            view.flex.pt20
+                view.pl20.title2  {{info.major_business}}
+                
+        view.flex.qrcode-icon-wrap(@tap.stop="showQrcodeImage")
+            image.qrcode-icon(src="/imgs/qrcode.png")
+            view.gt-icon-wrap
+                image.gt-icon(src="/imgs/gt.png")
+view.list-box
+    navigator.list-item.border-b(url="time")
+        view.flex
+            view 营业时间
+            view.flex-con.list-item-value {{info.open_times}}
+            view.gt-wrapper
+                image.gt(src="/imgs/gt.png")
+    view.list-item.border-b(@tap="editTelephone")
+        view.flex
+            view 服务电话
+            view.flex-con.list-item-value {{info.telephone}}
+            view.gt-wrapper
+                image.gt(src="/imgs/gt.png")
+
+view.list-box
+    view.list-item.border-b(@tap="chooseLocation")
+        view.flex
+            view GPS定位
+            view.flex-con.list-item-value {{info.position_name}}
+            view.gt-wrapper
+                image.gt(src="/imgs/gt.png")
+    view.list-item.border-b(@tap="showAddressDetail")
+        view.flex
+            view 详细地址
+            view.flex-con.list-item-value {{info.address}}
+            view.gt-wrapper
+              image.gt(src="/imgs/gt.png")
+
+view.list-box
+    navigator.list-item.border-b(url="tags")
+        view.flex
+            view 店铺标签
+            view.flex-con.list-item-value(wx:if="{{info.tags}}") 已添加
+            block(wx:else)
+                view.flex-con.text-right
+                    image.emptyicon(src="/imgs/emptyicon.png")
+                view.fz28.empty-state 未完善
+            view.gt-wrapper
+                image.gt(src="/imgs/gt.png")
+    navigator.list-item.border-b(url="mainpic?img_srcs={{info.img_srcs}}")
+        view.flex
+            view 店铺图册
+            view.flex-con.list-item-value(wx:if="{{info.img_srcs}}") 已完善
+            block(wx:else)
+                view.flex-con.text-right
+                    image.emptyicon(src="/imgs/emptyicon.png")
+                view.fz28.empty-state 未完善
+            view.gt-wrapper
+                image.gt(src="/imgs/gt.png")
+    view.list-item.border-b(@tap="editIntro")
+        view.flex
+            view 店铺介绍
+            view.flex-con.list-item-value(wx:if="{{info.intro && info.intro.length}}") 已完善
+            block(wx:else)
+                view.flex-con.text-right
+                    image.emptyicon(src="/imgs/emptyicon.png")
+                view.fz28.empty-state 未完善
+            view.gt-wrapper
+                image.gt(src="/imgs/gt.png")
+view.text-center.btn-area
+    button.btn-primary-outed(@tap="sureExit") 退出账号
+view.qrcode-masker(@tap="closeMasker" wx:if='{{_showMasker}}')
+        view.qrcode-masker-inner
+            view.qrcode(@tap.stop="noop")
+                view.qrcode-title
+                    view.flex
+                        view
+                            image.qrcode-avatar(src="{{m1.absUrl(info.cover)}}")
+                        view.flex-con.one-line.fz30.text282828 {{info.nickname}}
+                view.qrcode-wrap
+                    image.qrcode-img(src="{{qrcode}}" @load="onLoadQrcode")   
+                view.qrcode-txt(@tap="downQrcode") 下载二维码分享朋友圈
+              
+</template>
+<style lang="less">
+page {
+  background-color: #f4f4f4;
+}
+image.cover {
+  width: 172rpx;
+  height: 172rpx;
+}
+.gt-icon-wrap {
+  padding-left: 20rpx;
+}
+.gt-icon {
+  width: 15rpx;
+  height: 27rpx;
+  position: relative;
+  top: -3rpx;
+  vertical-align: middle;
+}
+.qrcode-icon-wrap {
+  justify-content: flex-end;
+  width: 140rpx;
+  height: 140rpx;
+}
+.qrcode-icon {
+  width: 39rpx;
+  height: 41rpx;
+}
+.title1 {
+  font-size: 32rpx;
+  color: #282828;
+}
+.title2 {
+  font-size: 30rpx;
+  color: #666;
+}
+.shop-icon {
+  width: 31rpx;
+  height: 29rpx;
+}
+.categories-icon {
+  width: 25rpx;
+  height: 27rpx;
+}
+.addr-icon {
+  width: 29rpx;
+  height: 29rpx;
+}
+.qrcode-masker {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.qrcode-masker-inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.qrcode-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 28rpx;
+}
+
+.qrcode {
+  width: 624rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  text-align: left;
+  display: inline-block;
+}
+
+.qrcode-title {
+  padding: 38rpx 36rpx 0 36rpx;
+}
+
+.qrcode-wrap {
+  text-align: center;
+  padding-bottom: 65rpx;
+  padding-top: 68rpx;
+}
+
+.qrcode-txt {
+  color: #ff538b;
+  font-size: 30rpx;
+  text-align: center;
+  padding-bottom: 47rpx;
+}
+
+.qrcode-img {
+  width: 440rpx;
+  height: 440rpx;
+}
+</style>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+import m1 from "../../wxs/common.wxs";
+export default class extends wepy.page {
+  mixins = [baseMixin];
+  config = {
+    navigationBarTitleText: "店铺管理"
+  };
+  data = {
+    _showMasker: false,
+    info: {},
+    qrcode: "",
+    img_src: ""
+  };
+  wxs = {
+    m1
+  };
+  onLoad() {
+    this.$get("/shopapi/shop_manager/index", ret => {
+      this.info = ret;
+      this.info.major_business = this.info.major_business.join("、");
+    });
+  }
+  methods = {
+    getAddress() {
+      return this.info.address;
+    },
+    seAddress({ content }) {
+      this.info.address = content;
+    },
+    showAddressDetail() {
+      this.$goto("address_detail");
+    },
+    setImgSrcs({ value }) {
+      this.info.img_srcs = value;
+    },
+    setShopTags({ tags }) {
+      this.info.tags = tags;
+    },
+    setOpenTime({ days, start_time, end_time }) {
+      let open_times = "";
+      days = days.split(",").map(el => parseInt(el));
+      let day_txt = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+      if (days.length == days[days.length - 1] - days[0] + 1) {
+        //
+        open_times =
+          day_txt[days[0]] +
+          "至" +
+          day_txt[days[days.length - 1]] +
+          " " +
+          start_time +
+          "-" +
+          end_time;
+      } else {
+        open_times = [];
+        for (let i = 0; i < days.length; i++) {
+          open_times.push(day_txt[days[i]]);
+        }
+        open_times = open_times.join("、") + " " + start_time + "-" + end_time;
+      }
+      this.info.open_times = open_times;
+    },
+    showQrcodeImage() {
+      this._showMasker = true;
+      if (this.qrcode) {
+        return;
+      }
+      this.showLoading();
+      wx.downloadFile({
+        url: this.absUrl(
+          "/shopapi/shop/showQrcode?page=" +
+            encodeURIComponent("pages/home/index")
+        ),
+        header: {
+          cookie: this.getSessionId()
+        },
+        success: res => {
+          this.hideLoading();
+          this.qrcode = res.tempFilePath;
+          this.$apply();
+        }
+      });
+    },
+    downQrcode() {
+      if (this.qrcode) {
+        this.showLoading();
+        wx.saveImageToPhotosAlbum({
+          filePath: this.qrcode,
+          success: res => {
+            this._showMasker = false;
+            this.$apply();
+            this.showToast("成功保存在相册");
+          },
+          fail: res => {
+            // this.$alert(res.errMsg);
+          }
+        });
+        return;
+        wx.downloadFile({
+          url: this.qrcode,
+          success: res => {
+            this.hideLoading();
+            if (res.statusCode === 200) {
+              let tempFilePath = res.tempFilePath;
+            }
+          },
+          fail: res => {
+            console.log(res, "相册");
+          }
+        });
+      }
+    },
+    closeMasker() {
+      this._showMasker = false;
+    },
+    showDetail() {
+      this.$goto("shopDetail");
+    },
+    setIntroNodes({ nodes }) {
+      nodes = nodes || [];
+      let contents = "";
+      nodes.forEach(el => {
+        if (el.type == "text") {
+          contents += el.content;
+        } else {
+          contents += '<img src="' + el.content + '"/>';
+        }
+      });
+      this.$post("/shopapi/shop/setIntro", { contents }, () => {});
+      this.info.intro = nodes;
+    },
+    editTelephone() {
+      wx.showActionSheet({
+        itemList: ["座机", "手机"],
+        success: res => {
+          //console.log(res.tapIndex)
+          if (res.tapIndex == 0) {
+            this.$goto("editHomephone");
+          } else {
+            this.$goto("editTelephone?mode=4");
+          }
+        },
+        fail: function(res) {
+          //console.log(res.errMsg)
+        }
+      });
+    },
+    sureExit() {
+      this.confirm("确定退出系统吗？", () => {
+        this.logoff();
+        wx.reLaunch({
+          url: "/pages/login"
+        });
+      });
+    },
+    getIntroNodes() {
+      return this.info.intro || [];
+    },
+    editIntro() {
+      this.$goto("/pages/mine/products/editdetail");
+    },
+
+    chooseLocation() {
+      wx.chooseLocation({
+        success: res => {
+          console.log(res);
+          let name = res.name;
+          let address = res.address;
+          let latitude = res.latitude;
+          let longitude = res.longitude;
+          this.info.position_name = res.name;
+          this.$post("/shopapi/shop/saveAddr", res);
+        }
+      });
+    },
+
+    // 调用图片
+    gatPhoto() {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: res => {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          var tempFilePaths = res.tempFilePaths;
+          // this.showLoading("正在上传...");
+          wx.uploadFile({
+            url: this.absUrl("/services/uploader/uploadImg"),
+            filePath: tempFilePaths[0],
+            name: "_file_",
+            complete: () => {
+              this.hideLoading();
+            },
+            success: res => {
+              var data = res.data;
+              if (typeof data == "string") {
+                try {
+                  data = JSON.parse(data);
+                } catch (e) {}
+              }
+              if (data.status == 1) {
+                this.img_src = this.absUrl(data.info);
+                let cover = data.info;
+                this.$post("/shopapi/shop_manager/setCover", {
+                  cover
+                });
+              } else {
+                // this.$alert(data.info);
+              }
+            }
+          });
+        }
+      });
+    }
+  };
+}
+</script>
+
+

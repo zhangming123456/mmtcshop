@@ -1,0 +1,256 @@
+<style lang="less">
+page {
+  background-color: #f4f4f4;
+}
+.container-main {
+  .footer-area-before {
+    height: 116rpx;
+  }
+  .footer-area {
+    background-color: #fff;
+    position: fixed;
+    color: #ff8000;
+    z-index: 1000;
+    left: 0;
+    font-size: 28rpx;
+    box-sizing: border-box;
+    height: 116rpx;
+    right: 0;
+    bottom: 0;
+    image {
+      position: relative;
+      top: -2rpx;
+    }
+    padding: 0 30rpx;
+    padding-top: 30rpx;
+    button {
+      display: inline-block;
+      font-size: 28rpx;
+      width: 150rpx;
+    }
+    .preview-btn {
+      background-color: transparent;
+      border-radius: 5rpx;
+      border: solid 1px #ff8000;
+      color: #ff8000;
+      height: 56rpx;
+      padding: 0;
+      line-height: 54rpx;
+      text-align: center;
+      margin-right: 20rpx;
+    }
+    .sure-btn {
+      padding: 0;
+      background-color: #ff8000;
+      border-radius: 5rpx;
+      border: solid 1px #ff8000;
+      height: 56rpx;
+      color: white;
+      line-height: 54rpx;
+      text-align: center;
+    }
+  }
+  .empty-area {
+    text-align: center;
+    padding-top: 185rpx;
+    .empty-area-text {
+      padding-top: 39rpx;
+      font-size: 28rpx;
+      color: #999999;
+      view {
+        padding-top: 20rpx;
+      }
+    }
+  }
+  .remove-btn {
+    width: 35rpx;
+    height: 35rpx;
+    position: absolute;
+    right: -14rpx;
+    top: -14rpx;
+  }
+  .edit-img {
+    width: 100%;
+    height: 448rpx;
+    border-radius: 5rpx;
+  }
+  .edit-block {
+    position: relative;
+    margin-bottom: 47rpx;
+  }
+  .text-block {
+    padding: 26rpx 31rpx;
+    background-color: #ffffff;
+    textarea {
+      font-size: 30rpx;
+      color: #282828;
+      line-height: 1.5em;
+      min-height: 100rpx;
+    }
+    view {
+      font-size: 30rpx;
+      color: #282828;
+      line-height: 1.4em;
+    }
+  }
+  .edit-area {
+    padding: 30rpx;
+  }
+}
+.pen-img {
+  width: 191rpx;
+  height: 190rpx;
+}
+</style> 
+<template lang="pug">
+view.container-main         
+    view.empty-area(wx:if="{{!contents.length}}")
+        image.pen-img(src="/imgs/pen.png")
+        view.empty-area-text  您还没有添加任何内容
+            view 点击下方工具栏添加
+    view.edit-area(wx:else)
+        repeat(for="{{contents}}")
+            view.edit-block.text-block(wx:if="{{item.type=='text'}}" @tap="editContent({{index}})")
+                view {{item.content}}
+                image.remove-btn(src="/imgs/closegray.png" @tap.stop="removeImg({{index}})")
+            view.edit-block(wx:else)
+                image.edit-img(mode="aspectFill" style="{{item.height?'height:'+ item.height +'rpx':''}}" src="{{m1.absUrl(item.content)}}" @tap="uploadImage({{index}})")
+                image.remove-btn(src="/imgs/closegray.png" @tap="removeImg({{index}})")
+    view.footer-area-before
+    view.footer-area
+        view.flex
+            view(@tap="addTextArea")
+                view.ib
+                    image(src="/imgs/words.png" style="width:32rpx;height:32rpx;margin-right:13rpx;")            
+                view.ib.footer-text(style="margin-right:50rpx;") 文案
+            view(@tap="uploadImage")
+                view.ib
+                    image(src="/imgs/pic.png" style="width:39rpx;height:35rpx;margin-right:17rpx;")
+                view.ib.footer-text 图片
+            view.flex-con.text-right
+                button.preview-btn(@tap="preview" hover-class="tapmode")  预览
+                button.sure-btn(@tap="dosure" hover-class="tapmode") 确定                
+</template>
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+import m1 from "../../wxs/common.wxs";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "店铺详情"
+  };
+  wxs = {
+    m1
+  };
+  mixins = [baseMixin];
+  data = {
+    contents: [
+      
+    ]
+  };
+  onLoad(){
+    let nodes = this.$noticePage('getIntroNodes',{})
+    this.contents = nodes;
+  };
+  methods = {
+    getTextContent({ idx }) {
+      return this.contents[idx].content;
+    },
+    setTextContent({ idx, content }) {
+      if (idx > -1) {
+        this.contents[idx].content = content;
+      } else {
+        this.contents.push({
+          type: "text",
+          content: content
+        });
+      }
+    },
+    editContent(idx) {
+      this.$goto("editcontent?idx=" + idx);
+    },
+    setField(idx, e) {
+      this.contents[idx].content = e.detail.value.trim();
+    },
+    addTextArea() {
+      this.$goto("editcontent?idx=-1");
+      //   this.contents.push({
+      //     type: "text",
+      //     content: ""
+      //   });
+    },
+    removeImg(idx) {
+      this.contents.splice(idx, 1);
+      this.$apply();
+    },
+    dosure(){
+        this.$noticePage('setIntroNodes',{nodes:this.contents})
+        this.$back()
+    },
+    preview() {
+      this.$goto(
+        "preview?contents=" + encodeURIComponent(JSON.stringify(this.contents))
+      );
+    },
+    uploadImage(idx) {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: res => {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          var tempFilePaths = res.tempFilePaths;
+          wx.getImageInfo({
+            src: tempFilePaths[0],
+            success: sizeinfo => {
+              this.showLoading("正在上传...");
+              wx.uploadFile({
+                url: this.absUrl("/services/uploader/uploadImg"), //仅为示例，非真实的接口地址
+                filePath: tempFilePaths[0],
+                name: "_file_",
+                complete: () => {
+                  this.hideLoading();
+                },
+                success: res => {
+                  var data = res.data;
+                  if (typeof data == "string") {
+                    try {
+                      data = JSON.parse(data);
+                    } catch (e) {}
+                  }
+                  if (data.status == 1) {
+                    let height = parseInt(
+                      sizeinfo.height / sizeinfo.width * 689
+                    );
+                    if (typeof idx === "number") {
+                      for (let i = 0; i < this.contents.length; i++) {
+                        if (i == idx) {
+                          this.contents[i] = {
+                            type: "img",
+                            content: data.info,
+                            height: height
+                          };
+                          break;
+                        }
+                      }
+                    } else {
+                      this.contents.push({
+                        type: "img",
+                        content: data.info,
+                        height: height
+                      });
+                    }
+                    this.$apply();
+                  } else {
+                    this.$alert(data.info);
+                  }
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  };
+}
+</script>

@@ -1,0 +1,147 @@
+<style lang="less">
+.container-main {
+  .pp2 {
+    padding: 39rpx 30rpx;
+    line-height: 40rpx;
+    font-size: 28rpx;
+    color: #999999;
+  }
+  .pp1 {
+    padding-left: 30rpx;
+    background-color: #fff;
+    .ib {
+      margin-right: 37rpx;
+    }
+    & > .flex {
+      padding: 30rpx 30rpx 30rpx 0;
+      font-size: 32rpx;
+      color: #282828;
+    }
+    & > .flex:last-child {
+      padding-top: 22rpx;
+      padding-bottom: 22rpx;
+    }
+    .selected {
+      color: #ff8000;
+    }
+    image {
+      width: 35rpx;
+      height: 35rpx;
+      position: relative;
+      top: -2rpx;
+      left: -127rpx;
+    }
+    .label {
+      width: 176rpx;
+    }
+  }
+  button.btn-account {
+    font-size: 32rpx;
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 100rpx;
+    line-height: 100rpx;
+  }
+}
+page {
+  background-color: #f4f4f4;
+}
+</style>
+<template lang="pug">
+view.container-main
+    view.hr24
+    view.pp1
+        view.flex.border-b
+            view.label  
+                view.ib 拼团人数
+            view.flex-con
+            view.left
+                view.ib(class="{{group_num==2?'selected':''}}" @tap="toggleGroupNum(2)") 2人团
+                    image(src="/imgs/{{group_num==2?'checked':'circle'}}.png")
+                view.ib(class="{{group_num==3?'selected':''}}" @tap="toggleGroupNum(3)") 3人团
+                    image(src="/imgs/{{group_num==3?'checked':'circle'}}.png")
+                view.ib(class="{{group_num==5?'selected':''}}" @tap="toggleGroupNum(5)") 5人团
+                    image(src="/imgs/{{group_num==5?'checked':'circle'}}.png")
+        
+        view.flex.border-b
+            view.label  拼团价格
+            view.flex-con
+                input(placeholder="请填写拼团价格" value="{{group_price}}" @input="setField('group_price')" type="digit")
+
+        view.flex
+            view.label  是否有效
+            view.flex-con
+                switch(type="switch" checked="{{is_valid}}" @change="changeValid")
+
+    view.pp2    
+        view *拼团价格：优惠力度不得少于日均价格的10%
+        view 
+            view.flex
+                view.label  *日均价格：
+                view.flex-con 产品近一个月的交易原价（交易原价=交易最终价格+包括优惠卷，买单等各种优惠折扣金额）的日平均数。
+
+    button.btn-account.bg-primary.btn-block(type="default" hover-class="tapmode" @tap="addAccount")  确 定
+
+</template>
+
+
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "选择拼团规格"
+  };
+  mixins = [baseMixin];
+  data = {
+    group_num: "",
+    is_valid:true,
+    group_price: ""
+  };
+  onLoad(options) {
+    let info = options.info;
+    if (info) {
+      info = decodeURIComponent(info);
+      try {
+        info = JSON.parse(info);
+      } catch (e) {}
+      if (info) {
+        this.group_num = info.group_num;
+        this.group_price = info.group_price;
+        this.is_valid = info.is_valid || false;
+      }
+    }
+  }
+  methods = {
+    changeValid(e){
+      this['is_valid'] = e.detail.value;
+    },
+    setField(field, e) {
+      this[field] = e.detail.value.trim();
+    },
+    toggleGroupNum(num) {
+      this.group_num = num;
+    },
+    addAccount() {
+      if (!this.group_num) {
+        this.$alert("请输入拼团人数");
+        return;
+      }
+      if (!this.group_price) {
+        this.$alert("请输入拼团价格");
+        return;
+      }
+      this.$noticePage("setGroupInfo", {
+        group_num: this.group_num,
+        group_price: this.group_price,
+        is_valid:this.is_valid
+      });
+      this.$back();
+    }
+  };
+}
+</script>

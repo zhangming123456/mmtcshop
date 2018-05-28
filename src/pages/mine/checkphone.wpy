@@ -1,0 +1,122 @@
+<template lang="pug">
+view.container1
+    view.p1  为了您的安全考虑，我们需要您进行一次手机验证，通过后，将生成提现指令，我们的审核周期为1至3个工作日~
+    view.form-area.text999.fz28        
+        view.form-item
+            view.flex
+                view.flex-con
+                    input(placeholder="请输入商户帐号/手机账号" @input="setField('telephone')" type="text")
+                button.ib.validbtn(hover-class="tapmode" @tap="getCheckcode"  class="{{timestr?'disabled-btn':''}}") {{timestr||'获取验证码'}}
+        input(placeholder="请输入验证码" @input="setField('checkcode')" type="text")
+        view.button-area
+            button.btn-disabled.btn-primary(type="default" @tap="validPhone" hover-class="tapmode") 确定
+</template>
+
+<style lang="less">
+.p1 {
+  padding-top: 10rpx;
+  padding-bottom: 91rpx;
+  font-size: 28rpx;
+  color: #999999;
+  line-height: 1.8em;
+}
+button.validbtn {
+  width: 184rpx;
+  height: 60rpx;
+  line-height: 58rpx;
+  color: #ff8000;
+  text-align: center;
+  font-size: 28rpx;
+  padding: 0;
+  margin-right: 20rpx;
+  border: solid 1px #ff8000;
+  background-color: transparent;
+}
+button.disabled-btn {
+  border: solid 1px #999999;
+  color: #999999;
+  font-size: 24rpx;
+}
+</style>
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "手机验证"
+  };
+  mixins = [baseMixin];
+  data = {
+    timestr: ""
+  };
+  methods = {
+    validPhone() {
+      if (!this.telephone) {
+        this.$alert("请输入手机号码");
+        return;
+      }
+      if (!this.isPhone(this.telephone)) {
+        this.$alert("请输入正确的手机号码");
+        return;
+      }
+      if (!this.checkcode) {
+        this.$alert("请输入验证码");
+        return;
+      }
+      this.showLoading();
+      this.$post(
+        "/shopapi/shop/applyCash",
+        {
+          code: this.checkcode
+        },
+        info => {
+          this.$goto("checkphonesuc");
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
+    },
+    setField(field, e) {
+      this[field] = e.detail.value;
+    },
+    getCheckcode() {
+      if (!this.telephone) {
+        this.$alert("请输入手机号码");
+        return;
+      }
+      if (!this.isPhone(this.telephone)) {
+        this.$alert("请输入正确的手机号码");
+        return;
+      }
+      if (this.timestr) {
+        return;
+      }
+      this.$post("/api/index/getCheckCode?docheck=1", {
+        telephone: this.telephone
+      });
+      this.start_time = new Date().getTime();
+      startcount.call(this);
+      function w(v) {
+        return v < 10 ? "0" + v : v;
+      }
+      function startcount() {
+        let left_seconds =
+          60 - parseInt((new Date().getTime() - this.start_time) / 1000);
+        if (left_seconds <= 0) {
+          this.timestr = "";
+          this.$apply();
+          return;
+        }
+        this.timestr = w(left_seconds) + "秒后可重发";
+        this.$apply();
+        setTimeout(() => {
+          startcount.call(this);
+        }, 1000);
+      }
+    }
+  };
+}
+</script>

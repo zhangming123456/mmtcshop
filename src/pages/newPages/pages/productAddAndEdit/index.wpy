@@ -1,0 +1,556 @@
+<template>
+    <view class="productAddAndEdit">
+        <form report-submit="true" bindsubmit="submit">
+            <view class="t-itme">
+                <view class="t-itmeName">产品名称</view>
+                <view class="t-itmeText">
+                    <input placeholder="产品名称（主标题）" name="title" value="{{title}}" bindinput="bindinputChang('title')"/>
+                </view>
+            </view>
+            <view class="t-itme">
+                <view class="t-itmeName">副标题</view>
+                <view class="t-itmeText">
+                    <input placeholder="产品副标题" name="profile" value="{{profile}}"
+                           bindinput="bindinputChang('profile')"/>
+                </view>
+            </view>
+            <view class="t-itmeBox">
+                <view class="t-itmePrice border-r">
+                    <view class="azm-price_title">门市价(门店标价）</view>
+                    <view class="t-itmeMoney flexBox">
+                        <view class="flexBox-item">
+                            <text class="azm-money_icon">¥</text>
+                        </view>
+                        <view class="flexBox-item fb-all zan-ellipsis">
+                            <input type="digit" maxlength="8" name="market_price" value="{{market_price}}"
+                                   bindinput="bindinputChang('market_price')"/>
+                        </view>
+                    </view>
+                </view>
+                <view class="t-itmeDiscount">
+                    <view class="azm-price_title">折扣价</view>
+                    <view class="t-itmeMoney flexBox">
+                        <view class="flexBox-item">
+                            <text class="azm-money_icon">¥</text>
+                        </view>
+                        <view class="flexBox-item fb-all zan-ellipsis">
+                            <input type="digit" maxlength="8" name="price" value="{{price}}"
+                                   bindinput="bindinputChang('price')"/>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="azm-cells">
+                <view class="azm-cell flexBox">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">产品类别</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all"
+                          @tap="goTo('/pages/newPages/pages/productCategory/index')">
+                        <block wx:if="{{category_id && category_id.length>0}}">
+                            <view class="zan-ellipsis azm-cell__ft_bd">
+                                <block wx:for="{{category_id}}" wx:key="{{index}}">
+                                    <text>{{item.title}}</text>
+                                    <text wx:if="{{index !== category_id.length-1}}">、</text>
+                                </block>
+                                <text>等</text>
+                            </view>
+                        </block>
+                        <block wx:else>
+                            <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
+                            <text class="azm-not_perfection azm-color_primary">未完善</text>
+                        </block>
+                        <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
+                    </view>
+                </view>
+                <view class="azm-cell flexBox azm-from__image">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">产品主图</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all"
+                          @tap="goTo('/pages/product2/pages/mainpic/index')">
+                        <block wx:if="{{cover && cover.length>0}}">
+                            <view class="azm-cell__ft_bd">
+                                <image class="azm-image" src="{{imageUrl + cover[0]}}" mode="aspectFill"></image>
+                            </view>
+                        </block>
+                        <block wx:else>
+                            <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
+                            <text class="azm-not_perfection azm-color_primary">未完善</text>
+                        </block>
+                        <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
+                    </view>
+                </view>
+            </view>
+            <!--服务内容&服务特色&服务流程&产品细节-->
+            <view class="azm-cells">
+                <view class="azm-cell flexBox">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">服务内容</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
+                        <input placeholder="一句话介绍" name="service" value="{{service}}"
+                               bindinput="bindinputChang('service')"/>
+                    </view>
+                </view>
+                <view class="azm-cell flexBox">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">服务特色</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
+                        <input placeholder="可以填写特色或功效" name="service_char" value="{{service_char}}"
+                               bindinput="bindinputChang('service_char')"/>
+                    </view>
+                </view>
+                <view class="azm-cell flexBox">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">服务流程</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all"
+                          @tap="goTo('/pages/newPages/pages/productServiceProcess/index')">
+                        <block wx:if="{{service_flow && service_flow.length>0}}">
+                            <text class="azm-not_perfection azm-color_primary">已完善</text>
+                        </block>
+                        <block wx:else>
+                            <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
+                            <text class="azm-not_perfection azm-color_primary">未完善</text>
+                        </block>
+                        <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
+                    </view>
+                </view>
+                <view class="azm-cell flexBox">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">产品细节</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all"
+                          @tap="goTo('/pages/newPages/pages/productDetails/index')">
+                        <view class="flexBox">
+                            <view class="flexBox-item fb-17 azm-text_left">越完善度排名越高(选填)</view>
+                            <view class="flexBox-item fb-all">
+                                <block wx:if="{{isProductDetails === 2}}">
+                                    <text class="azm-not_perfection" style="color: #282828">已添加</text>
+                                </block>
+                                <block wx:elif="{{isProductDetails === 1}}">
+                                    <text class="azm-not_perfection" style="color: #282828">部分添加</text>
+                                </block>
+                                <block wx:else>
+                                    <text class="azm-not_perfection azm-color_primary">添加</text>
+                                </block>
+                            </view>
+                            <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="azm-cells">
+                <view class="azm-cell flexBox">
+                    <view class="azm-cell__bd flexBox-item">
+                        <text class="azm-label">参加活动</text>
+                    </view>
+                    <view class="azm-cell__ft flexBox-item fb-all">
+                        <view class="flexBox">
+                            <view class="flexBox-item fb-17 azm-text_left">目前可参加拼团(选填)</view>
+                            <view class="flexBox-item fb-all">
+                                <block wx:if="{{isProductDetails}}">
+                                    <text class="azm-not_perfection azm-color_primary">已完善</text>
+                                </block>
+                                <block wx:else>
+                                    <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
+                                    <text class="azm-not_perfection azm-color_primary">未完善</text>
+                                </block>
+                            </view>
+                            <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="footer">
+                <block wx:if="{{isAdd}}">
+                    <button class="azm-btn azm-btn_save" plain="true" size="mini" formType="submit">保存</button>
+                    <button class="azm-btn azm-btn_submit" plain="true" size="mini" formType="submit">提交</button>
+                </block>
+                <block wx:else>
+                    <button class="t-button" plain="true" formType="submit">提交</button>
+                </block>
+            </view>
+        </form>
+    </view>
+</template>
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    import c from "../../../../wxs/common.wxs";
+    const appPage = new utilPage({
+        data: {
+            text: "Page productsIndex",
+            hasMoreData: false,//是否有更多
+            isAdd: true,
+            isProductDetails: 0,
+            title: '',//标题
+            profile: '',//副标题
+            market_price: null,//市场价格（门市价）
+            price: null,//价格（折扣）
+            category_id: [],//产品分类ID
+            cover: [],//产品封面
+            service: '',//服务内容
+            service_char: '',//服务特色
+            service_flow: [],//服务流程
+            intro: '',//产品详情介绍 (图文详情)
+            label: [], //产品标签 ["a","b"]
+            period_of_use: {
+                isTheTerm: false,// 是否设置使用限制日期
+                start_date: '',// 限制起始日期
+                end_date: '',// 限制结束日期
+                note: '',// 期限说明
+                start_time: '',// 开始时间
+                end_time: ''// 结束时间
+            },
+            item_brand: [],//使用物料（商品）
+            taboo_crowd: '',//禁忌人群
+            other_instructions: '',//其它说明
+        },
+        onLoad (options){
+            this.$parent.globalData.productManage = {};
+            this.loadCb()
+        },
+        onShow(){
+            let productManage = this.$parent.globalData.productManage;
+            if (this.data.isShow && this.data.isRefresh) {
+                for (let k in productManage) {
+                    this[k] = productManage[k];
+                }
+            }
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+
+        }
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "产品管理",
+            navigationBarBackgroundColor: "#fff",
+            backgroundColor: "#fff",
+            navigationBarTextStyle: "black",
+            backgroundTextStyle: "dark",
+//            enablePullDownRefresh: true,
+            onReachBottomDistance: 200
+        };
+        wxs = {
+            c
+        };
+        mixins = [baseMixin];
+
+        watch = {
+            isShow (newValue, oldValue) {
+                console.log(`num value: ${oldValue} -> ${newValue}`)
+            }
+        };
+
+        loadCb () {
+            let that = this,
+                options = that.data.options;
+            that.$parent.productManage = {};
+            if (options.id) {
+                that.isAdd = false;
+            }
+        }
+
+        methods = {
+            bindinputChang(k, e){
+                let value = e.detail.value;
+                this[k] = value;
+            },
+            goTo(url){
+                this.$azmUtil.go(url);
+            }
+        }
+    }
+</script>
+
+<style lang="less">
+    page {
+        background-color: #f4f4f4;
+        box-sizing: border-box;
+    }
+
+    .productAddAndEdit {
+        box-sizing: border-box;
+        padding-bottom: 110*1rpx;
+        view {
+            box-sizing: border-box;
+        }
+        .azm-from__image {
+            .azm-image {
+                width: 63*1rpx;
+                height: 63*1rpx;
+                vertical-align: middle;
+            }
+        }
+        .t-itme {
+            height: 91*1rpx;
+            width: 100%;
+            display: flex;
+            justify-content: first baseline;
+            border: 1*1rpx solid #eeeeee;
+            background-color: #ffffff;
+        }
+
+        .t-itme:nth-child(2) {
+            border-top: none;
+            border-bottom: 1*1rpx solid #eeeeee;
+        }
+
+        .t-itme .t-itmeName {
+            font-size: 32*1rpx;
+            width: 26%;
+            height: 100%;
+            line-height: 91*1rpx;
+            padding-left: 30*1rpx;
+            box-sizing: border-box;
+        }
+
+        .t-itme .t-itmeText {
+            width: 74%;
+            height: 100%;
+            font-size: 30*1rpx;
+        }
+
+        .t-itmeText input {
+            height: 100%;
+            line-height: 91*1rpx;
+        }
+
+        .t-itmeBox {
+            width: 100%;
+            border-bottom: 1*1rpx solid #eeeeee;
+            display: flex;
+            justify-content: space-around;
+            background-color: #ffffff;
+            box-sizing: border-box;
+            padding-top: 23*1rpx;
+            padding-bottom: 23*1rpx;
+            .t-itmePrice, .t-itmeDiscount {
+                font-size: 30*1rpx;
+                color: #999;
+                width: 50%;
+                padding-left: 30*1rpx;
+                > view {
+                    height: 29*1rpx;
+                    line-height: 29*1rpx;
+                }
+                .azm-price_title {
+                    font-size: 30*1rpx;
+                    margin-bottom: 29*1rpx;
+                }
+                .t-itmeMoney {
+                    font-size: 32*1rpx;
+                    color: #ff8000;
+                    .azm-money_icon {
+                        padding-right: 10*1rpx;
+                    }
+                    input {
+                        font-size: 32*1rpx;
+                        height: 100%;
+                        min-height: 100%;
+                    }
+                }
+            }
+            .border-r {
+                position: relative;
+                &::after {
+                    content: ' ';
+                    position: absolute;
+                    left: auto;
+                    background: #ddd;
+                    right: 0;
+                    top: 50%;
+                    width: 1px;
+                    height: 90*1rpx;
+                    transform: translateY(-50%);
+                    transform-origin: 0 0;
+                }
+            }
+        }
+
+        .t-itmeCategory {
+            height: 91*1rpx;
+            width: 100%;
+            display: flex;
+            justify-content: first baseline;
+            border-bottom: 1*1rpx solid #eeeeee;
+            background-color: #ffffff;
+            margin-top: 24*1rpx;
+        }
+
+        .t-itmecategory {
+            height: 91*1rpx;
+            width: 100%;
+            display: flex;
+            justify-content: first baseline;
+            border-bottom: 1*1rpx solid #eeeeee;
+            background-color: #ffffff;
+            .t-categoryName {
+                position: relative;
+                padding-right: 40*1rpx;
+            }
+        }
+
+        .t-itmeCategory .t-categoryName {
+            font-size: 32*1rpx;
+            width: 26%;
+            height: 100%;
+            line-height: 91*1rpx;
+            padding-left: 30*1rpx;
+            box-sizing: border-box;
+        }
+
+        .t-itmeCategory .t-categoryText {
+            width: 74%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .t-itmecategory .t-categoryName {
+            font-size: 32*1rpx;
+            width: 26%;
+            height: 100%;
+            line-height: 91*1rpx;
+            padding-left: 30*1rpx;
+            box-sizing: border-box;
+        }
+
+        .t-itmecategory .t-categoryText {
+            width: 74%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .t-categoryText .t-emptyicon {
+            height: 36*1rpx;
+            width: 36*1rpx;
+            margin-right: 16*1rpx;
+        }
+
+        .t-categoryText .t-arrows {
+            width: 15*1rpx;
+            height: 25*1rpx;
+            margin-right: 26*1rpx;
+        }
+
+        .t-categoryText .t-not {
+            color: #ff8000;
+            font-size: 28*1rpx;
+            margin-right: 19*1rpx;
+        }
+
+        .t-timeDetails {
+            margin-top: 24*1rpx;
+        }
+
+        .t-categoryText text {
+            font-size: 29*1rpx;
+            color: #999999;
+            margin-right: 182*1rpx;
+        }
+
+        .t-categoryText .t-now {
+            margin-right: 164*1rpx;
+        }
+
+        .t-ItmeCategory {
+            height: 91*1rpx;
+            width: 100%;
+            display: flex;
+            justify-content: first baseline;
+            border-bottom: 1*1rpx solid #eeeeee;
+            background-color: #ffffff;
+            margin-top: 24*1rpx;
+        }
+
+        .t-ItmeCategory .t-categoryName {
+            font-size: 32*1rpx;
+            width: 26%;
+            height: 100%;
+            line-height: 91*1rpx;
+            padding-left: 30*1rpx;
+            box-sizing: border-box;
+        }
+
+        .t-ItmeCategory .t-categoryText {
+            width: 74%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 98*1rpx;
+            line-height: 98*1rpx;
+            width: 100%;
+            background-color: #fff;
+            text-align: right;
+            box-sizing: border-box;
+            border-top: 1*1rpx solid #f4f4f4;
+            z-index: 100;
+            .azm-btn {
+                height: 72*1rpx;
+                line-height: 72*1rpx;
+                border: none;
+                text-align: center;
+                padding-left: 56*1rpx;
+                padding-right: 56*1rpx;
+                border-radius: 5*1px;
+                vertical-align: middle;
+                margin-right: 30*1rpx;
+            }
+            .azm-btn_submit {
+                background-color: #ff8000;
+                color: #fff;
+                border: 2*1rpx solid #ff8000;
+            }
+            .azm-btn_save {
+                background-color: transparent;
+                color: #ff8000;
+                border: 2*1rpx solid #ff8000;
+            }
+            .t-button {
+                height: 98*1rpx;
+                background-color: #ff8000;
+                color: #ffffff;
+                width: 100%;
+                line-height: 98*1rpx;
+                text-align: center;
+                border: none;
+                border-radius: 0;
+            }
+        }
+    }
+</style>
+ 

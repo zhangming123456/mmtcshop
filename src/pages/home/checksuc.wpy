@@ -1,0 +1,54 @@
+<template lang="pug">
+view.container1.text-center
+    image.ok-icon(src="/imgs/suc.png")
+    view.p0 验证成功
+    view.p1  订单：{{order_no}} 已完成验证
+</template>
+
+<style lang="less">
+.container1{
+    padding-top: 97rpx;
+    padding-bottom: 112rpx;
+    background-color: #fff;
+}
+page{
+    	background-color: #f4f4f4;
+
+}
+.p1{
+    padding-top: 21rpx;
+    font-size: 28rpx;
+    color: #999999;
+    line-height: 1.8em;
+}
+.ok-icon{
+    width: 105rpx;
+    height: 105rpx;
+}
+.p0{
+    padding-top: 39rpx;
+    	font-size: 36rpx;
+	color: #333333;
+
+}
+ 
+</style>
+
+
+<script>
+import wepy from 'wepy'
+export default class extends wepy.page {
+    config = {
+        navigationBarTitleText: '验证结果'
+    }
+    data = {
+        order_no:''
+    }
+    methods = {
+       
+    }  
+    onLoad(options){
+        this.order_no = options.order_no || ''
+    }  
+}   
+</script>

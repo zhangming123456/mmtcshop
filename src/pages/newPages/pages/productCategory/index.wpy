@@ -1,0 +1,448 @@
+<template>
+    <form report-submit="true" bindsubmit="submit">
+        <view class="productCategory">
+            <view class="h100">
+                <view bindtap="gotodetail" class="azm-container__head flexBox flexBox-start">
+                    <view class="flexBox-item left">选着项目:</view>
+                    <view class="flexBox-item right fb-all">
+                        <scroll-view scroll-x class="azm-scroll_x">
+                            <block wx:if="{{category_id.length>0}}">
+                                <block wx:for="{{category_id}}" wx:key="{{index}}">
+                                    <view class="azm-category_select">
+                                        <text>{{item.title}}</text>
+                                        <button class="azm-btn zan-ellipsis" plain="true" size="mini"
+                                                catchtap="bindSelect({{item}})">X
+                                        </button>
+                                    </view>
+                                </block>
+                            </block>
+                            <block wx:else>
+                                <text>最多三个标签</text>
+                            </block>
+                        </scroll-view>
+                    </view>
+                </view>
+                <view class="azm-container__center" style="height: 1018rpx;">
+                    <view class="flexBox azm_box h100">
+                        <scroll-view scroll-y class="flexBox-item left h100">
+                            <block wx:for="{{info}}" wx:key="{{index}}">
+                                <view class="li zan-ellipsis" :class="{'active':index === select_id}"
+                                      catchtap="bindTapIndex({{index}})">{{item.title}}
+                                </view>
+                            </block>
+                        </scroll-view>
+                        <scroll-view scroll-y class="flexBox-item fb-all right h100">
+                            <block wx:if="{{info[select_id]}}">
+                                <view class="azm-section" wx:for="{{info[select_id].children}}" wx:key="{{item.id}}"
+                                      wx:for-item="v" wx:for-index="i">
+                                    <view class="azm-title">{{v.title}}</view>
+                                    <view class="azm-select_btns flexBox flexBox-start">
+                                        <view class="flexBox-item" wx:for="{{v.children}}" wx:key="{{index}}">
+                                            <button class="azm-btn zan-ellipsis {{c.isSealedCategory(category_id,item)?'azm-btn_active':''}}"
+                                                    plain="true" size="mini"
+                                                    catchtap="bindSelect({{item}})">
+                                                {{item.title}}
+                                            </button>
+                                        </view>
+                                    </view>
+                                </view>
+                            </block>
+                        </scroll-view>
+                    </view>
+                </view>
+            </view>
+            <view class="footer">
+                <button class="t-false" catchtap="bindcancel">取消</button>
+                <button class="t-true" catchtap="bindconfirm">确定</button>
+            </view>
+        </view>
+    </form>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    import c from "../../../../wxs/common.wxs";
+    const appPage = new utilPage({
+        data: {
+            text: "Page productCategory",
+            hasMoreData: false,//是否有更多
+            info: [],
+            _category_id: [],
+            category_id: [],
+            select_id: 0,
+        },
+        onLoad (options){
+            this.loadCb()
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "产品类别",
+        };
+        wxs = {
+            c
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            let that = this,
+                options = that.data.options,
+                arr = [];
+            let category_id = this.$parent.globalData.productManage.category_id || [];
+            for (let v of category_id) {
+                arr.push(v.id + '')
+            }
+            that._category_id = arr || [];
+            that.getItemInfoCategory()
+        }
+
+        /**
+         * 获取产品类别
+         **/
+        getItemInfoCategory () {
+            let that = this;
+            that.showLoading();
+            this.ApiService.getItemInfoCategory().then(
+                res => {
+                    if (res.status === 1) {
+                        let arr = [];
+                        for (let v of res.info) {
+                            for (let val of v.children) {
+                                for (let value of val.children) {
+                                    let flag = that.data._category_id.indexOf(value.id + '') >= 0;
+                                    if (flag) {
+                                        that.category_id.push(value)
+                                    }
+                                }
+                            }
+                        }
+                        that.info = res.info;
+                        that.$apply();
+                    }
+                }
+            ).finally(() => {
+                that.hideLoading();
+            });
+        }
+
+        methods = {
+            bindTapIndex(index){
+                this.select_id = index
+            },
+            bindSelect(item){
+                let arr = this.data.category_id;
+                for (let i = 0; i < arr.length; i++) {
+                    let v = arr[i];
+                    if (v.id === item.id) {
+                        this.category_id.splice(i, 1);
+                        return;
+                    }
+                }
+
+                if (arr.length >= 3) {
+                    this.$alert('最多三个标签');
+                    return;
+                }
+                this.category_id.push(item);
+            },
+            bindconfirm(){
+                let category_id = this.data.category_id;
+                if (category_id.length < 1) {
+                    this.$alert('最少一个标签');
+                    return;
+                }
+                this.$parent.globalData.productManage.category_id = category_id;
+                this.$back();
+            },
+            bindcancel() {
+                this.$back();
+            }
+        }
+    }
+</script>
+
+<style lang="less">
+    .productCategory {
+        .t-itmecategory {
+            width: 100%;
+            display: flex;
+            justify-content: first baseline;
+            background-color: #ffffff;
+        }
+
+        .t-itmecategory .t-categoryName {
+            font-size: 28*1rpx;
+            width: 20%;
+            height: 100%;
+            line-height: 91*1rpx;
+            padding-left: 30*1rpx;
+            box-sizing: border-box;
+        }
+
+        .t-itmecategory .t-categoryText {
+            width: 80%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .t-categoryText text {
+            font-size: 29*1rpx;
+            color: #999999;
+            margin-right: 395*1rpx;
+        }
+
+        .t-mt24 {
+            height: 24*1rpx;
+            background-color: #eeeeee;
+        }
+
+        .t-content {
+            display: flex;
+        }
+
+        .t-content .t-title {
+            width: 20%;
+            height: 690*1rpx;
+            /* background-color: aquamarine; */
+            display: flex;
+            flex-direction: column;
+            font-size: 28*1rpx;
+            padding-left: 58*1rpx;
+            padding-top: 45*1rpx;
+            box-sizing: border-box;
+        }
+
+        .t-title .t-titleText {
+            margin-top: 73*1rpx;
+        }
+
+        .t-titleText:nth-child(1) {
+            margin-top: 0;
+        }
+
+        .t-content .t-titleContent {
+            width: 80%;
+            height: 690*1rpx;
+            /* background-color: skyblue; */
+        }
+
+        .t-productLabel {
+            margin-bottom: 26*1rpx;
+        }
+
+        .t-productLabel .t-product {
+            font-size: 32*1rpx;
+            margin-left: 34*1rpx;
+            margin-top: 41*1rpx;
+            color: #ff8000;
+            /* display: inline-block; */
+        }
+
+        .t-productLabel .t-labelAdd {
+            height: 41*1rpx;
+            border: 1*1rpx solid #d1d1d1;
+            line-height: 41*1rpx;
+            color: #666666;
+            padding: 4*1rpx 22*1rpx;
+            font-size: 28*1rpx;
+            display: inline-block;
+            margin-left: 30*1rpx;
+            margin-top: 39*1rpx;
+            border-radius: 30*1rpx;
+        }
+        .t-string {
+            width: 535*1rpx;
+            height: 2*1rpx;
+            background-color: #dcdcdc;
+            margin-left: 34*1rpx;
+        }
+    }
+
+    button.azm-btn {
+        height: auto;
+        opacity: 1;
+        vertical-align: middle;
+        background-color: transparent;
+        border-radius: 26*1rpx;
+        padding: 15*1rpx 28*1rpx;
+        line-height: 1;
+        font-size: 26*1rpx;
+        color: #666666;
+        border: 1*2rpx solid #d1d1d1;
+        max-width: 100%;
+    }
+
+    .productCategory {
+        font-size: 24*1rpx;
+        position: fixed;
+        margin: auto;
+        top: 0;
+        bottom: 98*1rpx;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        overflow: hidden;
+        .azm-container__head {
+            box-sizing: border-box;
+            height: 90*1rpx;
+            line-height: 90*1rpx;
+            font-size: 28*1rpx;
+            padding-left: 26*1rpx;
+            color: #282828;
+            .left {
+                width: 160*1rpx;
+                flex-basis: 160*1rpx;
+            }
+            .right {
+                overflow: hidden;
+                .azm-scroll_x {
+                    white-space: nowrap;
+                    height: 100%;
+                    display: block;
+                }
+                .azm-category_select {
+                    position: relative;
+                    height: 49*1rpx;
+                    line-height: 49*1rpx;
+                    background-color: #eee;
+                    border-radius: 24*1rpx;
+                    color: #666;
+                    font-size: 26*1rpx;
+                    padding-left: 32*1rpx;
+                    padding-right: 13+26+9rpx;
+                    display: inline-block;
+                    margin-right: 10*1rpx;
+                    .azm-btn {
+                        position: absolute;
+                        top: 50%;
+                        right: 13*1rpx;
+                        transform: translateY(-50%);
+                        /*vertical-align: middle;*/
+                        border-radius: 100%;
+                        border: 0;
+                        line-height: 26*1rpx;
+                        height: 26*1rpx;
+                        width: 26*1rpx;
+                        padding: 0;
+                        background-color: #ff8000;
+                        color: #fff;
+                    }
+                }
+            }
+        }
+        .azm-container__center {
+            padding-top: 24*1rpx;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+            width: 100%;
+            flex: 1;
+            flex-basis: auto;
+            .azm_box {
+                box-sizing: border-box;
+                padding: 9*1rpx 26*1rpx;
+                background-color: #fff;
+                .left {
+                    box-sizing: border-box;
+                    padding-right: 26*1rpx;
+                    width: 160*1rpx;
+                    flex-basis: 160*1rpx;
+                    .li {
+                        font-size: 28*1rpx;
+                        color: #282828;
+                        height: 100*1rpx;
+                        line-height: 100*1rpx;
+                        &.active {
+                            color: #ff8000;
+                        }
+                    }
+                }
+                .right {
+                    padding-top: 22*1rpx;
+                    .azm-section {
+                        margin-bottom: 26*1rpx;
+                        border-bottom: 1px solid #dcdcdc;
+                        .azm-title {
+                            font-size: 32*1rpx;
+                            color: #ff8000;
+                            margin-bottom: 40*1rpx;
+                        }
+                        &:nth-last-child(1) {
+                            border: none;
+                        }
+                        .azm-select_btns {
+                            > view {
+                                box-sizing: border-box;
+                                margin-bottom: 23*1rpx;
+                                padding-right: 14*1rpx;
+                            }
+                            .azm-btn {
+                                &.azm-btn_active {
+                                    color: #fff;
+                                    background-color: #ff8000;
+                                    border: 1*2rpx solid #ff8000;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .footer {
+            height: 98*1rpx;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            border-top: 1*1rpx solid #eeeeee;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            .t-false {
+                width: 179*1rpx;
+                height: 72*1rpx;
+                border: 2*1rpx solid #ff8000;
+                color: #ff8000;
+                line-height: 72*1rpx;
+                text-align: center;
+                margin-left: 336*1rpx;
+                background-color: transparent;
+            }
+            .t-true {
+                width: 179*1rpx;
+                height: 72*1rpx;
+                border: 1*1rpx solid #ff8000;
+                color: #ffffff;
+                line-height: 72*1rpx;
+                text-align: center;
+                background-color: #ff8000;
+                margin-right: 30*1rpx;
+            }
+        }
+
+    }
+
+    page {
+        background: #fff;
+    }
+</style>
+ 

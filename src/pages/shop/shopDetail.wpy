@@ -1,0 +1,162 @@
+<template lang="pug">
+view.tip-msg.flex
+    image.emptyicon(src="/imgs/emptyicon.png")
+    view
+      button.contact-btn(open-type="contact" plain="true" hover-class="tapmode") 注册信息如需更改请重新提交资料>>
+      
+view.bg-white.rel
+    image.authed2-img(src='/imgs/authed2.png')
+    view.p30.border-b
+        view.flex.hot-title   
+            view.title-line
+            view.title-txt 店铺信息        
+        view.flex-line
+            view.flex
+                view.label 店铺名称:
+                view.flex-con {{info.nickname}}
+            view.flex
+                view.label 主营业务:
+                view.flex-con {{info.major_business||'--'}}
+            view.flex
+                view.label 所在地址:
+                view.flex-con {{info.address||'--'}}
+            view.flex
+                view.label 营业执照注册号:
+                view.flex-con {{info.license_code||'--'}}
+    view.p30
+        view.flex.hot-title   
+            view.title-line
+            view.title-txt 负责人信息        
+        view.flex-line
+            view.flex
+                view.label 姓名:
+                view.flex-con {{info.legal_username||'--'}}
+            view.flex
+                view.label 电话:
+                view.flex-con {{info.legal_telephone||'--'}}
+            view.flex
+                view.label 身份证号码:
+                view.flex-con {{info.legal_identity||'--'}}      
+        
+view.hr24
+view.p30-last.bg-white
+    view.flex(@tap="showBigImg")
+        view.flex-con.fz30 门头照
+        view.text-right
+            image.cover(src="{{m1.absUrl(info.cover)}}")
+        view.gt-wrapper
+            image.gt(src="/imgs/gt.png")
+
+
+
+</template>
+
+<script>
+import wepy from "wepy";
+import m1 from "../../wxs/common.wxs";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  mixins = [baseMixin];
+  config = {
+    navigationBarTitleText: "注册信息"
+  };
+  data = {
+    info: {},
+    _showMasker: true
+  };
+  onLoad() {
+    this.showLoading();
+    this.$get(
+      "/shopapi/shop/getRegisterInfo",
+      res => {
+        this.info = res;
+      },
+      () => {
+        this.hideLoading();
+      }
+    );
+  }
+  methods = {
+      
+    showBigImg() {
+      let src = this.absUrl(this.info.cover);
+      wx.previewImage({
+        current: src, // 当前显示图片的http链接
+        urls: [src] // 需要预览的图片http链接列表
+      });
+    }
+  };
+  wxs = {
+    m1
+  };
+}
+</script>
+
+<style lang="less">
+page {
+  background-color: #f4f4f4;
+}
+.authed2-img {
+  width: 149rpx;
+  height: 149rpx;
+  position: absolute;
+  right: 43rpx;
+  top: 60rpx;
+}
+.flex-line .flex {
+  padding-top: 29rpx;
+  font-size: 30rpx;
+}
+image.gt {
+  width: 15rpx;
+  height: 27rpx;
+  vertical-align: middle;
+  position: relative;
+  top: -5rpx;
+}
+.p30-last {
+  padding-top: 15rpx;
+  padding-bottom: 15rpx;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+}
+.gt-wrapper {
+  padding-left: 20rpx;
+}
+.label {
+  color: #999999;
+  padding-right: 10rpx;
+}
+.title-txt {
+  font-size: 32rpx;
+}
+.cover {
+  width: 63rpx;
+  height: 63rpx;
+}
+.title-line {
+  width: 6rpx;
+  height: 23rpx;
+  background-color: #ff8000;
+  border-radius: 2rpx;
+  display: inline-block;
+  margin-right: 14rpx;
+}
+.tip-msg {
+  font-size: 30rpx;
+  color: #ff8000;
+  padding: 27rpx 30rpx;
+}
+button.contact-btn{
+  border:none;
+  padding: 0;
+  margin: 0;
+  line-height:30rpx;
+  height:30rpx;
+  font-size: 30rpx;
+  color: #ff8000;
+}
+
+</style>
+
+

@@ -1,0 +1,117 @@
+<style lang="less">
+    .azm-toast {
+        position: fixed;
+        top: 35%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        background: rgba(0, 0, 0, .7);
+        color: #fff;
+        font-size: 28*1rpx;
+        line-height: 1.5;
+        margin: 0 auto;
+        box-sizing: border-box;
+        padding: 20*1rpx 20*1rpx;
+        text-align: center;
+        border-radius: 10*1rpx;
+        z-index: 999
+    }
+
+    .azm-toast--notitle {
+        padding: 20*1rpx
+    }
+
+    .azm-toast__icon {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        margin: 0 auto;
+        padding: 12px 15px;
+        font-size: 38px;
+        text-align: center
+    }
+
+    .azm-toast__icon-loading {
+        line-height: 0
+    }
+
+    .azm-toast__icon-loading .zan-loading {
+        width: 40px;
+        height: 40px
+    }
+
+    .azm-toast__icon-image {
+        background-size: 40px;
+        background-position: center;
+        background-repeat: no-repeat
+    }
+</style>
+<template>
+    <view class="azm-toast {{ !message ? 'azm-toast--notitle' : '' }}" wx:if="{{ show }}"
+          @tap="clearAzmToast">
+        <!-- icon 展示 -->
+        <block wx:if="{{ icon || image }}">
+            <view wx:if="{{ image }}"
+                  class="azm-toast__icon azm-toast__icon-image"
+                  style="background-image: url({{ image }});"></view>
+            <view wx:elif="{{ icon === 'loading' }}" class="azm-toast__icon azm-toast__icon-loading">
+                <view class="zan-loading"></view>
+            </view>
+            <view wx:else class="azm-toast__icon iconfont {{ icon }}"></view>
+        </block>
+        <!-- 文案展示 -->
+        <view wx:if="{{ message }}">{{ message }}</view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import baseMixin from '../mixins/base'
+    export default class toast1 extends wepy.component {
+        props = {
+            message: String,
+            timeout: {
+                type: Number,
+                default: 1500
+            },
+            show: {
+                type: Boolean,
+                default: false
+            }
+        };
+        data = {
+            azmToast: null,
+            icon: null,
+            image: null
+        };
+        mixins = [baseMixin];
+
+        onLoad () {
+            let that = this;
+            that.$parent.azmShowToast = function (options) {
+                let data = {};
+                if (typeof options === 'string') {
+                    console.log(1);
+                    data.message = options;
+                } else {
+                    data.message = options.message;
+                    data.timeout = options.timeout;
+                }
+                that.message = data.message;
+                let timeout = data.timeout || that.timeout;
+                that.show = true;
+                that.azmToast = setTimeout(() => {
+                    that.show = false;
+                    that.$apply();
+                }, timeout);
+                that.$apply();
+            };
+        };
+
+        watch = {};
+        methods = {
+            clearAzmToast(){
+                clearTimeout(this.data.time);
+                this.show = false
+            }
+        };
+    }
+</script>

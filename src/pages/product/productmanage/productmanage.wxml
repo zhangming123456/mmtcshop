@@ -1,0 +1,49 @@
+<view class="t-navbar">
+    <view class='t-flex'>
+        <view class="t-nav-item border-r">已上架(10)</view>
+        <view class="t-nav-item border-r">已下架(11)</view>
+        <view class="t-nav-item">审核(20)</view>
+    </view>
+</view>
+<navigator hover-class='none' class="t-refund" url="/pages/product/shopdetail/shopdetail">
+    <view class="t-topStatus">
+        <view class="t-shopName">产品ID：201745212355</view>
+        <view class="t-statusBar">拼团</view>
+    </view>
+    <view class="t-item-info {{item.isTouchMove ? 'touch-move-active' : ''}}" bindtouchstart="touchstart" bindtouchmove="touchmove">
+        <image class='t-shopPhoto' src="../../../imgs/default.png"></image>
+        <view class='t-shopTitle'>【美容】单人祛痘护理套餐</view>
+        <view class='t-ShopUnit'>￥</view>
+        <view class='t-ShopPrice'>388</view>
+        <view class='t-shop-price'>门市价 ￥388</view>
+        <view class='t-shopNum'>上架时间2017/12/06 18:20</view>
+        <view class="del" catchtap="del" data-id="{{item.id}}" data-shopid="{{item.shop_id}}" data-index="{{index}}">删除</view>
+    </view>
+    <view class="t-shopCompile">
+        <button size="mini" hover-class="none" class="t-top">下架</button>
+        <button size="mini" hover-class="none" class="t-compile">编辑</button>
+    </view>
+</navigator>
+
+<navigator hover-class='none' class="t-refund">
+    <view class="t-topStatus">
+        <view class="t-shopName">产品ID：201745212355</view>
+        <view class="t-statusBar">拼团</view>
+    </view>
+    <view class='t-item-info'>
+        <image class='t-shopPhoto' src="../../../imgs/default.png"></image>
+        <view class='t-shopTitle'>【美容】单人祛痘护理套餐</view>
+        <view class='t-ShopUnit'>￥</view>
+        <view class='t-ShopPrice'>388</view>
+        <view class='t-shop-price'>门市价 ￥388</view>
+        <view class='t-shopNum'>上架时间2017/12/06 18:20</view>
+    </view>
+    <view class="t-shopCompile">
+        <button size="mini" hover-class="none" class="t-top">下架</button>
+        <button size="mini" hover-class="none" class="t-compile">编辑</button>
+    </view>
+</navigator>
+
+<view class="t-issue" bindtap="changeToTest">
+    +发布产品
+</view>

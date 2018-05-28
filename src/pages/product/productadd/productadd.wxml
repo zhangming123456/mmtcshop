@@ -1,0 +1,82 @@
+<form action="">
+    <view class="t-itme">
+        <view class="t-itmeName">产品名称</view>
+        <view class="t-itmeText">
+            <input placeholder="产品名称（主标题）" />
+        </view>
+    </view>
+    <view class="t-itme">
+        <view class="t-itmeName">副标题</view>
+        <view class="t-itmeText">
+            <input placeholder="产品副标题" />
+        </view>
+    </view>
+    <view class="t-itmeBox">
+        <view class="t-itmePrice border-r">
+            门市价(门店标价）
+            <view class="t-itmeMoney">¥258</view>
+        </view>
+        <view class="t-itmeDiscount">
+            折扣价
+            <view class="t-itmeMoney">¥238</view>
+        </view>
+    </view>
+    <view bindtap="gotoClassify" class="t-itmeCategory">
+        <view class="t-categoryName">产品类别</view>
+        <view class="t-categoryText">
+            <image class="t-emptyicon" src="../../../imgs/emptyicon.png"></image>
+            <view class="t-not">未完善</view>
+            <image class="t-arrows" src="../../../imgs/arrows.png"></image>
+        </view>
+    </view>
+    <view class="t-itmecategory">
+        <view class="t-categoryName">产品主图</view>
+        <view class="t-categoryText">
+            <image class="t-emptyicon" src="../../../imgs/emptyicon.png"></image>
+            <view class="t-not">未完善</view>
+            <image class="t-arrows" src="../../../imgs/arrows.png"></image>
+        </view>
+    </view>
+    <view class="t-timeDetails">
+        <view class="t-itme">
+            <view class="t-itmeName">服务内容</view>
+            <view class="t-itmeText">
+                <input placeholder="一句好介绍"/>
+            </view>
+        </view>
+        <view class="t-itme">
+            <view class="t-itmeName">服务特色</view>
+            <view class="t-itmeText">
+                <input placeholder="可以填写特色和功效" />
+            </view>
+        </view>
+        <view  bindtap="changeToTest" class="t-itmecategory">
+            <view class="t-categoryName">服务流程</view>
+            <view class="t-categoryText">
+                <image class="t-emptyicon" src="../../../imgs/emptyicon.png"></image>
+                <view class="t-not">未完善</view>
+                <image class="t-arrows" src="../../../imgs/arrows.png"></image>
+            </view>
+        </view>
+        <view bindtap="gotodetail" class="t-itmecategory">
+            <view class="t-categoryName">产品细节</view>
+            <view class="t-categoryText">
+                <text>完善度越高排名越高</text>
+                <view class="t-not">添加</view>
+                <image class="t-arrows" src="../../../imgs/arrows.png"></image>
+            </view>
+        </view>
+    </view>
+    <view class="t-ItmeCategory">
+        <view class="t-categoryName">参与活动</view>
+        <view class="t-categoryText">
+            <text class="t-now">目前可参加拼团</text>
+            <image class="t-emptyicon" src="../../../imgs/emptyicon.png"></image>
+            <view class="t-not">未完善</view>
+            <image class="t-arrows" src="../../../imgs/arrows.png"></image>
+        </view>
+    </view>
+    <view class="t-button" bindtap="changeToTest">
+        提交
+    </view>
+</form>

@@ -1,0 +1,12 @@
+"use strict";
+var Countdown = function () {
+    var time = 100;
+    setInterval(function () {
+        time--;
+        Countdown();
+    }, 100);
+    return time;
+};
+module.exports = {
+    Countdown: Countdown
+};

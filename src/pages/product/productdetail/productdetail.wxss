@@ -1,0 +1,192 @@
+page {
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+}
+
+.t-itmecategory {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-bottom: 24rpx;
+}
+
+.t-itmeCategory {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 24rpx;
+}
+
+.t-itmeCategory .t-categoryName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-categoryText text {
+    font-size: 29rpx;
+    color: #999999;
+    margin-right:67rpx;
+
+}
+
+.t-itmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.t-itmecategory .t-categoryName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itmecategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.t-categoryText .t-emptyicon {
+    height: 36rpx;
+    width: 36rpx;
+    margin-right: 16rpx;
+}
+
+.t-categoryText .t-arrows {
+    width: 15rpx;
+    height: 25rpx;
+    margin-right: 26rpx;
+}
+
+.t-categoryText .t-not {
+    color: #ff8000;
+    font-size: 28rpx;
+    margin-right: 19rpx;
+}
+
+.t-categoryText .t-not2 {
+    color: #999999;
+    font-size: 28rpx;
+    margin-right: 19rpx;
+}
+
+
+.t-productLabel {
+    height: 163rpx;
+    width: 100%;
+    display: flex;
+    background-color: #ffffff;
+}
+
+.t-productLabel .t-product {
+    font-size: 32rpx;
+    margin-left: 30rpx;
+    margin-top: 31rpx;
+}
+
+.t-productLabel .t-label {
+    font-size: 30rpx;
+    color: #999999;
+    margin-left: 42rpx;
+    margin-top: 31rpx;
+}
+
+.t-productLabel .t-labelAdd {
+    width: 86rpx;
+    height: 41rpx;
+    border: 1rpx solid #ff8000;
+    line-height: 41rpx;
+    text-align: center;
+    color: #ff8000;
+    margin-top: 92rpx;
+    margin-left: -439rpx;
+}
+
+.t-productLabel .t-labelText {
+    border: 1rpx solid #ff8000;
+    box-sizing: border-box;
+    height: 44rpx;
+    margin-top: 92rpx;
+    margin-left: 25rpx;
+    position: relative;
+}
+
+.t-labelText text {
+    font-size: 28rpx;
+    color: #ff8000;
+    padding: 7rpx 22rpx;
+    line-height: 41rpx;
+}
+
+.t-labelText .t-delete {
+    position: absolute;
+    width: 22rpx;
+    height: 22rpx;
+    right: -8rpx;
+    top: -11rpx;
+}
+
+
+.t-itme {
+    height: 91rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1rpx solid #eeeeee;
+    background-color: #ffffff;
+}
+
+
+.t-itme:nth-child(2) {
+    border-top: none;
+    border-bottom: 1rpx solid #eeeeee;
+}
+
+.t-itme .t-itmeName {
+    font-size: 32rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91rpx;
+    padding-left: 30rpx;
+    box-sizing: border-box;
+}
+
+.t-itme .t-itmeText {
+    width: 74%;
+    height: 100%;
+    font-size: 30rpx;
+}
+
+.t-itmeText input {
+    height: 100%;
+    line-height: 91rpx;
+}
+.t-button {
+    height: 98rpx;
+    background-color: #ff8000;
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98rpx;
+    text-align: center;
+}

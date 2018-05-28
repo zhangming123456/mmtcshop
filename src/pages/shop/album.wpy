@@ -1,0 +1,230 @@
+<template lang="pug">
+view.main-item
+    view.p30.flex.img-area
+      image.pic-item(src="/imgs/addicon.png"  @tap="addImg")
+      view.pic-item(wx:for="{{img_srcs}}" wx:for-item="item" wx:for-index="index" @tap="showDetail({{index}})")
+        image.pic-item-img(src="{{m1.absUrl(item)}}"  mode="aspectFill")
+        image.pic-item-remove(src="/imgs/closebtn@2x.png" @tap.stop="removeImg({{index}})")       
+view.footer-area
+    view.p30.text-right.border-t
+        button.btn1(hover-class="tapmode" @tap="clearPics") 清空
+        button.btn2(hover-class="tapmode" @tap="surePics") 确认
+</template>
+<script>
+import wepy from "wepy";
+import m1 from "../../wxs/common.wxs";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page { 
+  mixins = [baseMixin];
+  wxs = {
+    m1
+  };
+  onLoad(opts) {
+    let type_id = parseInt(opts.type_id);
+    this.type_id = type_id;
+    let index = parseInt(opts.index);
+    this.cover = decodeURIComponent(opts.cover)
+    wx.setNavigationBarTitle({
+      title: this.title = ["门店环境", "作品案例", "团队风采", "品牌展示"][index]
+    });
+    this.showLoading();
+    this.$get(
+      "/shopapi/shop_manager/picsOfType",
+      { type_id },
+      res => {
+        this.img_srcs = res || [];
+      },
+      () => {
+        this.hideLoading();
+      }
+    );
+  }
+  data = {
+    img_srcs: []
+  };
+  methods = {
+    showDetail(idx){
+      this.$goto('albumdetail?is_cover='+
+        (this.cover==this.img_srcs[idx]?1:0)
+      +'&type_id='+ this.type_id +'&idx='+idx+'&img='+encodeURIComponent(this.img_srcs[idx])+'&title='+encodeURIComponent(this.title))
+    },
+    showPicDetail() {
+      this.$goto("albumdetail");
+    },
+    setPicCover({cover}){
+      this.$noticePage('setPicCover',{
+        title:this.title,
+        cover
+      },3)
+    },
+    surePics(){
+      if(!this.type_id){
+        return;
+      }
+      this.showLoading();
+      this.$post('/shopapi/shop_manager/setPicsOfType',{
+        img_srcs:this.img_srcs,
+        type_id:this.type_id
+      },()=>{
+        this.$noticePage('setPicCount',{title:this.title,count:this.img_srcs.length})
+        this.$back()
+      },()=>{
+        this.hideLoading()
+      })
+    },
+    clearPics(){
+      this.confirm('确定清空吗？',()=>{
+        this.img_srcs = [];
+        this.$apply()
+      })      
+    },
+    removeImg(idx) {
+      if(typeof idx == 'object'){
+          idx = idx.idx;
+          this.img_srcs.splice(idx, 1);
+      }else{
+        this.confirm('确定删除该图片吗？',()=>{
+          this.img_srcs.splice(idx, 1);
+        });
+      }
+       
+      
+    },
+    addImg() {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: res => {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          var tempFilePaths = res.tempFilePaths;
+          this.showLoading("正在上传...");
+          wx.uploadFile({
+            url: this.absUrl("/services/uploader/uploadImg"), //仅为示例，非真实的接口地址
+            filePath: tempFilePaths[0],
+            name: "_file_",
+            complete: () => {
+              this.hideLoading();
+            },
+            success: res => {
+              var data = res.data;
+              //do something
+              if (typeof data == "string") {
+                try {
+                  data = JSON.parse(data);
+                } catch (e) {}
+              }
+              if (data.status == 1) {
+                this.img_srcs.push(data.info);
+                this.$apply();
+              } else {
+                this.$alert(data.info);
+              }
+            }
+          });
+        }
+      });
+    }
+  };
+  config = {
+    navigationBarTitleText: "店铺环境"
+  };
+}
+</script>
+<style lang="less">
+.main-container {
+  width: 750rpx;
+}
+.main-item {
+  width: 750rpx;
+}
+.photo-item {
+  width: 330rpx;
+  margin-bottom: 30rpx;
+}
+.photo-item-txt {
+  font-size: 30rpx;
+  color: #282828;
+  padding-top: 30rpx;
+}
+.photo-item-img {
+  width: 330rpx;
+  height: 330rpx;
+}
+.photos {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.btn2 {
+  margin-left: 30rpx;
+  color: #ffffff;
+  background-color: #ff8000;
+}
+.btn1 {
+  color: #ff8000;
+  border: solid 1px #ff8000;
+  background-color: transparent;
+}
+.btn1,
+.btn2 {
+  height: 72rpx;
+  display: inline-block;
+  font-size: 34rpx;
+  border-radius: 5rpx;
+
+  line-height: 72rpx;
+  width: 179rpx;
+  text-align: center;
+}
+.footer-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.pic-item {
+  margin-right: 5rpx;
+  margin-bottom: 5rpx;
+}
+.pic-item,
+.pic-item-img {
+  width: 168rpx;
+  height: 168rpx;
+  position: relative;
+}
+.img-area {
+  flex-wrap: wrap;
+  // justify-content: space-between;
+}
+
+.pic-item-remove {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40rpx;
+  height: 40rpx;
+}
+.toolbar {
+  text-align: center;
+  font-size: 29rpx;
+  position: relative;
+  padding: 47rpx 0 0 0;
+}
+.toolbar .flex-con {
+  padding-bottom: 20rpx;
+}
+.active {
+  color: #ff8000;
+  font-size: 31rpx;
+}
+.footer-hr {
+  width: 129rpx;
+  height: 3px;
+  background-color: #ff8000;
+  position: absolute;
+  bottom: 0;
+  left: 124rpx;
+}
+</style>
+
+

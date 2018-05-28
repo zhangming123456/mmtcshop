@@ -1,0 +1,120 @@
+<template lang="pug">
+view.container1
+    view.tip-msg *请务必填写真实号码，这与您店铺的信誉等级相关：
+
+    view.form-area.text999.fz28        
+        view.form-item
+            view.flex
+                view.telephone1-wrap-parent
+                    view.telephone1-wrap
+                        input(placeholder="区号" @input="setField('telephone1')" type="number")
+                view.flex-con.telephone1-right
+                    input(placeholder="座机号码" @input="setField('telephone2')" type="number")        
+        view.button-area
+            button.btn-disabled.btn-primary(type="default" @tap="gotoNext" hover-class="tapmode") 确认
+</template>
+
+<style lang="less">
+.telephone1-right{
+    padding-left:30rpx;
+    margin-left:20rpx;
+    border:1px solid #eee;
+    border-radius:5rpx;
+}
+.form-area .form-item{
+    padding:0;
+    border:none;
+}
+.telephone1-wrap-parent{
+      width:252rpx;    
+}
+.tip-msg{
+    font-size: 30rpx;
+    color: #999999;
+	line-height: 48rpx;
+    margin-bottom:30rpx;
+}
+.telephone1-wrap{
+    width:232rpx;    
+    border:1px solid #eee;
+    border-radius:5rpx;
+}
+.telephone1-wrap input{
+    width: 232rpx;
+    
+    margin-right:20rpx;
+    display:block;
+    text-align:center;
+}
+button.validbtn {
+  width: 184rpx;
+  height: 60rpx;
+  line-height: 58rpx;
+  color: #ff8000;
+  text-align: center;
+  font-size: 28rpx;
+  padding: 0;
+  margin-right: 20rpx;
+  border: solid 1px #ff8000;
+  background-color: transparent;
+}
+button.disabled-btn {
+  border: solid 1px #999999;
+  color: #999999;
+  font-size: 24rpx;
+}
+</style>
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "服务电话"
+  };
+  mixins = [baseMixin];
+  data = {
+    timestr: ""
+  };
+  onLoad(options) {
+    
+  }
+  methods = {
+    gotoNext() {
+      if (!this.telephone1) {
+        this.$alert("请输入区号");
+        return;
+      }
+      if (!this.telephone2) {
+        this.$alert("请输入座机号码");
+        return;
+      }  
+      var reg = /^0\d{2,3}-\d{7,8}(-\d{1,6})?$/;
+      var telephone = this.telephone1 + '-' + this.telephone2;
+      if(!reg.test(telephone)){
+          this.$alert("请输入正确的区号和座机号码");
+          return;
+      }
+      this.showLoading();
+      this.$post(
+        "/shopapi/shop/changeServicePhone",
+        {
+        telephone
+        },
+        info => {
+            this.toast('修改成功',()=>{
+                this.$back()
+            })
+        },
+        () => {
+            this.hideLoading();
+        }
+      );
+    },
+    setField(field, e) {
+      this[field] = e.detail.value.trim();
+    }
+  };
+}
+</script>

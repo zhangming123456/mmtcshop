@@ -1,0 +1,40 @@
+.nav{
+    font-size: 30rpx;
+    text-align: center;
+    color: #282828;
+    background-color: #fff;
+    .active{
+        color: #ff8000; 
+        position: relative;
+        &:after{
+            position: absolute;
+            bottom:0;
+            width: 152rpx;
+            content:'';
+            display: block;
+            background-color: #ff8000;
+            left:50%;
+            height: 3rpx;
+            margin-left:-76rpx; 
+        }
+    }    
+    & > view{
+        padding:30rpx 0 31rpx 0;
+    }
+    .nav-line{
+        width: 2rpx;
+        padding: 0;
+        height: 27rpx;
+        background-color: #dedede;
+        box-sizing: border-box;
+    }
+}
+.nav-holder{
+ height:90rpx;
+}
+.nav-fixed{
+    position: fixed;   
+    left:0;
+    right:0;
+    top:0;
+}

@@ -1,0 +1,343 @@
+.text-center {
+    text-align: center;
+  }
+  .container1 {
+    padding: 56rpx 40rpx;
+  }
+  input {
+    box-sizing: border-box;
+  }
+  page {
+    line-height: 1;
+  }
+  .fz28 {
+    font-size: 28rpx;
+  }
+  .fz32 {
+    font-size: 32rpx;
+  }
+  .fz30 {
+    font-size: 30rpx;
+  }
+  .textfff {
+    color: #ffffff !important;
+  }
+  .text999 {
+    color: #999999 !important;
+  }
+  .lh12 {
+    line-height: 1.2em;
+  }
+  .text666 {
+    color: #666 !important;
+  }
+  .text282828 {
+    color: #282828 !important;
+  }
+  button::after {
+    border-radius: 0;
+  }
+  button {
+    height: 90rpx;
+    line-height: 88rpx;
+    font-size: 32rpx;
+  }
+  .form-area {
+    .form-caption {
+      padding-bottom: 34rpx;
+    }
+    input,
+    button,
+    .form-item,
+    textarea {
+      width: 100%;
+      height: 90rpx;
+      line-height: 88rpx;
+      font-size: 32rpx;
+      display: block;
+      border-width: 1rpx;
+      border-radius: 5rpx;
+      box-sizing: border-box;
+    }
+    textarea.textarea {
+      height: 285rpx;
+      padding: 24rpx 30rpx;
+      margin-bottom: 30rpx;
+      line-height: 1em;
+      font-size: 30rpx;
+      border: solid 1px #eeeeee;
+    }
+    button.ib {
+      display: inline-block;
+    }
+    .form-item {
+      border: solid 1px #eeeeee;
+      padding: 0 0 0 30rpx;
+      margin-bottom: 30rpx;
+      line-height: 88rpx;
+    }
+    .form-item:last-child {
+      margin-bottom: 0;
+    }
+    .form-item input {
+      border: none;
+      padding: 0;
+      margin-bottom: 0;
+    }
+    input {
+      border: solid 1px #eeeeee;
+      padding: 0 30rpx;
+      font-size: 30rpx;
+      color: #999999;
+      margin-bottom: 30rpx;
+    }
+    input:last-child {
+      margin-bottom: 0;
+    }
+    .button-area {
+      padding-top: 85rpx;
+      display: block;
+    }
+    .btn-primary {
+      background-color: #ff8000;
+      font-size: 32rpx;
+      color: #ffffff;
+      // padding: 30rpx 0;
+      border: solid 1px #ff8000;
+    }
+    .btn-origin {
+      background-color: #ff8000;
+      border-radius: 5rpx;
+      font-size: 32rpx;
+      color: #ffffff;
+    }
+  }
+  .bg-primary {
+    background-color: #ff8000 !important;
+    color: white !important;
+  }
+  .btn-block {
+    display: block;
+    border-radius: 0;
+  }
+  .btn-block::after {
+    border-radius: 0;
+  }
+  .tapmode {
+    opacity: 0.8;
+  }
+  
+  .flex {
+    display: box; /* OLD - Android 4.4- */
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: flex; /* NEW, Spec - Opera 12.1, Firefox 20+ */ /* 09版 */
+    -webkit-box-orient: horizontal;
+    /* 12版 */
+    -webkit-flex-direction: row;
+    -moz-flex-direction: row;
+    -ms-flex-direction: row;
+    -o-flex-direction: row;
+    flex-direction: row;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    align-items: center;
+  }
+  
+  .flex-stretch {
+    -webkit-align-items: stretch;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+  }
+  button.btn-disabled {
+    background-color: #d3d3d3;
+    color: #ffffff;
+  }
+  .flex > a {
+    display: block;
+    color: inherit;
+  }
+  
+  .flex-con {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    white-space: normal;
+    min-width: 0;
+    word-break: break-all;
+  }
+  
+  .flex-vertical {
+    /* 09版 */
+    -webkit-box-orient: vertical;
+    /* 12版 */
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: inherit;
+    -webkit-box-align: inherit;
+    align-items: inherit;
+  }
+  
+  .one-line {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  
+  image {
+    vertical-align: middle;
+    max-width: 100% !important;
+  }
+  
+  .rel {
+    position: relative;
+  }
+  
+  .ib {
+    display: inline-block;
+  }
+  
+  .border-t,
+  .border-b {
+    position: relative;
+  }
+  
+  .border-t:before,
+  .border-b:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #ddd;
+    right: 0;
+    height: 1px;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+    -webkit-transform-origin: 100% 100%;
+    transform-origin: 100% 100%;
+  }
+  
+  .border-t:before {
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+  }
+  
+  .border-b:after {
+    top: auto;
+    bottom: 0;
+  }
+  
+  .border-t,
+  .border-b,
+  .border-r,
+  .border-l {
+    position: relative;
+  }
+  
+  .border-r:after {
+    content: " ";
+    position: absolute;
+    left: auto;
+    background: #ddd;
+    right: 0;
+    top: 0;
+    height: 100%;
+    bottom: 0;
+    width: 1px;
+    -webkit-transform: scaleX(0.5);
+    transform: scaleX(0.5);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+  }
+  
+  .border-l:before {
+    content: " ";
+    position: absolute;
+    right: auto;
+    background: #ddd;
+    left: 0;
+    top: 0;
+    height: 100%;
+    bottom: 0;
+    width: 1px;
+    -webkit-transform: scaleX(0.5);
+    transform: scaleX(0.5);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+  }
+  
+  .two-line {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    line-height: 1.5em;
+    max-height: 3.8em;
+  }
+  
+  .loading-more {
+    text-align: center;
+    padding: 30rpx 0;
+    color: #999;
+    font-size: 24rpx;
+    clear: both;
+  }
+  
+  .hr24 {
+    height: 24rpx;
+  }
+  
+  .fullwidth {
+    width: 100%;
+  }
+  
+  .mt24 {
+    margin-top: 24rpx;
+  }
+  
+  .last-no-border-b .border-b:last-child::after {
+    display: none;
+  }
+  
+  .fullheight {
+    height: 100%;
+  }
+  
+  .gotoTop {
+    width: 90rpx;
+    height: 90rpx;
+    position: fixed;
+    right: 30rpx;
+    bottom: 30rpx;
+  }
+  .list-item {
+    padding: 30rpx;
+  }
+  .icon-gt {
+    width: 15rpx;
+    height: 25rpx;
+    margin-left: 20rpx;
+  }
+  .bg-white {
+    background: #fff;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .text-left {
+    text-align: left;
+  }
+  .caption-title {
+    padding: 24rpx 30rpx 23rpx 30rpx;
+    font-size: 26rpx;
+    color: #999999;
+  }
+  .bg-f4 {
+    background-color: #f4f4f4;
+  }

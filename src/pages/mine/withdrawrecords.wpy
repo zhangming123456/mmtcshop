@@ -1,0 +1,126 @@
+
+<style lang="less">
+.empty-area {
+  text-align: center;
+  padding-top: 156rpx;
+  padding-bottom: 156rpx;
+  .empty-img {
+    text-align: center;
+    & > image {
+      width: 191rpx;
+      height: 190rpx;
+    }
+  }
+  .empty-txt {
+    font-size: 30rpx;
+    color: #999999;
+    padding-top: 40rpx;
+  }
+}
+.loading-more {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #999;
+  font-size: 24rpx;
+  clear: both;
+}
+.nomore-img {
+  width: 127rpx;
+  height: 134rpx;
+}
+.container-main {
+  .list-box {
+    
+    font-size: 30rpx;
+    color: #282828;
+
+    .list-item {
+      padding: 30rpx;
+      background-color: #fff;
+      image.gt {
+        width: 15rpx;
+        height: 27rpx;
+        vertical-align: middle;
+        position: relative;
+        // top: -4rpx;
+      }
+      .field-value {
+        color: #ff8000;
+        padding-right: 29rpx;
+      }
+      .list-title {
+        font-size: 30rpx;
+        color: #282828;
+      }
+
+      .list-time {
+        font-size: 28rpx;
+        color: #999999;
+        padding-top: 18rpx;
+      }
+      .field-value-add {
+        font-size: 36rpx;
+        margin-right: 6rpx;
+        display: inline;
+      }
+      .field-value-num {
+        font-size: 38rpx;
+        display: inline;
+        margin-right: 5rpx;
+      }
+      .field-value-yun {
+        font-size: 30rpx;
+        display: inline;
+      }
+      .field-label {
+        color: #666666;
+        font-size: 30rpx;
+        padding-right: 25rpx;
+      }
+    }
+  }
+}
+page {
+  background-color: #f4f4f4;
+}
+.loading-more{
+  background-color: #f4f4f4;
+}
+</style>
+<template lang='pug'>
+view.container-main
+    view.list-box.border-t
+        datalist(fetchurl="/shopapi/money/incomeList")    
+          view.list-item.border-b(@tap="showDetail('{{item.create_date}}')" slot="item-template")
+              view.flex
+                  view.flex-con 
+                      view.field-value  
+                          view.field-value-add +
+                          view.field-value-num {{item.total}}
+                          view.field-value-yun 元
+                      view.list-time {{item.create_date}}
+                  view.field-label  包含订单                    
+                  image.gt(src="/imgs/gt.png")   
+</template>
+<script>
+import wepy from "wepy";
+import datalist from "../../components/datalist";
+import datalistMixin from "../../mixins/datalist";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "余额明细"
+  };
+  components = {
+    datalist
+  };
+  mixins = [baseMixin, datalistMixin];
+  methods = {
+    showDetail(date){
+       this.$goto('withdrawdetail?date='+date)
+    }
+  };
+}
+</script>
+
+ 

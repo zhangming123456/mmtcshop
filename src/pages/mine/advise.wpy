@@ -1,0 +1,105 @@
+<template lang="pug">
+view.form-area
+    view.container1    
+        textarea.textarea(placeholder="想吐槽就吐槽，想表扬就表扬，我们都爱~" @input="setField('content')")
+        input(placeholder="留下您的邮箱，我们会回复你的哦~" @input="setField('email')")
+        view.pic-list
+            image.pic-item(src="{{img_src||'/imgs/updatepic.png'}}" @tap="selectPic")
+    button.btn-primary.fixed-btn(type="default" @tap="doSubmit" hover-class="tapmode") 提交反馈
+</template>
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class  extends wepy.page {
+  config = {
+    navigationBarTitleText: "意见反馈"
+  };
+  mixins = [baseMixin];
+  data = {
+    img_src : ''
+  };
+  methods = {
+    setField(name, e) {
+      this[name] = e.detail.value.trim();
+
+    },
+    selectPic() {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: res => {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          var tempFilePaths = res.tempFilePaths;
+          this.showLoading('正在上传...');
+          wx.uploadFile({
+            url: this.absUrl('/services/uploader/uploadImg'), //仅为示例，非真实的接口地址
+            filePath: tempFilePaths[0],
+            name: "_file_",            
+            complete:()=> {
+              this.hideLoading();
+            },
+            success: res => {
+              var data = res.data;
+              //do something
+              if(typeof data == 'string'){
+                  try{
+                      data = JSON.parse(data)
+                  }catch(e){
+                    
+                  }
+              }
+              if(data.status ==1){
+                 this.img_src = this.absUrl(data.info)
+                 this._img_src = data.info
+                 this.$apply()
+              }else{
+                  this.$alert(data.info)
+              }
+            }
+          });
+        }
+      });
+    },
+    doSubmit() {
+      if (!this.content) {
+        return this.$alert("请输入您要反馈的意见");
+      }
+      if (!this.email) {
+        return this.$alert("请输入您的邮箱地址");
+      }
+      this.showLoading()
+      this.$post('/shopapi/shop/feedback',{
+          content:this.content,
+          contact:this.email,
+          img_srcs:this._img_src || ''
+      },info=>{
+          this.$alert('提交成功，感谢您的反馈！','',()=>{
+              wx.navigateBack()
+          })
+      },()=>{
+          this.hideLoading()
+      })
+    }
+  };
+}
+</script>
+
+<style lang="less">
+.pic-item {
+  width: 216rpx;
+  height: 216rpx;
+}
+button.fixed-btn {
+  position: fixed;
+  left: 0;
+  height: 100rpx;
+  line-height: 98rpx;
+  right: 0;
+  bottom: 0;
+}
+.pic-list {
+  padding-top: 35rpx;
+}
+</style>
+

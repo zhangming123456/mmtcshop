@@ -1,0 +1,17 @@
+<view class='loading-more' wx:if='{{!isEmpty}}'>
+  <view wx:if="{{!noMore && loadingMore}}">加载更多...</view>
+  <view wx:elif="{{noMore}}" class='text-center'>
+    <view class='ib'>
+      <view class='flex'>
+      <!--
+        <view>
+          <image src='../../imgs/nomore.png' class='nomore-image'></image>
+        </view>
+        -->
+        <view class='nomore-text'>
+          没有更多了~
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,177 @@
+.t-setTime {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 93rpx;
+
+}
+
+.t-setTime .t-time {
+    font-size: 32rpx;
+    margin-left: 30rpx;
+}
+
+.wx-switch-input {
+    width: 42px !important;
+    height: 20px !important;
+}
+
+.wx-switch-input::before {
+    width: 41px !important;
+    height: 20px !important;
+}
+
+.wx-switch-input::after {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.t-setTime .t-switch{
+    margin-right: 30rpx;
+}
+
+.t-mt24{
+    height: 24rpx;
+    background-color: #f4f4f4;
+}
+
+.t-timeTitle{
+    display: flex;
+    justify-content: space-between;
+    font-size: 34rpx;
+    margin-top: 33rpx;
+}
+
+.t-timeTitle .t-begin{
+    margin-left: 73rpx;
+}
+
+.t-timeTitle .t-over{
+    margin-right: 100rpx;
+}
+
+.t-day{
+    font-size: 30rpx;
+    margin-left: 306rpx;
+    margin-top: 15rpx;
+}
+
+.t-date{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20rpx;
+    color: #ff8000;
+}
+
+.t-date .t-beginTime{
+    margin-left: 52rpx;
+}
+
+.t-date .t-overTime{
+    margin-right: 81rpx;
+}
+
+.t-wire{
+    width: 690rpx;
+    height: 1rpx;
+    background-color: #b7b7b7;
+    margin-left: 30rpx;
+    margin-top: 36rpx;
+}
+
+.t-exceptDate{
+    display: flex;
+    margin-bottom: 31rpx;
+}
+
+.t-exceptDate .t-except{
+    font-size: 32rpx;
+    margin-left: 34rpx;
+    margin-top: 34rpx;
+}
+
+.t-exceptDate .t-input{
+    font-size: 32rpx;
+    width: 536rpx;
+    height: 59rpx;
+    border: 1rpx solid #999999;
+    margin-left: 25rpx;
+    margin-top: 20rpx;
+    border-radius: 10rpx;
+}
+
+
+.t-input input{
+    padding-left: 28rpx;
+    color: #999999;
+}
+
+.hot-tags-wrap {
+    padding: 50rpx 30rpx
+}
+.hot-title {
+    font-size: 32rpx;
+}
+
+.title-line {
+    width: 6rpx;
+    height: 23rpx;
+    background-color: #ff8000;
+    border-radius: 2rpx;
+    display: inline-block;
+    margin-right: 14rpx
+}
+.picker-titles {
+    padding-top: 49rpx;
+    padding-bottom: 72rpx;
+    text-align: center;
+    font-size: 30rpx;
+    color: #999999;
+    padding-left: 102rpx;
+    padding-right: 102rpx;
+    justify-content: space-between
+}
+.picker-flex {
+    justify-content: space-between
+}
+.timepicker-wrap {
+    width: 300rpx;
+    height: 400rpx;
+    display: inline-block
+}
+.timepicker,
+.picker-inner-view {
+    text-align: center;
+    line-height: 80rpx;
+    font-size: 40rpx;
+    height: 80rpx
+}
+
+
+.footer-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0
+}
+.btn2 {
+    color: #ffffff;
+    background-color: #ff8000
+}
+
+.btn1 {
+    color: #ff8000;
+    border-top: solid 1px #ff8000;
+    background-color: transparent
+}
+
+.btn1,
+.btn2 {
+    height: 100rpx;
+    display: inline-block;
+    font-size: 36rpx;
+    border-radius: 0;
+    line-height: 100rpx;
+    text-align: center;
+    flex: 1
+}

@@ -1,0 +1,291 @@
+<template>
+    <view class="container-main">
+        <view class="flex nav nav-fixed">
+            <view class="flex-con {{type==0?'active':''}}" bindtap="toggleType" data-wpytoggletype-a="0">
+                已上架({{firgure.type1num || 0}})
+            </view>
+            <view class="nav-line"/>
+            <view class="flex-con {{type==1?'active':''}}" bindtap="toggleType" data-wpytoggletype-a="1">
+                已下架({{firgure.type2num || 0}})
+            </view>
+            <view class="nav-line"/>
+            <view class="flex-con {{type==2?'active':''}}" bindtap="toggleType" data-wpytoggletype-a="2">
+                待审核({{firgure.type3num || 0}})
+            </view>
+        </view>
+        <view class="nav-holder"/>
+        <datalist fetchurl="/shopapi/itemlist/site" autoload="false">
+            <view class="box" slot="item-template">
+                <view class="box-title border-b">
+                    <view class="flex">
+                        <view class="flex-con">产品ID：{{item.item_no}}</view>
+                        <view class="tag-primary" wx:if="{{item.is_group==1}}">拼团</view>
+                    </view>
+                </view>
+                <view class="box-content border-b" bindtap="showItemDetail" data-wpyshowitemdetail-a="{{item.id}}"
+                      data-wpyshowitemdetail-b="{{item.auth_status}}">
+                    <view class="flex">
+                        <view class="box-img-area">
+                            <image src="{{m1.absUrl(item.cover)}}"/>
+                            <view class="box-num-tip" wx:if="{{item.group_num && item.group_num>0}}">
+                                {{item.group_num}}人团
+                            </view>
+                        </view>
+                        <view class="flex-con">
+                            <view class="title1">【{{item.category}}】{{item.title}}</view>
+                            <view class="title2">
+                                <view class="txt1">{{item.is_group == 1 ? '拼团价' : ''}}</view>
+                                <view class="txt2">￥</view>
+                                <view class="txt3">{{item.is_group == 1 ? item.group_price : item.price}}</view>
+                                <view class="txt4">
+                                    {{item.is_group == 0 ? '门市价' : ''}}￥{{item.is_group == 1 ? item.price : item.market_price}}
+                                </view>
+                            </view>
+                            <view class="title3">{{timeflag}}时间 {{item.create_time}}</view>
+                        </view>
+                    </view>
+                </view>
+                <view class="box-footer text-right">
+                    <block wx:if="{{type==2}}">
+                        <block wx:if="{{item.auth_status==0}}">
+                            <view class="box-btn box-btn-outed" bindtap="revokeAuth"
+                                  data-wpyrevokeauth-a="{{item.id}}">
+                                撤销审核
+                            </view>
+                            <view class="box-btn box-btn-primary" bindtap="editAuth"
+                                  data-wpyeditauth-a="{{item.id}}">
+                                编辑
+                            </view>
+                        </block>
+                        <block wx:elif="{{item.auth_status==1}}">
+                            <view class="not-authed" bindtap="showAuthDetail"
+                                  data-wpyshowauthdetail-a="{{item.id}}">
+                                审核不通过，查看详情>
+                            </view>
+                        </block>
+                        <block wx:elif="{{item.auth_status==2}}">
+                            <view class="box-btn box-btn-primary" bindtap="editAuth"
+                                  data-wpyeditauth-a="{{item.id}}">
+                                编辑
+                            </view>
+                        </block>
+                    </block>
+                    <block wx:elif="{{type==1}}">
+                        <view class="box-btn box-btn-outed" bindtap="upItem" data-wpyupitem-a="{{item.id}}">上架
+                        </view>
+                        <view class="box-btn box-btn-primary" bindtap="editAuth" data-wpyeditauth-a="{{item.id}}">编辑
+                        </view>
+                    </block>
+                    <block wx:elif="{{type==0}}">
+                        <view class="box-btn box-btn-outed" bindtap="downItem" data-wpydownitem-a="{{item.id}}">下架
+                        </view>
+                        <view class="box-btn box-btn-primary" bindtap="editAuth" data-wpyeditauth-a="{{item.id}}">编辑
+                        </view>
+                    </block>
+                </view>
+            </view>
+        </datalist>
+        <view class="btn-holder"/>
+        <button class="btn-account bg-primary btn-block" type="default" hover-class="tapmode" bindtap="addAccount">
+            <image class="add-img" src="/imgs/add.png"/>
+            <view class="ib">发布产品</view>
+        </button>
+    </view>
+</template>
+
+<style lang="less">
+    @import "../../../styles/nav";
+    @import "../../../styles/box";
+
+    page {
+        background-color: #f4f4f4;
+    }
+
+    .empty-area {
+        text-align: center;
+        padding-top: 156*1rpx;
+        padding-bottom: 156*1rpx;
+        .empty-img {
+            text-align: center;
+            & > image {
+                width: 191*1rpx;
+                height: 190*1rpx;
+            }
+        }
+        .empty-txt {
+            font-size: 30*1rpx;
+            color: #999999;
+            padding-top: 40*1rpx;
+        }
+    }
+
+    .loading-more {
+        text-align: center;
+        padding: 30*1rpx 0;
+        color: #999;
+        font-size: 24*1rpx;
+        clear: both;
+    }
+
+    .nomore-img {
+        width: 127*1rpx;
+        height: 134*1rpx;
+    }
+
+    .not-authed {
+        padding: 14*1rpx 0;
+        font-size: 30*1rpx;
+        color: #ff8000;
+    }
+
+    .add-img {
+        width: 30*1rpx;
+        height: 30*1rpx;
+        margin-right: 10*1rpx;
+        position: relative;
+        top: -3*1rpx;
+    }
+
+    .list-item {
+        padding: 30*1rpx;
+        font-size: 30*1rpx;
+        color: #282828;
+    }
+
+    .btn-holder {
+        height: 90*1rpx;
+    }
+
+    button.btn-account {
+        font-size: 32*1rpx;
+        position: fixed;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        height: 100*1rpx;
+        line-height: 100*1rpx;
+    }
+</style>
+
+
+<script>
+    import wepy from "wepy";
+    import baseMixin from "../../../mixins/base";
+    import datalistMixin from "../../../mixins/datalist";
+    import datalist from "../../../components/datalist";
+    import m1 from "../../../wxs/common.wxs";
+
+    export default class extends wepy.page {
+        config = {
+            navigationBarTitleText: "产品管理",
+            enablePullDownRefresh: true
+        };
+        mixins = [baseMixin, datalistMixin];
+        components = {
+            datalist
+        };
+        data = {
+            list: [],
+            type: 0,
+            firgure: {},
+            timeflag: "上架"
+        };
+        wxs = {
+            m1
+        };
+
+        onShow () {
+            this.$invoke("datalist", "loadData");
+            this.methods.loadFigure.call(this);
+        }
+
+        methods = {
+            loadFigure() {
+                this.$get("/shopapi/itemlist/figure", info => {
+                    this.firgure = info;
+                });
+            },
+            refreshState() {
+                // this.$invoke("datalist", "loadData");
+                // this.methods.loadFigure.call(this);
+            },
+            showItemDetail(id, auth_status) {
+                if (auth_status == 1) {
+                    this.$goto("reback?id=" + id);
+                    return;
+                }
+                this.$goto("detail?id=" + id);
+            },
+            revokeAuth(id) {
+                //撤销
+                this.confirm("确定撤销申请吗？", () => {
+                    this.showLoading();
+                    this.$get(
+                        "/shopapi/iteminfo/revokeAuth",
+                        {
+                            id
+                        },
+                        info => {
+                            this.methods.loadFigure.call(this);
+                            this.$invoke("datalist", "loadData");
+                        },
+                        () => {
+                            this.hideLoading();
+                        }
+                    );
+                });
+            },
+            upItem(item_id) {
+                this.confirm("确定上架该项目吗？", () => {
+                    this.showLoading();
+                    this.$get(
+                        "/shopapi/iteminfo/upOn",
+                        {
+                            id: item_id
+                        },
+                        info => {
+                            this.methods.loadFigure.call(this);
+                            this.$invoke("datalist", "loadData");
+                        },
+                        () => {
+                            this.hideLoading();
+                        }
+                    );
+                });
+            },
+            downItem(item_id) {
+                this.confirm("确定下架该项目吗？", () => {
+                    this.showLoading();
+                    this.$get(
+                        "/shopapi/iteminfo/downOn",
+                        {
+                            id: item_id
+                        },
+                        info => {
+                            this.methods.loadFigure.call(this);
+                            this.$invoke("datalist", "loadData");
+                        },
+                        () => {
+                            this.hideLoading();
+                        }
+                    );
+                });
+            },
+            showAuthDetail(id) {
+                this.$goto("reback?id=" + id);
+            },
+            editAuth(id) {
+                this.$goto("create?id=" + id);
+            },
+            toggleType(t) {
+                this.type = t;
+                this.timeflag = ["上架", "下架", "申请"][parseInt(t)];
+                this.$invoke("datalist", "addFilter", "t", this.type);
+                this.$invoke("datalist", "loadData");
+            },
+            addAccount() {
+                this.$goto("create");
+            }
+        };
+    }
+</script>

@@ -1,0 +1,496 @@
+<style lang="less">
+.container-main {
+  .p1:first-child {
+    padding-top: 46rpx;
+    padding: 0;
+  }
+  .p1 {
+    background-color: #fff;
+    font-size: 30rpx;
+    padding: 28rpx 30rpx;
+    .label {
+      font-size: 32rpx;
+      width: 178rpx;
+      color: #282828;
+      font-size: 32rpx;
+    }
+    color: #999999;
+    &:first-child > .flex {
+      padding: 30rpx;
+    }
+
+    .title1 {
+      font-size: 32rpx;
+      color: #999999;
+    }
+    .title2 {
+      font-size: 32rpx;
+      color: #ff8000;
+      padding-top: 29rpx;
+    }
+    .p1-line {
+      width: 1px;
+      height: 90rpx;
+      background-color: #eeeeee;
+    }
+    .pl30 {
+      padding-left: 30rpx;
+    }
+  }
+}
+.pp1 {
+  padding-left: 30rpx;
+  background-color: #fff;
+  & > .flex {
+    padding: 30rpx 30rpx 30rpx 0;
+    font-size: 32rpx;
+    color: #282828;
+  }
+}
+.product-img {
+  width: 63rpx;
+  height: 63rpx;
+}
+.p2 {
+  background-color: #fff;
+  padding: 14rpx 30rpx;
+  font-size: 32rpx;
+  color: #282828;
+}
+.gt-img {
+  width: 15rpx;
+  height: 25rpx;
+  margin-left: 20rpx;
+  position: relative;
+  top: -2rpx;
+}
+.caption-title {
+  padding: 0;
+  font-size: 32rpx;
+  color: #282828;
+}
+.tags {
+  padding-top: 29rpx;
+  .tag {
+    color: #ff8000;
+    border-radius: 5rpx;
+    border: solid 1px #ff8000;
+    font-size: 28rpx;
+    display: inline-block;
+    margin-right: 30rpx;
+    margin-bottom:10rpx;
+    padding: 7rpx 22rpx;
+    position: relative;
+    .tag-close {
+      width: 29rpx;
+      height: 29rpx;
+      position: absolute;
+      right: -15rpx;
+      top: -10rpx;
+    }
+  }
+}
+.plast {
+  font-size: 32rpx;
+  color: #282828;
+  line-height: 48rpx;
+  padding: 30rpx;
+  background-color: #fff;
+  .img-area{
+    image{
+      width:100%;
+      margin-bottom:20rpx;
+    }
+  }
+}
+page {
+  background-color: #f4f4f4;
+}
+.box-footer {
+  padding: 30rpx;
+  .box-btn {
+    display: inline-block;
+    height: 56rpx;
+    line-height: 56rpx;
+    padding: 0 46rpx;
+    border: solid 1px #ff8000;
+    border-radius: 5rpx;
+    font-size: 30rpx;
+
+    margin-left: 30rpx;
+    color: #ff8000;
+  }
+  .box-btn-primary {
+    background-color: #ff8000;
+    color: #ffffff;
+  }
+}
+textarea {
+  height: 100rpx;
+  line-height: 48rpx;
+  display: block;
+  width: 100%;
+}
+.tag-placeholder {
+  font-size: 32rpx;
+}
+.input-price,
+.input-txt {
+  width: 100%;
+}
+.add-tag {
+  width: 86rpx;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 1;
+}
+.emptyicon{
+  width: 36rpx;
+  height: 36rpx;
+  vertical-align: middle;
+  margin-right:10rpx;
+}
+.empty-state{
+  color: #ff8000;
+  font-size: 28rpx;
+}
+.empty-state-price{
+  margin-left:10rpx;
+}
+.input-price {
+  display: inline-block;
+}
+.descinfo {
+  line-height: 48rpx;
+  font-size: 30rpx;
+  color: #999999;
+}
+.plast textarea {
+  font-size: 32rpx;
+  color: #282828;
+  line-height: 48rpx; 
+  z-index: 0;
+}
+.tip-msg {
+  color: #999999;
+  font-size: 30rpx;
+  line-height: 48rpx;
+  padding: 30rpx;
+  background-color: #fff;
+}
+.cover-img{
+  width: 63rpx;
+	height: 63rpx;
+}
+.add-tag-dialog-bg {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  opacity: 1;
+  z-index: 99999;
+  .add-tag-dialog-title {
+    font-size: 32rpx;
+    color: #282828;
+    margin-bottom: 41rpx;
+  }
+  .add-tag-dialog {
+    position: fixed;
+    background-color: #fff;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+  }
+  .add-tag-dialog-inner {
+    padding: 30rpx;
+  }
+  .add-tag-dialog-textarea {
+    display: block;
+    height: 150rpx;
+    font-size: 32rpx;
+    margin-bottom: 30rpx;
+  }
+  .add-tag-btn {
+    background-color: #ff8000;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    height: 100rpx;
+    font-size: 36rpx;
+    line-height: 100rpx;
+  }
+  
+}
+
+</style>
+<template lang="pug">
+view.container-main
+    view.p1
+        view.flex.border-b
+            view.label  产品名称
+            view.flex-con
+                input.input-txt(placeholder="产品名称（主标题）" value="{{item.title}}" @input="setField('title')")
+        view.flex.border-b
+            view.label  副标题
+            view.flex-con 
+                input.input-txt(placeholder="产品副标题"   value="{{item.profile}}" @input="setField('profile')")                                        
+    view.p1.border-b
+        view.flex
+            view.flex-con
+                view.title1 门市价(门店标价）
+                view.title2
+                    view.flex
+                        view ￥                    
+                        input.input-price(type="digit" value="{{item.market_price}}"  @input="setField('market_price')")
+            view.p1-line
+            view.flex-con.pl30
+                view.title1 折扣价
+                view.title2 
+                    view.flex
+                        view ￥                    
+                        input.input-price(type="digit" value="{{item.price}}" @input="setField('price')")
+    view.hr24
+    view.pp1
+        view.flex.border-b(@tap="showClasses")
+            view.flex-con  产品类别
+            block(wx:if="{{item.category_id}}")
+                view.fz28.text999 {{item.category}}
+            block(wx:else)
+                view
+                    image.emptyicon(src="/imgs/emptyicon.png")    
+                view.fz28.empty-state 未完善
+            view
+                image.gt-img(src='/imgs/gt.png')
+        
+        view.flex(@tap="showMainPic")
+            view.flex-con   产品主图  
+            block(wx:if="{{!item.cover}}")
+                view
+                    image.emptyicon(src="/imgs/emptyicon.png")
+                view.fz28.empty-state 未完善
+            view.fz28.empty-state(wx:else) 
+                image.cover-img(src="{{m1.absUrl(item.cover)}}")
+            view
+                image.gt-img(src='/imgs/gt.png')        
+    view.hr24
+    view.pp1
+        view.flex(@tap="showActivity")
+            view.flex-con  参与活动            
+            block(wx:if="{{item.group_num>0}}")
+                view.i.fz28.empty-state 拼团特惠{{item.group_num}}人团 
+                view.i.fz28.empty-state.empty-state-price ￥{{item.group_price}}
+            block(wx:else)
+                view
+                    image.emptyicon(src="/imgs/emptyicon.png")
+                view.fz28.empty-state 未完善
+            view
+                image.gt-img(src='/imgs/gt.png')
+
+    view.hr24
+    view.pp1.border-b
+        view.flex(@tap="showEditIntro")                          
+            view.flex-con  产品详情            
+            view.fz28.text999(wx:if="{{item.nodes && item.nodes.length}}")  已完善
+            block(wx:else)
+                view
+                    image.emptyicon(src="/imgs/emptyicon.png")
+                view.fz28.empty-state 未完善
+            view
+                image.gt-img(src='/imgs/gt.png')
+
+    view.p1.border-b 
+        view.caption-title  
+            view.flex
+                view.flex-con 产品标签
+                view.fz30.text999   最多5个            
+        view.tags
+            view.tag.add-tag(@tap="showAddTag") +
+            repeat(for="{{item.label}}" item="l" index="i")
+                view.tag {{l}}
+                    image.tag-close(src="/imgs/closegray2.png" @tap="rmTag({{i}})")            
+    
+    view.box-footer.text-right
+        //- view.box-btn.box-btn-outed 撤销申请
+        view.box-btn.box-btn-primary(@tap='submitData') 提交 
+
+view.add-tag-dialog-bg(@tap="closeTagDialog" wx:if="{{showTagDialog==true}}")
+        view.add-tag-dialog(@tap.stop="noop")
+            view.add-tag-dialog-inner
+                view.add-tag-dialog-title 填写领域标签或品牌属性，最多4个字哦~
+                textarea.add-tag-dialog-textarea(cursor-spacing="10" fixed="ture" @input="setTagValue" maxlength="40" placeholder-class="tag-placeholder" placeholder="例：欧莱雅（美发的产品品牌）")
+            button.add-tag-btn(type='default' @tap="doAddTag") 提交标签
+</template>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+import m1 from '../../../wxs/common.wxs';
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "产品详情"
+  };
+  data = {
+    item: {
+      label:[]
+    },
+    nodes:[],
+    showTagDialog: false
+  };
+  mixins = [baseMixin];
+  wxs = {
+    m1
+  };
+  onLoad(options) {
+    let id = options.id;
+    this.id = id;
+    if (id) {
+      // for edit
+      this.showLoading();
+      this.$get(
+        "/shopapi/iteminfo/site?nodes=1",
+        { id },
+        info => {
+          if (!info.label) {
+            info.label = [];
+          }         
+          this.item = info;
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
+    }
+  }
+  methods = {
+    submitData(){
+      if(!this.item.title){
+        this.$alert('产品名称不能为空')
+        return
+      }
+      if(!this.item.profile){
+        this.$alert('产品副标题不能为空')
+        return
+      }
+      
+      if(!this.item.market_price){
+        this.$alert('门市价(门店标价)不能为空')
+        return
+      }
+      if(!this.item.price){
+        this.$alert('折扣价不能为空')
+        return
+      }
+      if(parseInt(this.item.price) > parseInt(this.item.market_price)){
+        this.$alert('折扣价不能大于门市价');
+        return
+      }
+      if(this.item.group_price && parseInt(this.item.group_price) > parseInt(this.item.price)){
+        this.$alert('拼团价不能大于折扣价');
+        return
+      }
+      if(!this.item.category_id){
+        this.$alert('请选择产品类别')        
+        return
+      }
+      if(!this.item.cover){
+        this.$alert('请设置产品主图')
+        return
+      }
+      this.showLoading()
+      this.$post('/shopapi/iteminfo/sav',this.item,info=>{
+        this.$alert('提交成功,您可以前往“待审核”页面继续编辑,并决定是否上架。',()=>{
+          if(!this.id){
+            this.$noticePage('refreshState')
+          }
+          this.$back()
+        })
+      },()=>{
+        this.hideLoading()
+      })
+
+    }, 
+    setIntroNodes({nodes}){
+      this.item.nodes = nodes
+    },
+    setCategoryId({ category_id, parent_idx,title }) {
+      this.item.category_id = category_id;
+      this.item.parent_idx = parent_idx;
+      console.log(title);
+      this.item.category = title;
+    },
+    getIntroNodes(){
+      return this.item.nodes || []
+    },
+    showEditIntro(){
+      this.$goto('editdetail')
+    },
+    showClasses() {
+      this.$goto(
+        "classes?cid=" +
+          (this.item.category_id || 0) +
+          "&pid=" +
+          (this.item.parent_idx || "")
+      );
+    },
+    setCover({ _cover }) {
+      this.item.cover = _cover;
+    },
+    setGroupInfo({group_num,group_price,is_valid}) {
+      this.item.group_num = group_num
+      this.item.group_price = group_price
+      this.item.is_valid = is_valid
+    },
+    showMainPic() {
+      this.$goto("mainpic?cover=" + (this.item.cover || ""));
+    },
+    showActivity() {
+      if (this.item.group_num && this.item.group_price) {
+        let info = JSON.stringify({
+          group_num:this.item.group_num,
+          group_price:this.item.group_price,
+          is_valid:this.item.is_valid
+        });
+        this.$goto("group?info=" + encodeURIComponent(info));
+      } else {
+        this.$goto("group");
+      }
+    },
+    setTagValue(e) {
+      this.labelValue = e.detail.value.trim();
+    },
+    doAddTag() {
+      if (!this.labelValue) {
+        this.$alert("请填写标签名");
+        return;
+      }
+      if (this.labelValue.length > 4) {
+        this.$alert("标签名最多4个字");
+        return;
+      }
+      this.item.label.push(this.labelValue);
+      this.showTagDialog = false;
+    },
+    showAddTag() {
+      if (this.item.label.length >= 5) {
+        this.$alert("最多只能添加5个产品标签");
+        return;
+      }
+      this.showTagDialog = true;
+    },
+    setField(field, e) {
+      this.item[field] = e.detail.value.trim();
+    },
+    closeTagDialog() {
+      this.showTagDialog = false;
+    },
+    rmTag(idx) {
+      this.item.label.splice(idx);
+    },
+    noop() {},
+    
+  };
+}
+</script>

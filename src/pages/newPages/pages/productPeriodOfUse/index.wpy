@@ -1,0 +1,455 @@
+<template>
+    <view class="productPeriodOfUse">
+        <view class="t-setTime">
+            <view class="t-time">设置期限</view>
+            <view class="t-switch">
+                <switch checked="{{isTheTerm}}" @change="bindSetTimeSwitch"/>
+            </view>
+        </view>
+
+        <view wx:if="{{isTheTerm}}" class="azm-days">
+            <view class="t-timeTitle flexBox">
+                <view class="t-begin flexBox-item fb-8">开始日期</view>
+                <view class="flexBox-item fb-8"></view>
+                <view class="t-over flexBox-item fb-8">结束日期</view>
+            </view>
+            <view class="t-day">共 {{days}} 天</view>
+            <view class="t-date flexBox">
+                <view class="t-beginTime flexBox-item fb-8">
+                    <picker mode="date" value="{{start_date}}" start="{{limit_start_date}}" end="{{limit_end_date}}"
+                            @change="bindDateChange('start_date')">
+                        <text>{{start_date}}</text>
+                    </picker>
+                </view>
+                <view class="flexBox-item fb-8"></view>
+                <view class="t-overTime flexBox-item fb-8">
+                    <picker mode="date" value="{{end_date}}" start="{{start_date}}"
+                            @change="bindDateChange('end_date')">
+                        <text>{{end_date}}</text>
+                    </picker>
+                </view>
+            </view>
+            <view class="t-exceptDate flexBox">
+                <view class="t-except flexBox-item">期限说明</view>
+                <view class="t-input flexBox-item fb-all">
+                    <input placeholder="例如法定节假日不能使用" value="{{note}}" @input="bindNoteChang"/>
+                </view>
+            </view>
+        </view>
+        <!--使用时间-->
+        <view class="hot-tags-wrap">
+            <view class="flex hot-title">
+                <view class="title-txt">使用时间</view>
+            </view>
+            <view class="flex picker-titles">
+                <view>开始时间</view>
+                <view>结束时间 </view>
+            </view>
+            <view class="flexBox">
+                <view class="flexBox-item fb-12">
+                    <picker-view class="timepicker-wrap" value="{{start_time}}" @change="bindTimeChang('start_time')">
+                        <picker-view-column>
+                            <view class="picker-inner-view" wx:for="{{24}}" wx:key="{{index}}" wx:key="{{index}}">
+                                <block wx:if="{{item < 10}}">{{'0' + item}}</block>
+                                <block wx:else>{{item}}</block>
+                            </view>
+                        </picker-view-column>
+                        <picker-view-column>
+                            <view class="picker-inner-view" wx:for="{{60}}" wx:key="{{index}}" wx:key="{{index}}">
+                                <block wx:if="{{item < 10}}">{{'0' + item}}</block>
+                                <block wx:else>{{item}}</block>
+                            </view>
+                        </picker-view-column>
+                    </picker-view>
+                </view>
+                <view class="flexBox-item fb-12">
+                    <picker-view class="timepicker-wrap" value="{{end_time}}" @change="bindTimeChang('end_time')"
+                                 indicator-class="timepicker">
+                        <picker-view-column>
+                            <view class="picker-inner-view" wx:for="{{24}}" wx:key="{{index}}" wx:key="{{index}}">
+                                <block wx:if="{{item < 10}}">{{'0' + item}}</block>
+                                <block wx:else>{{item}}</block>
+                            </view>
+                        </picker-view-column>
+                        <picker-view-column>
+                            <view class="picker-inner-view" wx:for="{{60}}" wx:key="{{index}}" wx:key="{{index}}">
+                                <block wx:if="{{item < 10}}">{{'0' + item}}</block>
+                                <block wx:else>{{item}}</block>
+                            </view>
+                        </picker-view-column>
+                    </picker-view>
+                </view>
+            </view>
+        </view>
+
+        <view class="footer-area">
+            <view class="flexBox">
+                <view class="flexBox-item fb-12 left">
+                    <button class="azm-btn" plain="true" hover-class="none" @tap="bindCancelBtn">取消</button>
+                </view>
+                <view class="flexBox-item fb-12 right">
+                    <button class="azm-btn" plain="true" hover-class="none" @tap="binSubmit">确认</button>
+                </view>
+            </view>
+        </view>
+    </view>
+    <toast></toast>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    import toast from "../../../../components/toast";
+    import popup from "../../../../components/popup";
+    import c from "../../../../wxs/common.wxs";
+    const appPage = new utilPage({
+        data: {
+            text: "Page productPeriodOfUse",
+            hasMoreData: false,//是否有更多
+            start_time: [10, 0],
+            end_time: [22, 0],
+            start_date: '',
+            limit_start_date: '',
+            limit_end_date: '',
+            end_date: '',
+            days: 365,
+            note: '',
+            isTheTerm: 0
+        },
+        onLoad (options){
+            this.loadCb();
+            let that = this,
+                productManage = that.$parent.globalData.productManage,
+                id = productManage.id,
+                period_of_use = productManage.period_of_use || {},
+                start_date = period_of_use.start_date || this.$azmUtil.date_formate(new Date(), 'YYYY-MM-DD'),
+                end_date = this.$azmUtil.formatTime(start_date, {Y: 1, spacer: '-'}, 'YYYY-MM-DD'),
+                start_time = null,
+                end_time = null,
+                limit_end_date = this.$azmUtil.formatTime(start_date, {M: 6, spacer: '-'}, 'YYYY-MM-DD'),
+                isTheTerm = period_of_use.isTheTerm || 0;
+            if (isTheTerm) {
+                end_date = end_date || period_of_use.end_date;
+            }
+            if (period_of_use.start_time) {
+                start_time = period_of_use.start_time.split(':');
+            }
+            if (period_of_use.end_time) {
+                end_time = period_of_use.end_time.split(':');
+            }
+            this.start_date = start_date;
+            this.end_date = end_date;
+            this.isTheTerm = isTheTerm;
+            if (start_time) {
+                this.start_time = start_time;
+            }
+            if (end_time) {
+                this.end_time = end_time;
+            }
+            this.limit_start_date = start_date;
+            this.limit_end_date = limit_end_date;
+            this.days = this.$azmUtil.date_range(start_date, end_date, 'DD').length;
+        },
+        onShow(){
+            if (this.data.isShow && this.data.isRefresh) {
+                this.loadCb()
+            }
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        components = {
+            toast,
+            popup
+        };
+        config = {
+            navigationBarTitleText: "使用期限",
+            navigationBarBackgroundColor: "#fff",
+            backgroundColor: "#fff",
+            navigationBarTextStyle: "black",
+            backgroundTextStyle: "dark"
+        };
+        wxs = {
+            c
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            let that = this,
+                options = that.data.options,
+                productManage = that.$parent.globalData.productManage,
+                intro = productManage.intro || [],
+                label = productManage.label || [],
+                period_of_use = productManage.period_of_use || {},
+                item_brand = productManage.item_brand || [],
+                taboo_crowd = productManage.taboo_crowd || '',
+                other_instructions = productManage.other_instructions || '';
+            that.intro = intro;
+            that.label = this.$azmUtil.unique(label);
+            that.period_of_use = period_of_use;
+            that.item_brand = item_brand;
+            that.taboo_crowd = taboo_crowd;
+            that.other_instructions = other_instructions;
+        }
+
+        methods = {
+            bindSetTimeSwitch(e){
+                this.isTheTerm = e.detail.value ? 1 : 0;
+            },
+            bindDateChange(key, e){
+                let value = e.detail.value,
+                    start_date = this.data.start_date,
+                    end_date = this.data.end_date;
+                this[key] = value;
+                if (key === 'start_date') {
+                    start_date = value
+                } else if (key === 'end_date') {
+                    end_date = value
+                }
+                this.days = this.$azmUtil.date_range(start_date, end_date, 'DD').length;
+            },
+            bindTimeChang(key, e){
+                let value = e.detail.value;
+                this[key] = value;
+            },
+            bindNoteChang(e){
+                let value = e.detail.value;
+                this.note = value;
+            },
+            binSubmit(){
+                let that = this,
+                    _this2 = that.__getPrevPage(),
+                    isTheTerm = this.data.isTheTerm,
+                    start_date = this.data.start_date,
+                    end_date = this.data.end_date,
+                    start_time = this.data.start_time,
+                    end_time = this.data.end_time,
+                    note = this.data.note;
+                if (isTheTerm) {
+                    end_date = this.$azmUtil.formatTime(start_date, {
+                        Y: 1,
+                        spacer: '-'
+                    }, 'YYYY-MM-DD');
+                }
+                start_time = `${start_time[0] < 10 ? '0' + start_time[0] : start_time[0]}:${start_time[1] < 10 ? '0' + start_time[1] : start_time[1]}`;
+                end_time = `${end_time[0] < 10 ? '0' + end_time[0] : end_time[0]}:${end_time[1] < 10 ? '0' + end_time[1] : end_time[1]}`;
+                _this2.period_of_use = {
+                    isTheTerm,
+                    start_date,
+                    end_date,
+                    start_time,
+                    end_time,
+                    note
+                };
+                _this2.$apply();
+                that.$azmUtil.go(-1)
+            },
+            bindCancelBtn(){
+                this.$azmUtil.go(-1)
+            }
+        }
+    }
+</script>
+
+<style lang="less">
+    page {
+        box-sizing: border-box;
+    }
+
+    .productPeriodOfUse {
+        background-color: #f4f4f4;
+        box-sizing: border-box;
+        margin-bottom: 100*1rpx;
+        .azm-days {
+            margin-top: 24*1rpx;
+            padding: 30*1rpx;
+            background-color: #fff;
+            box-sizing: border-box;
+            .t-timeTitle {
+                display: flex;
+                justify-content: space-between;
+                font-size: 34*1rpx;
+                > view {
+                    text-align: center;
+                }
+            }
+            .t-day {
+                font-size: 30*1rpx;
+                margin-top: 15*1rpx;
+                text-align: center;
+            }
+            .t-date {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 20*1rpx;
+                margin-bottom: 36*1rpx;
+                color: #ff8000;
+                > view {
+                    text-align: center;
+                }
+            }
+            .t-exceptDate {
+                display: flex;
+                border-top: 2*1rpx solid #b7b7b7;
+                padding: 10*1rpx 0 0;
+            }
+
+            .t-exceptDate .t-except {
+                flex-basis: 150*1rpx;
+                font-size: 32*1rpx;
+            }
+
+            .t-exceptDate .t-input {
+                font-size: 32*1rpx;
+                border-radius: 10*1rpx;
+                border: 2*1rpx solid #999999;
+            }
+        }
+
+        .t-setTime {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 93*1rpx;
+            background-color: #fff;
+        }
+
+        .t-setTime .t-time {
+            font-size: 32*1rpx;
+            margin-left: 30*1rpx;
+        }
+
+        .wx-switch-input {
+            width: 42px !important;
+            height: 20px !important;
+        }
+
+        .wx-switch-input::before {
+            width: 41px !important;
+            height: 20px !important;
+        }
+
+        .wx-switch-input::after {
+            width: 18px !important;
+            height: 18px !important;
+        }
+
+        .t-setTime .t-switch {
+            margin-right: 30*1rpx;
+        }
+
+        .t-input input {
+            padding-left: 28*1rpx;
+            color: #999999;
+        }
+
+        .hot-tags-wrap {
+            margin-top: 24*1rpx;
+            padding: 50*1rpx 30*1rpx;
+            background-color: #fff;
+        }
+        .hot-title {
+            font-size: 32*1rpx;
+        }
+
+        .title-line {
+            width: 6*1rpx;
+            height: 23*1rpx;
+            background-color: #ff8000;
+            border-radius: 2*1rpx;
+            display: inline-block;
+            margin-right: 14*1rpx
+        }
+        .picker-titles {
+            padding: 45*1rpx 102*1rpx 56*1rpx;
+            text-align: center;
+            font-size: 30*1rpx;
+            color: #999999;
+            justify-content: space-between
+        }
+        .picker-flex {
+            justify-content: space-between
+        }
+        .timepicker-wrap {
+            width: 300*1rpx;
+            height: 400*1rpx;
+            display: inline-block
+        }
+        .timepicker,
+        .picker-inner-view {
+            text-align: center;
+            line-height: 80*1rpx;
+            font-size: 40*1rpx;
+            height: 80*1rpx
+        }
+
+        .footer-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: #fff;
+            border-top: 2*1rpx solid #f4f4f4;
+            height: 98*1rpx;
+            line-height: 98*1rpx;
+            .azm-btn {
+                border: none;
+                border-radius: 0;
+                height: inherit;
+                line-height: inherit;
+            }
+            .left {
+                .azm-btn {
+                    background-color: #fff;
+                    color: #ff8000;
+                }
+            }
+            .right {
+                .azm-btn {
+                    background-color: #ff8000;
+                    color: #fff;
+                }
+            }
+        }
+        .btn2 {
+            color: #ffffff;
+            background-color: #ff8000
+        }
+
+        .btn1 {
+            color: #ff8000;
+            border-top: solid 1px #ff8000;
+            background-color: transparent
+        }
+
+        .btn1,
+        .btn2 {
+            height: 100*1rpx;
+            display: inline-block;
+            font-size: 36*1rpx;
+            border-radius: 0;
+            line-height: 100*1rpx;
+            text-align: center;
+            flex: 1
+        }
+    }
+</style>
+ 

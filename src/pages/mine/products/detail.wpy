@@ -1,0 +1,260 @@
+<style lang="less">
+@import "../../../wxparse/wxParse.wxss";
+
+.container-main {
+  .group_price {
+    color: #ff8000;
+    font-size: 32rpx;
+    display: inline;
+  }
+  .p1:first-child {
+    padding-top: 46rpx;
+  }
+  .p1 {
+    background-color: #fff;
+    font-size: 30rpx;
+    padding: 30rpx;
+    .label {
+      font-size: 32rpx;
+      width: 178rpx;
+      color: #282828;
+      font-size: 32rpx;
+    }
+    color: #999999;
+    & > .flex {
+      padding-bottom: 30rpx;
+    }
+    & > .flex:last-child {
+      padding-bottom: 0;
+    }
+    .title1 {
+      font-size: 32rpx;
+      color: #282828;
+    }
+    .title2 {
+      font-size: 32rpx;
+      color: #ff8000;
+      padding-top: 29rpx;
+    }
+    .p1-line {
+      width: 1px;
+      height: 90rpx;
+      background-color: #eeeeee;
+    }
+    .pl30 {
+      padding-left: 30rpx;
+    }
+  }
+}
+.product-img {
+  width: 63rpx;
+  height: 63rpx;
+}
+.p2 {
+  background-color: #fff;
+  padding: 14rpx 30rpx;
+  font-size: 32rpx;
+  color: #282828;
+}
+.gt-img {
+  width: 15rpx;
+  height: 25rpx;
+  margin-left: 20rpx;
+}
+.caption-title {
+  padding: 0;
+  font-size: 32rpx;
+  color: #282828;
+}
+.tags {
+  padding-top: 29rpx;
+  .tag {
+    color: #ff8000;
+    height: 41rpx;
+    border-radius: 5rpx;
+    border: solid 1px #ff8000;
+    line-height: 41rpx;
+    font-size: 28rpx;
+    display: inline-block;
+    margin-bottom:20rpx;
+    margin-right: 30rpx;
+    padding: 0 22rpx;
+  }
+}
+.plast {
+  font-size: 32rpx;
+  color: #282828;
+  line-height: 48rpx;
+  padding: 30rpx;
+  padding-top: 10rpx;
+  background-color: #fff;
+}
+page {
+  background-color: #f4f4f4;
+}
+.box-footer {
+  padding: 30rpx;
+  .box-btn {
+    display: inline-block;
+    height: 56rpx;
+    line-height: 56rpx;
+    padding: 0 46rpx;
+    border: solid 1px #ff8000;
+    border-radius: 5rpx;
+    font-size: 30rpx;
+    margin-left: 30rpx;
+    color: #ff8000;
+  }
+  .box-btn-primary {
+    background-color: #ff8000;
+    color: #ffffff;
+  }
+}
+.wxParse-img {
+    width:100%;
+    margin-bottom: 20rpx;
+}
+</style>
+<template lang="pug">
+view.container-main
+    view.p1.border-b
+        view.flex
+            view.label  产品名称
+            view.flex-con {{info.title}}
+        view.flex
+            view.label  副标题
+            view.flex-con {{info.profile||'--'}}
+        view.flex(wx:if="{{info.group_price}}")
+            view.label  参与活动
+            view.flex-con  拼团特惠  {{info.num}}人团  拼团价
+                view.group_price ￥{{info.group_price}}
+        view.flex
+            view.label  产品类别
+            view.flex-con  {{info.category}}
+    view.p1.border-b
+        view.flex
+            view.flex-con
+                view.title1 门市价(门店标价）
+                view.title2 ￥{{info.market_price}}
+            view.p1-line
+            view.flex-con.pl30
+                view.title1 折扣价
+                view.title2 ￥{{info.price}}
+    view.p1.border-b
+        view.flex
+            view.label 产品ID
+            view.flex-con {{info.item_no}}
+        view.flex
+            view.label  产品状态
+            view.flex-con {{m1.cashStatus(info.auth_status,info.status,info.is_display)}}
+        view.flex
+            view.label  {{info.timeflag}}时间
+            view.flex-con {{info.create_time}}
+    view.p2.flex(@tap="showPicDetail")
+        view.flex-con   产品主图
+        view
+            image.product-img(src="{{info.cover}}")
+        view
+            image.gt-img(src='/imgs/gt.png')
+    view.hr24
+    view.p1.border-b(wx:if="{{info.label && info.label.length}}") 
+        view.caption-title  产品标签
+        view.tags
+            repeat(for="{{info.label}}" item="item")
+                view.tag {{item}}
+    
+    view.plast
+        html2wxml(:parserName="name" :parserContent.sync="textContent")
+    view.box-footer.text-right(wx:if="{{info.is_display==1}}")
+        view.box-btn.box-btn-outed(wx:if="{{info.auth_status==0}}")(@tap="revokeAuth") 撤销申请
+        view.box-btn.box-btn-primary(@tap="editAuth") 编辑 
+
+</template>
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+import html2wxml from "../../../components/html2wxml";
+import m1 from "../../../wxs/common.wxs";
+
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "产品详情"
+  };
+  mixins = [baseMixin];
+  data = {
+    name: "myHtmlParserKiner",
+    textContent: "",
+    info: {}
+  };
+  wxs = {
+    m1
+  };
+  components = {
+    html2wxml
+  };
+  onLoad(options) {
+    let id = options.id || 0;
+    this.id = id;
+    this.showLoading();
+    this.$get(
+      "/shopapi/iteminfo/site",
+      { id },
+      info => {
+        this.textContent = info.intro;
+        info.cover = this.absUrl(info.cover);
+        this.info = info;
+        if (this.info.auth_status == 0) {
+          this.timeflag = "申请";
+        } else if (this.status == 1) {
+          this.timeflag = "上架";
+        } else {
+          this.timeflag = "下架";
+        }
+        this.$apply();
+        this.$invoke("html2wxml", "htmlParserNotice");
+      },
+      () => {
+        this.hideLoading();
+      }
+    );
+  }
+  methods = {
+    revokeAuth() {
+      //撤销
+      let id = this.id;
+      this.confirm("确定撤销申请吗？", () => {
+        this.showLoading();
+        this.$get(
+          "/shopapi/iteminfo/revokeAuth",
+          {
+            id
+          },
+          info => {
+            this.$noticePage('refreshState')
+            this.$back()
+          },
+          () => {
+            this.hideLoading();
+          }
+        );
+      });
+    },
+
+    editAuth() {
+      this.$goto("create?id=" + this.id);
+    },
+    showPicDetail() {
+      if (this.info) {
+        this.$goto("pics?url=" + encodeURIComponent(this.info.cover));
+      }
+    },
+    wxParseImgTap(e) {
+      wx.previewImage({
+        current: e.currentTarget.dataset.idx, // 当前显示图片的http链接
+        urls: [e.currentTarget.dataset.src]
+      });
+    }
+  };
+}
+</script>

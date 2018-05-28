@@ -1,0 +1,115 @@
+<template>
+    <view class="form-area">
+        <view class="container1">
+            <textarea class="textarea" placeholder="请在这里输入文字~" value="{{content}}" @input="setField"/>
+            <button class="btn-primary" type="default" @tap="doSubmit" hover-class="tapmode">提 交</button>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    const appPage = new utilPage({
+        data: {
+            text: "Page editText",
+            hasMoreData: false,//是否有更多
+            content: "",
+            idx: -1
+        },
+        onLoad (options){
+            this.loadCb();
+        },
+        onShow(){
+
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "文案输入"
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            let options = this.data.options,
+                idx = parseInt(options.idx),
+                previousPage = this.__getPrevPage(),
+                node = previousPage.data.intro[idx];
+            this.idx = idx !== undefined ? parseInt(idx) : -1;
+            if (idx !== -1 && node.type === 'text') {
+                this.content = previousPage.data.intro[idx].content;
+                this.$apply();
+            }
+        }
+
+        methods = {
+            setField(e) {
+                this.content = e.detail.value.trim();
+            },
+            doSubmit() {
+                let content = this.data.content,
+                    idx = this.data.idx;
+                if (!content) {
+                    return this.$alert("请输入文字");
+                }
+                let _this2 = this.__getPrevPage();
+                if (idx === -1) {
+                    _this2.intro.push({type: 'text', content});
+                } else {
+                    _this2.intro[idx] = {type: 'text', content};
+                }
+                this.$back();
+            }
+        };
+    }
+</script>
+
+<style lang="less">
+    .btn-primary {
+        margin-top: 101*1rpx;
+    }
+
+    .textarea {
+        background-color: #fff;
+    }
+
+    page {
+        background-color: #f4f4f4;
+    }
+
+    .pic-item {
+        width: 216*1rpx;
+        height: 216*1rpx;
+    }
+
+    button.fixed-btn {
+        position: fixed;
+        left: 0;
+        height: 100*1rpx;
+        line-height: 98*1rpx;
+        right: 0;
+        bottom: 0;
+    }
+
+    .pic-list {
+        padding-top: 35*1rpx;
+    }
+</style>
+

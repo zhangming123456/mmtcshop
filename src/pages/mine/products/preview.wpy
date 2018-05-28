@@ -1,0 +1,130 @@
+<style lang="less">
+.container-main {
+  .footer-area-before {
+    height: 116rpx;
+  }
+  .footer-area {
+    background-color: #fff;
+    position: fixed;
+    color: #ff8000;
+    left: 0;
+    font-size: 28rpx;
+    box-sizing: border-box;
+    height: 116rpx;
+    right: 0;
+    bottom: 0;
+    image {
+      position: relative;
+      top: -2rpx;
+    }
+    padding: 0 30rpx;
+    padding-top: 30rpx;
+    button {
+      display: inline-block;
+      font-size: 28rpx;
+      width: 150rpx;
+    }
+    .preview-btn {
+      background-color: transparent;
+      border-radius: 5rpx;
+      border: solid 1px #ff8000;
+      color: #ff8000;
+      height: 56rpx;
+      padding: 0;
+      line-height: 54rpx;
+      text-align: center;
+      margin-right: 20rpx;
+    }
+    .sure-btn {
+      padding: 0;
+      background-color: #ff8000;
+      border-radius: 5rpx;
+      border: solid 1px #ff8000;
+      height: 56rpx;
+      color: white;
+      line-height: 54rpx;
+      text-align: center;
+    }
+  }
+  .empty-area {
+    text-align: center;
+    padding-top: 185rpx;
+    .empty-area-text {
+      padding-top: 39rpx;
+      font-size: 28rpx;
+      color: #999999;
+      view {
+        padding-top: 20rpx;
+      }
+    }
+  }
+  .remove-btn {
+    width: 35rpx;
+    height: 35rpx;
+    position: absolute;
+    right: -14rpx;
+    top: -14rpx;
+  }
+  .edit-img {
+    width: 100%;
+    height: 448rpx;
+    border-radius: 5rpx;
+    margin-bottom: 34rpx;
+    margin-top: 34rpx;
+  }
+  .edit-block {
+    position: relative;    
+  }
+  .text-block {
+    font-size: 30rpx;
+    color: #282828;
+    line-height: 1.5em;
+  }
+  .edit-area {
+    padding:42rpx 30rpx 30rpx 30rpx;
+  }
+}
+.pen-img {
+  width: 191rpx;
+  height: 190rpx;
+}
+</style> 
+<template lang="pug">
+view.container-main         
+    view.empty-area(wx:if="{{!contents.length}}")
+        image.pen-img(src="/imgs/pen.png")
+        view.empty-area-text  您还没有添加任何内容
+    view.edit-area(wx:else)
+        repeat(for="{{contents}}")
+            view.edit-block.text-block(wx:if="{{item.type=='text'}}") {{item.content}}                
+            view.edit-block(wx:else)
+                image.edit-img(mode="aspectFill" style="{{item.height?'height:'+ item.height +'rpx':''}}" src="{{m1.absUrl(item.content)}}")
+</template>
+
+<script>
+import wepy from "wepy";
+import m1 from "../../../wxs/common.wxs";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "详情介绍"
+  };
+  data = {
+    contents: [
+    ]
+  };
+  wxs = {
+    m1
+  };
+  onLoad(options) {
+    let contents = options.nodes || "";
+    if (contents) {
+      try {
+        contents = decodeURIComponent(contents);
+        contents = JSON.parse(contents);
+        this.contents = contents;
+        this.$apply();
+      } catch (e) {}
+    }
+  }
+}
+</script>

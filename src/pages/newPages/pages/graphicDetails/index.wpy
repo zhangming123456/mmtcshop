@@ -1,0 +1,319 @@
+<template>
+    <view class="graphicDetails">
+        <view class="container-main">
+            <view class="empty-area" wx:if="{{!intro.length}}">
+                <image class="pen-img" src="/imgs/pen.png"/>
+                <view class="empty-area-text"> 您还没有添加任何内容
+                    <view>点击下方工具栏添加</view>
+                </view>
+            </view>
+            <view class="edit-area" wx:else>
+                <block wx:for="{{intro}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                    <view class="edit-block text-block" wx:if="{{item.type=='text'}}">
+                        <view @tap="AddEditText({{index}})">{{item.content}}</view>
+                        <image class="remove-btn" src="/imgs/closegray.png" @tap="removeImg({{index}})"/>
+                    </view>
+                    <view class="edit-block" wx:else>
+                        <image class="edit-img" mode="aspectFill"
+                               style="{{item.height?'height:'+ item.height +'rpx':''}}"
+                               src="{{imageUrl + item.content}}" @tap="uploadImage({{index}})"/>
+                        <image class="remove-btn" src="/imgs/closegray.png" @tap="removeImg({{index}})"/>
+                    </view>
+                </block>
+            </view>
+            <view class="footer-area-before"/>
+            <view class="footer-area">
+                <view class="flex">
+                    <view @tap="AddEditText(-1)">
+                        <view class="ib">
+                            <image src="/imgs/words.png" style="width:32rpx;height:32rpx;margin-right:13rpx;"></image>
+                        </view>
+                        <view class="ib footer-text" style="margin-right:50rpx;">文案</view>
+                    </view>
+                    <view @tap="uploadImage">
+                        <view class="ib">
+                            <image src="/imgs/pic.png" style="width:39rpx;height:35rpx;margin-right:17rpx;"/>
+                        </view>
+                        <view class="ib footer-text">图片</view>
+                    </view>
+                    <view class="flex-con text-right">
+                        <button class="preview-btn" @tap="preview" hover-class="tapmode">预览</button>
+                        <button class="sure-btn" @tap="dosure" hover-class="tapmode">确定</button>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <toast></toast>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    import toast from "../../../../components/toast";
+    import popup from "../../../../components/popup";
+    import c from "../../../../wxs/common.wxs";
+    const appPage = new utilPage({
+        data: {
+            text: "Page productItemBrand",
+            hasMoreData: false,//是否有更多
+            intro: []
+        },
+        onLoad (options){
+            this.loadCb();
+        },
+        onShow(){
+            if (this.data.isShow && this.data.isRefresh) {
+
+            }
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+        onReachBottom(){
+            let that = this
+        },
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        components = {
+            toast,
+            popup
+        };
+        config = {
+            navigationBarTitleText: "详情介绍",
+            navigationBarBackgroundColor: "#fff",
+            backgroundColor: "#fff",
+            navigationBarTextStyle: "black",
+            backgroundTextStyle: "dark"
+        };
+        wxs = {
+            c
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            let that = this,
+                options = that.data.options,
+                productManage = that.$parent.globalData.productManage,
+                intro = productManage.intro;
+            this.intro = intro || [];
+        }
+
+        methods = {
+            getTextContent({idx}) {
+                return this.intro[idx].content;
+            },
+            setTextContent({idx, content}) {
+                if (idx > -1) {
+                    this.intro[idx].content = content;
+                } else {
+                    this.intro.push({
+                        type: "text",
+                        content: content
+                    });
+                }
+            },
+            AddEditText(idx) {
+                this.$azmUtil.go('/pages/product2/pages/editText/index', {data: {idx}})
+            },
+            setField(idx, e) {
+                this.intro[idx].content = e.detail.value.trim();
+            },
+            removeImg(idx) {
+                this.intro.splice(idx, 1);
+                this.$apply();
+            },
+            preview() {
+                this.$parent.globalData.preview = this.data.intro;
+                this.$azmUtil.go('/pages/product2/pages/preview/index');
+            },
+            uploadImage(idx) {
+                wx.chooseImage({
+                    count: 1, // 默认9
+                    sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+                    success: res => {
+                        // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+                        var tempFilePaths = res.tempFilePaths;
+                        wx.getImageInfo({
+                            src: tempFilePaths[0],
+                            success: sizeinfo => {
+                                this.showLoading("正在上传...");
+                                wx.uploadFile({
+                                    url: this.absUrl("/services/uploader/uploadImg"), //仅为示例，非真实的接口地址
+                                    filePath: tempFilePaths[0],
+                                    name: "_file_",
+                                    complete: () => {
+                                        this.hideLoading();
+                                    },
+                                    success: res => {
+                                        var data = res.data;
+                                        if (typeof data == "string") {
+                                            try {
+                                                data = JSON.parse(data);
+                                            } catch (e) {
+                                            }
+                                        }
+                                        if (data.status == 1) {
+                                            let height = parseInt(
+                                                sizeinfo.height / sizeinfo.width * 689
+                                            );
+                                            if (typeof idx === "number") {
+                                                for (let i = 0; i < this.intro.length; i++) {
+                                                    if (i == idx) {
+                                                        this.intro[i] = {
+                                                            type: "img",
+                                                            content: data.info,
+                                                            height: height
+                                                        };
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                this.intro.push({
+                                                    type: "img",
+                                                    content: data.info,
+                                                    height: height
+                                                });
+                                            }
+                                            this.$apply();
+                                        } else {
+                                            this.$alert(data.info);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            },
+            dosure(){
+                let _this2 = this.__getPrevPage();
+                _this2.intro = this.data.intro;
+                _this2.$apply();
+                this.$azmUtil.go(-1)
+            }
+        }
+    }
+</script>
+
+<style lang="less">
+    page {
+        background-color: #f4f4f4;
+    }
+
+    .graphicDetails {
+        box-sizing: border-box;
+        margin-bottom: 100*1rpx;
+        .container-main {
+            .footer-area-before {
+                height: 116*1rpx;
+            }
+            .footer-area {
+                background-color: #fff;
+                position: fixed;
+                color: #ff8000;
+                z-index: 1000;
+                left: 0;
+                font-size: 28*1rpx;
+                box-sizing: border-box;
+                height: 116*1rpx;
+                right: 0;
+                bottom: 0;
+                image {
+                    position: relative;
+                    top: -2*1rpx;
+                }
+                padding: 0 30*1rpx;
+                padding-top: 30*1rpx;
+                button {
+                    display: inline-block;
+                    font-size: 28*1rpx;
+                    width: 150*1rpx;
+                }
+                .preview-btn {
+                    background-color: transparent;
+                    border-radius: 5*1rpx;
+                    border: solid 1px #ff8000;
+                    color: #ff8000;
+                    height: 56*1rpx;
+                    padding: 0;
+                    line-height: 54*1rpx;
+                    text-align: center;
+                    margin-right: 20*1rpx;
+                }
+                .sure-btn {
+                    padding: 0;
+                    background-color: #ff8000;
+                    border-radius: 5*1rpx;
+                    border: solid 1px #ff8000;
+                    height: 56*1rpx;
+                    color: white;
+                    line-height: 54*1rpx;
+                    text-align: center;
+                }
+            }
+            .empty-area {
+                text-align: center;
+                padding-top: 185*1rpx;
+                .empty-area-text {
+                    padding-top: 39*1rpx;
+                    font-size: 28*1rpx;
+                    color: #999999;
+                    view {
+                        padding-top: 20*1rpx;
+                    }
+                }
+            }
+            .remove-btn {
+                width: 35*1rpx;
+                height: 35*1rpx;
+                position: absolute;
+                right: -14*1rpx;
+                top: -14*1rpx;
+            }
+            .edit-img {
+                width: 100%;
+                height: 448*1rpx;
+                border-radius: 5*1rpx;
+            }
+            .edit-block {
+                position: relative;
+                margin-bottom: 47*1rpx;
+            }
+            .text-block {
+                padding: 26*1rpx 31*1rpx;
+                background-color: #ffffff;
+                textarea {
+                    font-size: 30*1rpx;
+                    color: #282828;
+                    line-height: 1.5em;
+                    min-height: 100*1rpx;
+                }
+                view {
+                    font-size: 30*1rpx;
+                    color: #282828;
+                    line-height: 1.4em;
+                }
+            }
+            .edit-area {
+                padding: 30*1rpx;
+            }
+        }
+        .pen-img {
+            width: 191*1rpx;
+            height: 190*1rpx;
+        }
+    }
+</style>
+ 

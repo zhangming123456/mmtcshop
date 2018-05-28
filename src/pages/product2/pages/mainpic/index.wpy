@@ -1,0 +1,116 @@
+<template>
+    <view class="container-main">
+        <view class="pic-item">
+            <image class="pic-item-img" src="/imgs/updatepic.png" bindtap="pickImg"/>
+        </view>
+        <block wx:if="{{cover && cover.length}}">
+            <view class="pic-item" wx:for="{{cover}}" wx:key="{{index}}">
+                <image class="pic-item-img" src="{{imageUrl + item}}" mode="aspectFill"/>
+                <image class="pic-item-close" src="/imgs/closegray.png" bindtap="removePic(index)"/>
+            </view>
+        </block>
+    </view>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
+    import c from "../../../../wxs/common.wxs";
+    const appPage = new utilPage({
+        data: {
+            text: "Page mainpic",
+            hasMoreData: false,//是否有更多
+            cover: []
+        },
+        onLoad (options){
+            this.loadCb()
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "产品主图",
+        };
+        wxs = {
+            c
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            let that = this,
+                options = that.data.options;
+            that.cover = that.$parent.globalData.productManage.cover || [];
+        }
+
+        saveImg () {
+            let that = this;
+            that.$parent.globalData.productManage.cover = that.data.cover;
+        }
+
+
+        methods = {
+            pickImg() {
+                let that = this;
+                that.ImageUpload(9).then(
+                    res => {
+                        that.saveImg();
+                    }
+                );
+            },
+            removePic(index){
+                this.cover.splice(index, 1);
+                this.saveImg()
+            }
+        }
+    }
+</script>
+
+<style lang="less">
+    page {
+        background: #fff;
+    }
+
+    .container-main {
+        padding: 16*1rpx 30*1rpx;
+        margin-right: -5*1rpx;
+        .pic-item {
+            width: 168*1rpx;
+            height: 167*1rpx;
+            position: relative;
+            background-color: #eee;
+            margin-right: 5*1rpx;
+            margin-bottom: 8*1rpx;
+            float: left;
+            .pic-item-img {
+                width: 168*1rpx;
+                height: 167*1rpx;
+                background-color: #eee;
+            }
+            .pic-item-close {
+                width: 29*1rpx;
+                height: 29*1rpx;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+        }
+    }
+</style>
+ 
