@@ -6,3 +6,5 @@ dist
 .svn
 .idea
 npm-debug.log
+.wepycache
+package-lock.json
