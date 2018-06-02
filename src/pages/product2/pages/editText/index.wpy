@@ -48,14 +48,15 @@
         mixins = [baseMixin];
 
         loadCb () {
-            let options = this.data.options,
+            let that = this,
+                options = this.data.options,
                 idx = parseInt(options.idx),
-                previousPage = this.__getPrevPage(),
-                node = previousPage.data.intro[idx];
-            this.idx = idx !== undefined ? parseInt(idx) : -1;
+                _this2 = that.__getPrevPage(),
+                node = _this2.data.nodes[idx];
+            that.idx = idx !== undefined ? parseInt(idx) : -1;
             if (idx !== -1 && node.type === 'text') {
-                this.content = previousPage.data.intro[idx].content;
-                this.$apply();
+                that.content = _this2.data.nodes[idx].content;
+                that.$apply();
             }
         }
 
@@ -64,17 +65,19 @@
                 this.content = e.detail.value.trim();
             },
             doSubmit() {
-                let content = this.data.content,
+                let that = this,
+                    content = this.data.content,
                     idx = this.data.idx;
                 if (!content) {
                     return this.$alert("请输入文字");
                 }
-                let _this2 = this.__getPrevPage();
+                let _this2 = that.__getPrevPage();
                 if (idx === -1) {
-                    _this2.intro.push({type: 'text', content});
+                    _this2.nodes.push({type: 'text', content});
                 } else {
-                    _this2.intro[idx] = {type: 'text', content};
+                    _this2.nodes[idx] = {type: 'text', content};
                 }
+                _this2.$apply();
                 this.$back();
             }
         };

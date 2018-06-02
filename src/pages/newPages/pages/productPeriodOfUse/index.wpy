@@ -163,10 +163,8 @@
         loadCb () {
             let that = this,
                 options = that.data.options,
-                PrevPage = that.__getPrevPage(),
-                productManage = that.$parent.globalData.productManage,
-                id = productManage.id,
-                period_of_use = PrevPage.data.period_of_use || {},
+                _this2 = that.__getPrevPage(),
+                period_of_use = _this2.data.period_of_use || {},
                 start_date = period_of_use.start_date || this.$azmUtil.date_formate(new Date(), 'YYYY-MM-DD'),
                 end_date = this.$azmUtil.formatTime(start_date, {Y: 1, spacer: '-'}, 'YYYY-MM-DD'),
                 start_time = null,

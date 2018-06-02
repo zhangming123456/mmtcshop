@@ -43,11 +43,11 @@ const events = {
         console.warn(`离开${this.data.text}`, options, 'onHide');
         let that = this;
         that.isShow = true;
-        that.$parent.__prevPage__ = that;
         this.__page.onHide && that.__page.onHide.call(this, options);
         if (that.data.isShow) {
 
         }
+        that.$parent.__prevPage__ = that;
     },
 
     /**
@@ -57,8 +57,8 @@ const events = {
         console.log(`离开${this.data.text}`, options, 'onUnload');
         let that = this;
         that.isShow = true;
-        that.$parent.__prevPage__ = that;
         this.__page.onUnload && that.__page.onUnload.call(this, options);
+        that.$parent.__prevPage__ = that;
     },
 
     /**
@@ -107,6 +107,10 @@ const events = {
         this.__page.onPageScroll && this.__page.onPageScroll.call(this, options);
     },
 
+    onTabItemTap(options) {
+        console.warn(`用户点击tap事件触发${this.data.text}`, options, 'onTabItemTap');
+        this.__page.onTabItemTap && this.__page.onTabItemTap.call(this, options);
+    },
     /**
      * 用户点击右上角分享
      */
@@ -277,7 +281,13 @@ const events = {
     },
 
     __getPrevPage(){
-        return this.__prevPage__;
+        let path = this.$azmUtil.getCurrentPage(2).__route__,
+            pervPage = this.$parent.$pages[`/${path}`];
+        console.log(this, pervPage);
+        return pervPage;
+    },
+    __route(path, data){
+        this.$azmUtil.go(path, {data})
     }
 };
 

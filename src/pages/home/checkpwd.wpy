@@ -32,37 +32,39 @@ view.container
         view.flex-con  
             button.num(@tap="tapNum(0)" hover-class="tapmode") 0
         view.check-area
-            button.check-btn(@tap="doCheck" class="{{numValue?'btn-enabled':''}}") 验证  
+            button.check-btn(@tap="doCheck" class="{{isEnabled?'btn-enabled':''}}") 验证  
 </template>
 <style lang="less">
 .input-area {
-  padding: 94*1rpx 30*1rpx 0 30*1rpx;
+  padding: 94 * 1rpx 30 * 1rpx 0 30 * 1rpx;
   .input-box {
-    height: 120*1rpx;
-    letter-spacing: 2*1rpx;
-    line-height: 120*1rpx;
-    padding: 0 35*1rpx;
-	font-size: 34*1rpx;    
+    height: 120 * 1rpx;
+    letter-spacing: 2 * 1rpx;
+    line-height: 120 * 1rpx;
+    padding: 0 35 * 1rpx;
+    font-size: 34 * 1rpx;
     background-color: #f4f4f4;
-    border-radius: 5*1rpx;
+    border-radius: 5 * 1rpx;
     border: solid 1px #eeeeee;
+    overflow: hidden;
   }
-  .input-box-inputed{
+  .input-box-inputed {
     color: #ff8000 !important;
-    font-size: 50*1rpx;
+    font-size: 50 * 1rpx;
   }
-  .cancel-img-area{
+  .cancel-img-area {
     position: absolute;
-    top:0;
-    right:0;  
-    bottom:0;
-    width:94*1rpx;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 94 * 1rpx;
   }
-  .cancel-img{
-    width: 31*1rpx;
-    height: 30*1rpx;
+  .cancel-img {
+    width: 31 * 1rpx;
+    height: 30 * 1rpx;
     position: absolute;
-    top:43*1rpx; right:34*1rpx;
+    top: 43 * 1rpx;
+    right: 34 * 1rpx;
   }
 }
 button.tapmode {
@@ -70,107 +72,133 @@ button.tapmode {
 }
 
 .footer-area {
-  padding-left: 50*1rpx;
+  padding-left: 50 * 1rpx;
 }
 .num-area {
-  padding-top: 88*1rpx;
-  padding-left: 10*1rpx;
-  padding-right: 10*1rpx;
+  padding-top: 88 * 1rpx;
+  padding-left: 10 * 1rpx;
+  padding-right: 10 * 1rpx;
   & > .flex {
-    padding-bottom: 53*1rpx;
+    padding-bottom: 53 * 1rpx;
     text-align: center;
   }
 }
 .num {
   background-color: #fff;
   display: inline-block;
-  width: 172*1rpx;
-  height: 172*1rpx;
-  line-height: 172*1rpx;
+  width: 172 * 1rpx;
+  height: 172 * 1rpx;
+  line-height: 172 * 1rpx;
   border-radius: 50%;
   border: 1px solid #eee;
-  font-size: 60*1rpx;
+  font-size: 60 * 1rpx;
   color: #333333;
   text-align: center;
-  &::after{
-      border:none;
-      border-radius: 0;
+  &::after {
+    border: none;
+    border-radius: 0;
   }
 }
 .check-area {
-  width: 461*1rpx;
+  width: 461 * 1rpx;
   text-align: left;
   .check-btn {
     display: inline-block;
-    width: 397*1rpx;
-    height: 172*1rpx;
-    line-height: 172*1rpx;
+    width: 397 * 1rpx;
+    height: 172 * 1rpx;
+    line-height: 172 * 1rpx;
     background-color: #eeeeee;
-    border-radius: 86*1rpx;
+    border-radius: 86 * 1rpx;
     color: #999999;
-    font-size: 45*1rpx;
-    &::after{
-      border:none;
+    font-size: 45 * 1rpx;
+    &::after {
+      border: none;
       border-radius: 0;
     }
   }
-  button.btn-enabled{
+  button.btn-enabled {
     background-color: #ff8000;
     color: #ffffff;
-    }
+  }
 }
 </style>
 <script>
 import wepy from "wepy";
-import baseMixin from '../../mixins/base';
+import baseMixin from "../../mixins/base";
+import c from "../../wxs/common.wxs";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "输入消费码" 
+    navigationBarTitleText: "输入消费码"
   };
   mixins = [baseMixin];
   data = {
-    numValue: ""
+    numValue: "",
+    numStr: "",
+    isEnabled: false
   };
-  onLoad(){
-      this.numStr = ''
+  wxs = {
+    c
   };
+  onLoad() {
+    this.numStr = "";
+  }
+
+  setNum() {
+    let num = this.data.numStr;
+    if (num && num.length >= 12) {
+      this.isEnabled = true;
+    } else {
+      this.isEnabled = false;
+    }
+  }
   methods = {
-      deleteNum(){
-        if(this.numStr.length > 0){
-            this.numStr = this.numStr.substr(0,this.numStr.length - 1)    
-            let numValue = ''
-            for(let i=0;i<this.numStr.length;i++){
-                numValue += this.numStr[i]
-                if(i && (i+1)%4 == 0){
-                    numValue+= ' ';
-                }
-            }
-            this.numValue = numValue
+    deleteNum() {
+      if (this.numStr.length > 0) {
+        this.numStr = this.numStr.substr(0, this.numStr.length - 1);
+        let numValue = "";
+        for (let i = 0; i < this.numStr.length; i++) {
+          numValue += this.numStr[i];
+          if (i && (i + 1) % 4 == 0) {
+            numValue += " ";
+          }
         }
-      },
+        this.numValue = numValue;
+        this.$apply();
+        this.setNum();
+      }
+    },
     tapNum(num) {
+      if (this.numStr.length >= 12) return;
       if (this.numStr.length > 0 && this.numStr.length % 4 == 0) {
-        this.numValue += " ";         
+        this.numValue += " ";
       }
       this.numValue += "" + num;
-      this.numStr += "" + num
+      this.numStr += "" + num;
       this.$apply();
+      this.setNum();
     },
     doCheck() {
-        if(this.numStr){
-            this.showLoading()
-            this.$post('/shopapi/verification/see',{
-                pwd:this.numStr
-            },(info)=>{
-                if(info.is_used == 1){
-                    this.$goto('haschecked?order_id='+info.id)  
-                }else{
-                    this.$goto('orderinfo?info='+encodeURIComponent(JSON.stringify(info)))
-                }                
-            },()=>{
-                this.hideLoading()
-            })
-        }
+      if (this.numStr && this.numStr.length >= 12) {
+        this.showLoading();
+        this.$post(
+          "/shopapi/verification/see",
+          {
+            pwd: this.numStr
+          },
+          info => {
+            if (info.is_used == 1) {
+              this.$goto("haschecked?order_id=" + info.id);
+            } else {
+              this.$goto(
+                "orderinfo?info=" + encodeURIComponent(JSON.stringify(info))
+              );
+            }
+          },
+          () => {
+            this.hideLoading();
+          }
+        );
+      }
     }
   };
 }

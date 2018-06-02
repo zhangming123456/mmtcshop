@@ -139,8 +139,8 @@
         loadCb () {
             let that = this,
                 options = that.data.options,
-                PrevPage = that.__getPrevPage(),
-                item_brand = PrevPage.data.item_brand;
+                _this2 = that.__getPrevPage(),
+                item_brand = _this2.data.item_brand;
             that.item_brand = item_brand || [];
         }
 

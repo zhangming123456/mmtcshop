@@ -1,5 +1,5 @@
 <template>
-    <form report-submit="true" bindsubmit="submit">
+    <form report-submit="true" @submit="bindconfirm">
         <view class="productCategory">
             <view class="h100">
                 <view bindtap="gotodetail" class="azm-container__head flexBox flexBox-start">
@@ -10,8 +10,8 @@
                                 <block wx:for="{{category_id}}" wx:key="{{index}}">
                                     <view class="azm-category_select">
                                         <text>{{item.title}}</text>
-                                        <button class="azm-btn zan-ellipsis" plain="true" size="mini"
-                                                catchtap="bindSelect({{item}})">X
+                                        <button class="azm-btn zan-ellipsis" plain="true" size="mini" hover-class="none"
+                                                @tap.stop="bindSelect({{item}})">X
                                         </button>
                                     </view>
                                 </block>
@@ -39,8 +39,8 @@
                                     <view class="azm-select_btns flexBox flexBox-start">
                                         <view class="flexBox-item" wx:for="{{v.children}}" wx:key="{{index}}">
                                             <button class="azm-btn zan-ellipsis {{c.isSealedCategory(category_id,item)?'azm-btn_active':''}}"
-                                                    plain="true" size="mini"
-                                                    catchtap="bindSelect({{item}})">
+                                                    plain="true" size="mini" hover-class="none"
+                                                    @tap.stop="bindSelect({{item}})">
                                                 {{item.title}}
                                             </button>
                                         </view>
@@ -51,9 +51,15 @@
                     </view>
                 </view>
             </view>
-            <view class="footer">
-                <button class="t-false" catchtap="bindcancel">取消</button>
-                <button class="t-true" catchtap="bindconfirm">确定</button>
+        </view>
+        <view class="azm-footer">
+            <view class="azm-btn__mini_right">
+                <button class="azm-btn__mini azm-btn__mini__cancel" plain="true" size="mini" @tap="bindcancel"
+                        hover-class="none">取消
+                </button>
+                <button class="azm-btn__mini azm-btn__mini__submit" plain="true" size="mini" formType="submit"
+                        hover-class="none">确定
+                </button>
             </view>
         </view>
     </form>
@@ -104,15 +110,22 @@
         mixins = [baseMixin];
 
         loadCb () {
-            let that = this,
-                options = that.data.options,
-                arr = [];
-            let category_id = this.$parent.globalData.productManage.category_id || [];
-            for (let v of category_id) {
-                arr.push(v.id + '')
+            try {
+                let that = this,
+                    options = that.data.options,
+                    arr = [],
+                    _this2 = that.__getPrevPage();
+                let category_id = _this2.data.productData.category_id || [];
+                for (let v of category_id) {
+                    if (v.id) {
+                        arr.push(v.id + '')
+                    }
+                }
+                that._category_id = arr || [];
+                that.getItemInfoCategory()
+            } catch (e) {
+
             }
-            that._category_id = arr || [];
-            that.getItemInfoCategory()
         }
 
         /**
@@ -165,12 +178,15 @@
                 this.category_id.push(item);
             },
             bindconfirm(){
-                let category_id = this.data.category_id;
+                let that = this,
+                    category_id = that.data.category_id,
+                    _this2 = that.__getPrevPage();
                 if (category_id.length < 1) {
                     this.$alert('最少一个标签');
                     return;
                 }
-                this.$parent.globalData.productManage.category_id = category_id;
+                _this2.productData.category_id = category_id;
+                _this2.$apply();
                 this.$back();
             },
             bindcancel() {
@@ -301,7 +317,7 @@
         bottom: 98*1rpx;
         left: 0;
         right: 0;
-        z-index: 100;
+        z-index: 50;
         overflow: hidden;
         .azm-container__head {
             box-sizing: border-box;

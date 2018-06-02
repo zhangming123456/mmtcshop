@@ -121,9 +121,9 @@
                     options = that.data.options,
                     prevPage = this.__getPrevPage(),
                     data = {
-                        group_num: prevPage.data.group_num,
-                        group_price: prevPage.data.group_price,
-                        is_valid: prevPage.data.is_valid
+                        group_num: prevPage.data.productData.group_num,
+                        group_price: prevPage.data.productData.group_price,
+                        is_valid: prevPage.data.productData.is_valid
                     };
                 if (data) {
                     this.group_num = data.group_num;
@@ -161,9 +161,8 @@
                     this.$alert("请输入拼团价格");
                     return;
                 }
-                _this2.group_num = data.group_num;
-                _this2.group_price = data.group_price;
-                _this2.is_valid = data.is_valid;
+                let productData = _this2.data.productData;
+                _this2.productData = Object.assign(productData, data);
                 _this2.$apply();
                 that.$azmUtil.go(-1);
             }

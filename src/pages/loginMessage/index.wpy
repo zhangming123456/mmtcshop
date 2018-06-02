@@ -1,0 +1,113 @@
+<template>
+    <view class="loginMessage">
+        <view>
+            <text>亲爱的美美天成商家小伙伴们</text>
+        </view>
+        <view>
+            <text>美容宝已升级为“美美天成商家端”，点击以下面"前往往新版本"继续使用哦</text>
+        </view>
+        <navigator wx:if="{{canIUse}}" class="azm-navigator" open-type="navigate" target="miniProgram"
+                   app-id="{{appid}}"
+                   path="pages/home/index" extra-data="{{extraData}}" version="{{envVersion}}">
+            <text>前往新版本</text>
+        </navigator>
+        <button wx:else class="azm-btn" plain="true" hover-class="none" @tap="navigateToMiniProgram">前往新版本
+        </button>
+    </view>
+</template>
+<script>
+    import wepy from "wepy";
+    import utilPage from "../../mixins/utilPage";
+    import baseMixin from "../../mixins/base";
+    const appPage = new utilPage({
+        data: {
+            text: "Page loginMessage",
+            canIUse: true,
+            appid: 'wx6a8d8aa65a3d743e',
+            extraData: {},
+            envVersion: 'release',
+            path: 'pages/home/index'
+        },
+        onLoad (options){
+            this.loadCb();
+        },
+        onShow(){
+            this.canIUse = !wx.navigateToMiniProgram
+        },
+        onPullDownRefresh(){
+            let that = this
+        },
+
+        onReachBottom(){
+            let that = this
+        },
+
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor () {
+            super();
+            for (let k in appPage) {
+                this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "美容宝"
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+            let options = this.data.options;
+        }
+
+        methods = {
+            navigateToMiniProgram(){
+                wx.navigateToMiniProgram({
+                    appId: this.data.appid,
+                    path: this.data.path,
+                    extraData: this.data.extraData,
+                    envVersion: this.data.envVersion,
+                    success(res) {
+                        // 打开成功
+                    }
+                })
+            }
+        };
+    }
+</script>
+
+<style lang="less">
+    .loginMessage {
+        box-sizing: border-box;
+        padding: 250*1rpx 56*1rpx 0;
+        text-align: center;
+        text {
+            font-size: 32*1rpx;
+            line-height: 48*1rpx;
+            color: #333333;
+        }
+        navigator {
+            margin-top: 77*1rpx;
+            display: block;
+            color: #fff;
+            background-color: #ff8000;
+            border-radius: 10*1rpx;
+            height: 90*1rpx;
+            line-height: 90*1rpx;
+            text {
+                color: #fff;
+            }
+        }
+        button {
+            margin-top: 77*1rpx;
+            color: #fff;
+            background-color: #ff8000;
+            border-radius: 10*1rpx;
+            border: none;
+            padding: 30*1rpx 0;
+        }
+    }
+</style>
+

@@ -11,7 +11,7 @@
     }
 
     .azm-color_primary {
-        color: #ff8000;
+        color: #ff8000 !important;
     }
 
     .azm-text_left {
@@ -48,6 +48,34 @@
             height: inherit;
             line-height: inherit;
             color: #fff;
+        }
+        .azm-btn__mini_right {
+            width: inherit;
+            height: inherit;
+            line-height: inherit;
+            box-sizing: inherit;
+            text-align: right;
+            button.azm-btn__mini {
+                height: 72*1rpx;
+                line-height: 72*1rpx;
+                border: none;
+                text-align: center;
+                padding-left: 56*1rpx;
+                padding-right: 56*1rpx;
+                border-radius: 5*1px;
+                vertical-align: middle;
+                margin-right: 30*1rpx;
+                &.azm-btn__mini__save, &.azm-btn__mini__cancel {
+                    background-color: transparent;
+                    color: #ff8000;
+                    border: 2*1rpx solid #ff8000;
+                }
+                &.azm-btn__mini__submit {
+                    background-color: #ff8000;
+                    color: #fff;
+                    border: 2*1rpx solid #ff8000;
+                }
+            }
         }
     }
 
@@ -163,6 +191,7 @@
                 }
                 .azm-not_perfection {
                     font-size: 28*1rpx;
+                    color: #282828;
                 }
                 .azm-icon_right {
                     position: absolute;
@@ -444,44 +473,39 @@
                 "pages/mine/withdrawrecords",
                 "pages/mine/advise",
                 "pages/mine/about",
-//                "pages/product/productmanage/productmanage",
-                "pages/product/shopclassify/shopclassify",
-                "pages/product/shopdetail/shopdetail",
-                "pages/product/productdetail/productdetail",
-                "pages/product/goods/goods",
-                "pages/product/usetime/usetime",
-                "pages/product/productadd/productadd",
-                "pages/product/serve/serve",
 
                 "pages/alterpwd",
                 "pages/bindphone",
                 "pages/login",
-                "pages/common/404"
+                "pages/common/404",
+
+                "pages/loginMessage/index",
             ],
-            subPackages: [
-                {
-                    "root": "pages/newPages",
-                    "pages": [
-                        "pages/productManage/index",
-                        "pages/productAddAndEdit/index",
-                        "pages/productCategory/index",
-                        "pages/productServiceProcess/index",
-                        "pages/productDetails/index",
-                        "pages/productPeriodOfUse/index",
-                        "pages/productItemBrand/index",
-                        "pages/graphicDetails/index",
-                    ]
-                },
-                {
-                    "root": "pages/product2",
-                    "pages": [
-                        "pages/mainpic/index",
-                        "pages/preview/index",
-                        "pages/editText/index",
-                        "pages/groupActivity/index",
-                    ]
-                }
-            ],
+//            subPackages: [
+//                {
+//                    "root": "pages/newPages",
+//                    "pages": [
+//                        "pages/productManage/index",
+//                        "pages/productAddAndEdit/index",
+//                        "pages/productCategory/index",
+//                        "pages/productServiceProcess/index",
+//                        "pages/productDetails/index",
+//                        "pages/productPeriodOfUse/index",
+//                        "pages/productItemBrand/index",
+//                        "pages/graphicDetails/index",
+//                    ]
+//                },
+//                {
+//                    "root": "pages/product2",
+//                    "pages": [
+//                        "pages/mainpic/index",
+//                        "pages/preview/index",
+//                        "pages/editText/index",
+//                        "pages/groupActivity/index",
+//                        "pages/detail/index",
+//                    ]
+//                }
+//            ],
             window: {
                 backgroundTextStyle: "light",
                 navigationBarBackgroundColor: "#fff",

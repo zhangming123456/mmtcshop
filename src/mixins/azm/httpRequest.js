@@ -12,14 +12,15 @@ Promise.prototype.finally = function (callback) {
 const app = getApp(),
     util = require('./util'),
     utilCommon = require('./utilCommon'),
-    Fly = require('./fly.min');
+    Fly = require('./fly.min'),
+    contentType = "Content-Type";
 function getFly (params = {}) {
     let fly = new Fly();
     let sid = util.getSessionId(),
         config = {};
-    config.timeout = 15000;
     config.headers = {
-        'Content-Type': params.contentType || 'application/json' // 默认值
+        'Content-Type': params.contentType || 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'// 默认值
     };
     config.dataType = 'json';
     config.parseJson = params.contentType ? false : true;
@@ -30,12 +31,12 @@ function getFly (params = {}) {
     if (params.baseURL) {
         config.baseURL = params.baseURL;
     }
-    Object.assign(fly.config, config);
+    fly.config = Object.assign(fly.config, config);
     //添加拦截器
     fly.interceptors.request.use((config, promise) => {
         //给所有请求添加自定义header
         app.interceptors && app.interceptors.request && app.interceptors.request(config, promise);
-        return config;
+        return Object.assign(config, config);
     });
 
     //添加响应拦截器，响应拦截器会在then/catch处理之前执行
@@ -92,9 +93,9 @@ class HttpRequest {
         this.requestTask = []
     }
 
-    request (params, resolve) {
-        let retryNum = 0,
-            url = params.url,
+    request ({url = '', data = {}, contentType = 'application/json', method = 'GET'}, resolve) {
+        let params = {url, data, contentType, method},
+            retryNum = 0,
             promise = null,
             reject = null,
             isLoading = false,
@@ -107,27 +108,21 @@ class HttpRequest {
                 reject = arguments[i];
             }
         }
-        let _url = url.split('/')
+        let _url = url.split('/');
         console.log(`_____请求数据${_url[_url.length - 1]}______`, params.data);
         if (params.data.config && params.data.config.isLoading) {
             isLoading = params.data.config.isLoading;
             delete params.data.config;
         }
         delete params.url;
-        if (params.method && params.method.toLocaleLowerCase() === 'post') {
-            params.header = {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-            params.contentType = "application/x-www-form-urlencoded"
-        }
-        if (params.flag) {
-            url += '?' + util.requestParametersMerge(params.data);
-            params.data = null;
+        if (params.data.options && utilCommon.isEmptyObject(params.data.options)) {
+            url += '?' + util.queryString.stringify(params.data.options);
+            delete params.data.options;
         }
         for (let k in params.data) {
             params.data[k] = utilCommon.isFalse(params.data[k]);
-            if (!params.data[k] && !utilCommon.isNumberOfNaN(params.data[k])) {
-                params.data[k] = '';
+            if (util.trim(params.data[k]) === '' || !params.data[k] && !utilCommon.isNumberOfNaN(params.data[k])) {
+                delete params.data[k]
             }
         }
 
@@ -181,12 +176,23 @@ class HttpRequest {
                     params.data = {};
                 }
                 params.data['_f'] = 1;
-                let _data = util.queryString.stringify(params.data);
+                let _contentType = 'application/x-www-form-urlencoded',
+                    _data = util.queryString.stringify(params.data);
+                if (params.method && params.method.toLocaleLowerCase() === 'post') {
+                    params.header = {
+                        "Content-Type": params.contentType
+                    };
+                    if (util.trim((params.header[contentType] || "").toLowerCase()) === _contentType) {
+
+                    } else if (params.data && ["object", "array"].indexOf(util.type(params.data)) !== -1) {
+                        _data = params.data;
+                    }
+                }
                 let fly = getFly(params);
                 if (params.method === 'GET') {
                     promise = fly.get(url, _data)
                 } else if (params.method === 'POST') {
-                    promise = fly.post(url, _data)
+                    promise = fly.request(url, _data, {method: "POST"})
                 }
                 promise.then(res => {
                     console.log(`_____响应数据${_url[_url.length - 1]}______`, res);
@@ -200,6 +206,17 @@ class HttpRequest {
     };
 
     post (url, options, resolve, reject) {
+        let data = options || {};
+        let params = {
+            url,
+            data,
+            contentType: 'application/x-www-form-urlencoded',
+            method: 'POST'
+        };
+        return this.request(params, resolve, reject);
+    };
+
+    post2 (url, options, resolve, reject) {
         let data = options || {};
         let params = {
             url,
@@ -224,8 +241,7 @@ class HttpRequest {
         let params = {
             url,
             data,
-            flag: true,
-            method: 'POST'
+            method: 'PUT'
         };
         return this.request(params, resolve, reject);
     };

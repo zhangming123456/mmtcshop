@@ -43,7 +43,7 @@ view.p30-last.bg-white
     view.flex(@tap="showBigImg")
         view.flex-con.fz30 门头照
         view.text-right
-            image.cover(src="{{m1.absUrl(info.cover)}}")
+            image.cover(src="{{m1.absUrl(info.pic)}}")
         view.gt-wrapper
             image.gt(src="/imgs/gt.png")
 
@@ -79,7 +79,7 @@ export default class extends wepy.page {
   methods = {
       
     showBigImg() {
-      let src = this.absUrl(this.info.cover);
+      let src = this.absUrl(this.info.pic);
       wx.previewImage({
         current: src, // 当前显示图片的http链接
         urls: [src] // 需要预览的图片http链接列表

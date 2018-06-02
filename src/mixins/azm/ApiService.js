@@ -41,15 +41,26 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    saveItemInfo (data = {
-        id: 0
-    }, resole, reject) {
+    saveItemInfo (data = {}, resole, reject) {
         let that = this;
-        const api = `${that.shopApi}iteminfo/sav`;
-        const http = $http.get(that.url + api, data, resole, reject);
+        const api = `${that.shopApi}iteminfo/sav_new`;
+        const http = $http.post2(that.url + api, data, resole, reject);
         return http;
     }
 
+    /**
+     * 查看产品详情
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    siteItemInfo (data = {nodes= 1, id= 0} = {}, resole, reject) {
+        let that = this;
+        const api = `${that.shopApi}iteminfo/site`;
+        const http = $http.get(that.url + api, data, resole, reject);
+        return http;
+    }
 
     /**
      * 商家获取订单详情
@@ -74,9 +85,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    getShopManagerRefundDetail (data = {
-        id: 0
-    }, resole, reject) {
+    getShopManagerRefundDetail (data = {id: 0}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}shop_manager/refundDetail`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -130,17 +139,43 @@ class ShopApi {
     }
 
     /**
-     * 商家获取产品管理下架产品
+     * 商家产品管理下架产品
      * @param data
      * @param resole
      * @param reject
      * @returns {*}
      */
-    setItemlistDownOn (data = {
-        id: 0
-    }, resole, reject) {
+    setIteminfoDownOn (data = {id=0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/downOn`;
+        const http = $http.get(that.url + api, data, resole, reject);
+        return http;
+    }
+
+    /**
+     * 商家产品管理上架产品
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    setIteminfoUpOn (data = {id=0} = {}, resole, reject) {
+        let that = this;
+        const api = `${that.shopApi}iteminfo/upOn`;
+        const http = $http.get(that.url + api, data, resole, reject);
+        return http;
+    }
+
+    /**
+     * 商家产品管理撤销审核产品
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    setIteminfoRevokeAuth (data = {id=0} = {}, resole, reject) {
+        let that = this;
+        const api = `${that.shopApi}iteminfo/revokeAuth`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
     }

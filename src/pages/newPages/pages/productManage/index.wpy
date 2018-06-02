@@ -1,11 +1,11 @@
 <template>
-    <view class="productManage" style="box-sizing: border-box;">
+    <view class="productManage">
         <view class="t-navbar" :class="{'azm-fixed':isFixed}">
             <view class='flexBox t-flex'>
                 <block wx:for="{{tabList.list}}" wx:key="{{index}}">
                     <view class="flexBox-item fb-8 t-nav-item"
                           :class="{'border-r':index != 2,'active':item.id == tabList.selectedId}"
-                          catchtap="bindTapChang({{item.id}})">
+                          @tap.stop="bindTapChang({{item.id}})">
                         {{item.title}}({{item.num}})
                     </view>
                 </block>
@@ -18,7 +18,12 @@
                         <view class="t-topStatus flexBox">
                             <view class="t-shopName flexBox-item fb-all">产品ID：{{item.item_no}}</view>
                             <view class="flexBox-item fb-all azm-text_right">
-                                <view class="t-statusBar" wx:if="{{tabList.selectedId == 1}}">审核未通过</view>
+                                <block wx:if="{{tabList.selectedId == 2}}">
+                                    <view class="t-statusBar" wx:if="{{item.auth_status == 1}}">审核未通过</view>
+                                    <view class="t-statusBar" wx:elif="{{item.auth_status == 2}}">审核通过</view>
+                                    <view class="t-statusBar" wx:elif="{{item.auth_status == 3}}">代提交</view>
+                                    <view class="t-statusBar" wx:else>审核中</view>
+                                </block>
                                 <view class="t-statusBar" wx:if="{{item.is_group == 1}}">拼团</view>
                             </view>
                         </view>
@@ -32,7 +37,7 @@
                                 </view>
                                 <view class="flexBox-item fb-all right">
                                     <view class="zan-ellipsis t-shopTitle">
-                                        【{{item.category}}】{{item.title}}sdhklafhnkjahfkjahdfkjlah
+                                        <text>{{item.title}}</text>
                                     </view>
                                     <view class="zan-ellipsis azm-money" wx:if="{{item.group_num > 0}}">
                                         <text class="azm-TeamworkMoner">拼团价</text>
@@ -40,7 +45,8 @@
                                         <text class='t-ShopPrice'>{{item.group_price}}</text>
                                         <text class='t-shop-price'>门市价 ￥{{item.price}}</text>
                                     </view>
-                                    <view class="zan-ellipsis azm-money" wx:else>
+                                    <view class="zan-ellipsis azm-money"
+                                          wx:elif="{{item.price>0 && item.market_price>0}}">
                                         <text class='t-ShopUnit'>￥</text>
                                         <text class='t-ShopPrice'>{{item.price}}</text>
                                         <text class='t-shop-price'>门市价 ￥{{item.market_price}}</text>
@@ -49,46 +55,56 @@
                                         <text>上架时间</text>
                                         <text>{{item.create_time}}</text>
                                     </view>
+                                    <view class="zan-ellipsis azm-seview__status azm-text_right"
+                                          wx:if="{{tabList.selectedId == 2 && item.auth_status==1}}"
+                                          @tap="route('/pages/product2/pages/detail/index',{{item}})">
+                                        <text>查看详情></text>
+                                    </view>
                                 </view>
                             </view>
-                            <view class="azm-item-info_del" catchtap="del" data-id="{{item.id}}"
+                            <view class="azm-item-info_del" @tap.stop="del" data-id="{{item.id}}"
                                   data-shopid="{{item.shop_id}}"
                                   data-index="{{index}}">删除
                             </view>
                         </view>
-                        <view class="t-shopCompile flexBox">
-                            <view class="flexBox-item left" wx:if="{{tabList.selectedId != 0}}">
-                                <button size="mini" plain hover-class="none" class="azm-btn azm-del"
-                                        catchtap="deleteItem({{item}})">删除
-                                </button>
+                        <block wx:if="{{item.auth_status!=1}}">
+                            <view class="t-shopCompile flexBox">
+                                <view class="flexBox-item left" wx:if="{{tabList.selectedId != 0}}">
+                                    <button size="mini" plain hover-class="none" class="azm-btn azm-del"
+                                            @tap.stop="deleteItem({{item}})">删除
+                                    </button>
+                                </view>
+                                <view class="flexBox-item fb-all right">
+                                    <block wx:if="{{tabList.selectedId == 0}}">
+                                        <button size="mini" plain hover-class="none" class="azm-btn"
+                                                @tap.stop="downItem({{item}})">下架
+                                        </button>
+                                    </block>
+                                    <block wx:elif="{{tabList.selectedId == 1}}">
+                                        <button size="mini" plain hover-class="none" class="azm-btn"
+                                                @tap.stop="shelfItem({{item}})">上架
+                                        </button>
+                                    </block>
+                                    <button size="mini" plain hover-class="none" class="azm-btn t-compile"
+                                            wx:if="{{item.auth_status != 0}}"
+                                            @tap.stop="bindEditItem({{item}})">
+                                        编辑
+                                    </button>
+                                    <block wx:if="{{tabList.selectedId == 2 && item.auth_status == 0}}">
+                                        <button size="mini" plain hover-class="none" class="azm-btn"
+                                                @tap.stop="revokeAuthItem({{item}})">
+                                            撤销申请
+                                        </button>
+                                    </block>
+                                    <block wx:elif="{{tabList.selectedId == 2 && item.auth_status == 3}}">
+                                        <button size="mini" plain hover-class="none" class="azm-btn"
+                                                @tap.stop="editAuth({{item}})">
+                                            提交审核
+                                        </button>
+                                    </block>
+                                </view>
                             </view>
-                            <view class="flexBox-item fb-all right">
-                                <block wx:if="{{tabList.selectedId == 0}}">
-                                    <button size="mini" plain hover-class="none" class="azm-btn"
-                                            catchtap="downItem({{item}})">下架
-                                    </button>
-                                </block>
-                                <block wx:elif="{{tabList.selectedId == 1}}">
-                                    <button size="mini" plain hover-class="none" class="azm-btn"
-                                            catchtap="shelfItem({{item}})">上架
-                                    </button>
-                                </block>
-                                <button size="mini" plain hover-class="none" class="azm-btn t-compile"
-                                        catchtap="editAuth({{item}})">
-                                    编辑
-                                </button>
-                                <block wx:if="{{tabList.selectedId == 2}}">
-                                    <button size="mini" plain hover-class="none" class="azm-btn"
-                                            catchtap="editAuth({{item}})">
-                                        撤销申请
-                                    </button>
-                                    <button size="mini" plain hover-class="none" class="azm-btn"
-                                            catchtap="editAuth({{item}})">
-                                        提交审核
-                                    </button>
-                                </block>
-                            </view>
-                        </view>
+                        </block>
                     </view>
                 </block>
             </block>
@@ -101,7 +117,7 @@
                 <view class="empty-txt">没有找到记录</view>
             </view>
         </block>
-        <view class="t-issue" catchtap="addItem">
+        <view class="t-issue" @tap.stop="addItem">
             +发布产品
         </view>
     </view>
@@ -148,17 +164,15 @@
             this.loadCb()
         },
         onShow () {
-
+            if (this.data.isShow && this.data.isRefresh) {
+                this.loadCb()
+            }
         },
         onPullDownRefresh () {
             let that = this,
                 selectedId = that.tabList.selectedId;
             that.getItemlistFigure();
-            that.getItemlistSite({p: 1, t: selectedId}).finally(
-                () => {
-                    wx.stopPullDownRefresh()
-                }
-            );
+            that.getItemlistSite({p: 1, t: selectedId});
         },
 
         onReachBottom () {
@@ -166,6 +180,7 @@
                 selectedId = that.tabList.selectedId,
                 page = that.data.pages[selectedId];
             page++;
+            that.showLoading();
             that.getItemlistSite({p: page, t: selectedId});
         },
 
@@ -199,9 +214,12 @@
         mixins = [baseMixin];
 
         loadCb () {
-            let that = this;
+            let that = this,
+                selectedId = that.tabList.selectedId,
+                page = that.data.pages[selectedId];
+            that.showLoading();
             that.getItemlistFigure();
-            that.getItemlistSite();
+            that.getItemlistSite({p: 1, t: selectedId});
         }
 
         /**
@@ -218,8 +236,8 @@
                             that.tabList.list[i].num = res.info[k];
                             i++;
                         }
-                        that.$apply();
                     }
+                    that.$apply();
                 }
             );
         }
@@ -232,26 +250,36 @@
          */
         getItemlistSite ({p = 1, t = 0} = {}) {
             let that = this,
-                selectedId = that.data.tabList.selectedId;
-            return this.ApiService.getItemlistSite({p, t}).then(
-                res => {
-                    if (res.status === 1 && res.info.length > 0) {
-                        if (p == 1) {
-                            that.items[selectedId] = []
+                selectedId = that.data.tabList.selectedId,
+                _p = this.ApiService.getItemlistSite({p, t}).then(
+                    res => {
+                        if (res.status === 1 && res.info.length > 0) {
+                            if (p == 1) {
+                                that.items[selectedId] = []
+                            }
+                            that.items[selectedId][p - 1] = res.info;
+                            that.pages[selectedId] = p;
+                        } else {
+                            if (p == 1) {
+                                that.items[selectedId] = []
+                            }
                         }
-                        that.items[selectedId][p - 1] = res.info;
-                        that.pages[selectedId] = p;
                         that.$apply();
-                    } else {
-                        if (p == 1) {
-                            that.items[selectedId] = []
-                        }
                     }
-                }
-            )
+                );
+            _p.finally(res => {
+                that.hideLoading();
+                wx.stopPullDownRefresh();
+            });
+            return _p;
         }
 
         methods = {
+            route(path, item){
+                console.log(path, item);
+                if (!item.id)return;
+                this.$azmUtil.go(path, {data: {id: item.id}});
+            },
             bindTapChang (i) {
                 let that = this,
                     page = that.data.pages[i];
@@ -272,23 +300,35 @@
                 this.$azmUtil.go('/pages/newPages/pages/productAddAndEdit/index', {
                     data: {id, isEdit}
                 });
-//                wx.navigateTo({
-//                    url: '/pages/product/productadd/productadd'
-//                });
             },
             /**
-             * 新增与编辑产品
+             * 编辑产品
              * @param item
              **/
-            editItem (item) {
-                this.addItem(null, item.id);
+            bindEditItem (item) {
+                this.methods.addItem.call(this, null, item.id);
             },
             /**
              * 上架产品
              * @param item
              **/
             shelfItem (item) {
-
+                let that = this,
+                    id = item.id,
+                    selectedId = that.data.tabList.selectedId,
+                    page = that.data.tabList.list[selectedId];
+                this.confirm("确定上架该项目吗？", () => {
+                    this.showLoading();
+                    this.ApiService.setIteminfoUpOn({id}).then(
+                        res => {
+                            if (res.status === 1) {
+                                that.loadCb();
+                            }
+                        }
+                    ).finally(res => {
+                        that.hideLoading();
+                    });
+                });
             },
             /**
              * 下架产品
@@ -301,15 +341,36 @@
                     page = that.data.tabList.list[selectedId];
                 this.confirm("确定下架该项目吗？", () => {
                     this.showLoading();
-                    this.ApiService.setItemlistDownOn({id}).then(
+                    this.ApiService.setIteminfoDownOn({id}).then(
                         res => {
                             if (res.status === 1) {
-                                that.items[selectedId] = res.info;
-                                that.$apply();
+                                that.loadCb();
                             }
                         }
                     ).finally(res => {
-                        this.hideLoading();
+                        that.hideLoading();
+                    });
+                });
+            },
+            /**
+             * 下架产品
+             * @param item
+             **/
+            revokeAuthItem(item){
+                let that = this,
+                    id = item.id,
+                    selectedId = that.data.tabList.selectedId,
+                    page = that.data.tabList.list[selectedId];
+                this.confirm("是否撤销审核该项目吗？", () => {
+                    this.showLoading();
+                    this.ApiService.setIteminfoRevokeAuth({id}).then(
+                        res => {
+                            if (res.status === 1) {
+                                that.loadCb();
+                            }
+                        }
+                    ).finally(res => {
+                        that.hideLoading();
                     });
                 });
             },
@@ -484,6 +545,11 @@
                 .t-shopNum {
                     font-size: 26*1rpx;
                     color: #666666;
+                }
+                .azm-seview__status {
+                    margin-top: 29*1rpx;
+                    font-size: 30*1rpx;
+                    color: #ff8000;
                 }
             }
             .t-shopPhoto {

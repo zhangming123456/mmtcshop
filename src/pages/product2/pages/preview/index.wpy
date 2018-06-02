@@ -101,7 +101,7 @@
                 <view class="edit-block text-block" wx:if="{{item.type=='text'}}">{{item.content}}</view>
                 <view class="edit-block" wx:else>
                     <image class="edit-img" mode="aspectFill" style="{{item.height?'height:'+ item.height +'rpx':''}}"
-                           src="{{imageUrl + item.content}}"/>
+                           src="{{c.absUrl(item.content)}}"/>
                 </view>
             </block>
         </view>
@@ -151,14 +151,13 @@
         };
 
         loadCb (options) {
-            let preview = this.$parent.globalData.preview || "";
-            if (preview) {
-                try {
-                    this.preview = preview;
-                    this.$apply();
-                } catch (e) {
+            let that = this,
+                _this2 = that.__getPrevPage();
+            try {
+                this.preview = _this2.data.nodes || '';
+                this.$apply();
+            } catch (e) {
 
-                }
             }
         }
     }

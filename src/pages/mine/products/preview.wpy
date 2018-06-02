@@ -116,7 +116,7 @@ export default class extends wepy.page {
     m1
   };
   onLoad(options) {
-    let contents = options.nodes || "";
+    let contents = options.contents || "";
     if (contents) {
       try {
         contents = decodeURIComponent(contents);

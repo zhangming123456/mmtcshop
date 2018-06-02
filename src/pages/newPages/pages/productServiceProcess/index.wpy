@@ -91,13 +91,18 @@
         mixins = [baseMixin];
 
         loadCb () {
-            let that = this,
-                options = that.data.options,
-                service_flow = that.$parent.globalData.productManage.service_flow;
-            if (service_flow && service_flow.length > 0) {
-                that.service_flow = service_flow;
-            } else {
-                that.methods.bindAddProcess.call(that);
+            try {
+                let that = this,
+                    options = that.data.options,
+                    _this2 = that.__getPrevPage(),
+                    service_flow = _this2.data.productData.service_flow;
+                if (service_flow && service_flow.length > 0) {
+                    that.service_flow = service_flow;
+                } else {
+                    that.methods.bindAddProcess.call(that);
+                }
+            } catch (e) {
+
             }
         }
 
@@ -119,6 +124,7 @@
         methods = {
             changeToTest(){
                 let that = this,
+                    _this2 = that.__getPrevPage(),
                     service_flow = this.data.service_flow,
                     flag = service_flow.findIndex(res => {
                         return res.name === '' || res.times === '' || res.time === ''

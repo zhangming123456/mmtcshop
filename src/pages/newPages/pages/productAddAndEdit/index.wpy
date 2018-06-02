@@ -1,17 +1,18 @@
 <template>
     <view class="productAddAndEdit">
-        <form report-submit="true" bindsubmit="submit">
+        <form report-submit="true" @submit="bindSubmit">
             <view class="t-itme">
                 <view class="t-itmeName">产品名称</view>
                 <view class="t-itmeText">
-                    <input placeholder="产品名称（主标题）" name="title" value="{{title}}" bindinput="bindinputChang('title')"/>
+                    <input placeholder="产品名称（主标题）" name="title" value="{{productData.title}}" disabled="{{!isAdd}}"
+                           @input="bindinputChang('title')"/>
                 </view>
             </view>
             <view class="t-itme">
                 <view class="t-itmeName">副标题</view>
                 <view class="t-itmeText">
-                    <input placeholder="产品副标题" name="profile" value="{{profile}}"
-                           bindinput="bindinputChang('profile')"/>
+                    <input placeholder="产品副标题" name="profile" value="{{productData.profile}}"
+                           @input="bindinputChang('profile')"/>
                 </view>
             </view>
             <view class="t-itmeBox">
@@ -22,8 +23,8 @@
                             <text class="azm-money_icon">¥</text>
                         </view>
                         <view class="flexBox-item fb-all zan-ellipsis">
-                            <input type="digit" maxlength="8" name="market_price" value="{{market_price}}"
-                                   bindinput="bindinputChang('market_price')"/>
+                            <input type="digit" maxlength="8" name="market_price" value="{{productData.market_price}}"
+                                   @input="bindinputChang('market_price')"/>
                         </view>
                     </view>
                 </view>
@@ -34,25 +35,27 @@
                             <text class="azm-money_icon">¥</text>
                         </view>
                         <view class="flexBox-item fb-all zan-ellipsis">
-                            <input type="digit" maxlength="8" name="price" value="{{price}}"
-                                   bindinput="bindinputChang('price')"/>
+                            <input type="digit" maxlength="8" name="price" value="{{productData.price}}"
+                                   @input="bindinputChang('price')"/>
                         </view>
                     </view>
                 </view>
             </view>
 
+            <!--产品类别&产品主图-->
             <view class="azm-cells">
+                <!--产品类别-->
                 <view class="azm-cell flexBox">
                     <view class="azm-cell__bd flexBox-item">
                         <text class="azm-label">产品类别</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/newPages/pages/productCategory/index')">
-                        <block wx:if="{{category_id && category_id.length>0}}">
+                        <block wx:if="{{productData.category_id && productData.category_id.length>0}}">
                             <view class="zan-ellipsis azm-cell__ft_bd">
-                                <block wx:for="{{category_id}}" wx:key="{{index}}">
+                                <block wx:for="{{productData.category_id}}" wx:key="{{index}}">
                                     <text>{{item.title}}</text>
-                                    <text wx:if="{{index !== category_id.length-1}}">、</text>
+                                    <text wx:if="{{index !== productData.category_id.length-1}}">、</text>
                                 </block>
                                 <text>等</text>
                             </view>
@@ -64,15 +67,17 @@
                         <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
                     </view>
                 </view>
+                <!--产品主图-->
                 <view class="azm-cell flexBox azm-from__image">
                     <view class="azm-cell__bd flexBox-item">
                         <text class="azm-label">产品主图</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/product2/pages/mainpic/index')">
-                        <block wx:if="{{cover && cover.length>0}}">
+                        <block wx:if="{{productData.cover && productData.cover.length>0}}">
                             <view class="azm-cell__ft_bd">
-                                <image class="azm-image" src="{{imageUrl + cover[0]}}" mode="aspectFill"></image>
+                                <image class="azm-image" src="{{imageUrl + productData.cover[0]}}"
+                                       mode="aspectFill"></image>
                             </view>
                         </block>
                         <block wx:else>
@@ -90,8 +95,8 @@
                         <text class="azm-label">服务内容</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
-                        <input placeholder="一句话介绍" name="service" value="{{service}}"
-                               bindinput="bindinputChang('service')"/>
+                        <input placeholder="一句话介绍" name="service" value="{{productData.service}}"
+                               @input="bindinputChang('service')"/>
                     </view>
                 </view>
                 <view class="azm-cell flexBox">
@@ -99,8 +104,8 @@
                         <text class="azm-label">服务特色</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
-                        <input placeholder="可以填写特色或功效" name="service_char" value="{{service_char}}"
-                               bindinput="bindinputChang('service_char')"/>
+                        <input placeholder="可以填写特色或功效" name="service_char" value="{{productData.service_char}}"
+                               @input="bindinputChang('service_char')"/>
                     </view>
                 </view>
                 <view class="azm-cell flexBox">
@@ -109,8 +114,8 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/newPages/pages/productServiceProcess/index')">
-                        <block wx:if="{{service_flow && service_flow.length>0}}">
-                            <text class="azm-not_perfection azm-color_primary">已完善</text>
+                        <block wx:if="{{productData.service_flow && productData.service_flow.length>0}}">
+                            <text class="azm-not_perfection">已完善</text>
                         </block>
                         <block wx:else>
                             <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
@@ -128,10 +133,10 @@
                         <view class="flexBox">
                             <view class="flexBox-item fb-17 azm-text_left">越完善度排名越高(选填)</view>
                             <view class="flexBox-item fb-all">
-                                <block wx:if="{{isProductDetails === 2}}">
+                                <block wx:if="{{productData.isProductDetails === 2}}">
                                     <text class="azm-not_perfection" style="color: #282828">已添加</text>
                                 </block>
-                                <block wx:elif="{{isProductDetails === 1}}">
+                                <block wx:elif="{{productData.isProductDetails === 1}}">
                                     <text class="azm-not_perfection" style="color: #282828">部分添加</text>
                                 </block>
                                 <block wx:else>
@@ -154,8 +159,8 @@
                         <view class="flexBox">
                             <view class="flexBox-item fb-17 azm-text_left">目前可参加拼团(选填)</view>
                             <view class="flexBox-item fb-all">
-                                <block wx:if="{{group_num && group_price}}">
-                                    <text class="azm-not_perfection azm-color_primary">已完善</text>
+                                <block wx:if="{{productData.group_num && productData.group_price}}">
+                                    <text class="azm-not_perfection">已完善</text>
                                 </block>
                                 <block wx:else>
                                     <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
@@ -170,64 +175,77 @@
 
             <view class="footer">
                 <block wx:if="{{isAdd}}">
-                    <button class="azm-btn azm-btn_save" plain="true" size="mini" formType="submit">保存</button>
-                    <button class="azm-btn azm-btn_submit" plain="true" size="mini" formType="submit">提交</button>
+                    <button class="azm-btn azm-btn_save" plain="true" size="mini" formType="submit" data-active="save">
+                        <text>保存</text>
+                    </button>
+                    <button class="azm-btn azm-btn_submit" plain="true" size="mini" formType="submit"
+                            data-active="submit">
+                        <text>提交</text>
+                    </button>
                 </block>
                 <block wx:else>
-                    <button class="t-button" plain="true" formType="submit">提交</button>
+                    <button class="t-button" plain="true" formType="submit" data-active="submit">提交</button>
                 </block>
             </view>
         </form>
     </view>
+    <toast></toast>
 </template>
 <script>
     import wepy from "wepy";
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
+    import toast from "../../../../components/toast";
     import c from "../../../../wxs/common.wxs";
 
     const appPage = new utilPage({
         data: {
-            text: "Page productsIndex",
+            text: "Page productAddAndEdit",
             hasMoreData: false,//是否有更多
             isAdd: true,
             isProductDetails: 0,
-            title: '',//标题
-            profile: '',//副标题
-            market_price: null,//市场价格（门市价）
-            price: null,//价格（折扣）
-            category_id: [],//产品分类ID
-            cover: [],//产品封面
-            service: '',//服务内容
-            service_char: '',//服务特色
-            service_flow: [],//服务流程
-            intro: '',//产品详情介绍 (图文详情)
-            label: [], //产品标签 ["a","b"]
-            period_of_use: {
-                isTheTerm: false,// 是否设置使用限制日期
-                start_date: '',// 限制起始日期
-                end_date: '',// 限制结束日期
-                note: '',// 期限说明
-                start_time: '',// 开始时间
-                end_time: ''// 结束时间
-            },
-            item_brand: [],//使用物料（商品）
-            taboo_crowd: '',//禁忌人群
-            other_instructions: '',//其它说明
-            group_num: '',//成团要求数量
-            group_price: '',//成团价格
-            is_valid: true//是否有效
+            productData: {
+                title: '',//标题
+                profile: '',//副标题
+                market_price: null,//市场价格（门市价）
+                price: null,//价格（折扣）
+                category_id: [],//产品分类ID
+                cover: [],//产品封面
+                service: '',//服务内容
+                service_char: '',//服务特色
+                service_flow: [],//服务流程
+                nodes: '',//产品详情介绍 (图文详情)
+                label: [], //产品标签 ["a","b"]
+                period_of_use: {
+                    isTheTerm: 0,// 是否设置使用限制日期
+                    start_date: '',// 限制起始日期
+                    end_date: '',// 限制结束日期
+                    note: '',// 期限说明
+                    start_time: '',// 开始时间
+                    end_time: ''// 结束时间
+                },
+                item_brand: [],//使用物料（商品）
+                taboo_crowd: '',//禁忌人群
+                other_instructions: '',//其它说明
+                group_num: '',//成团要求数量
+                group_price: '',//成团价格
+                is_valid: true//是否有效
+            }
         },
         onLoad (options) {
             this.$parent.globalData.productManage = {};
             this.loadCb()
         },
         onShow () {
-            let productManage = this.$parent.globalData.productManage;
+//            let productManage = this.$parent.globalData.productManage;
             if (this.data.isShow && this.data.isRefresh) {
-                for (let k in productManage) {
-                    this[k] = productManage[k];
-                }
+                let productData = {};
+//                for (let k in productManage) {
+//                    if (productManage[k]) {
+//                        productData[k] = productManage[k];
+//                    }
+//                }
+//                this.productData = Object.assign(this.data.productData, productData);
             }
         },
         onPullDownRefresh () {
@@ -243,13 +261,16 @@
         }
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
                 this[k] = appPage[k]
             }
         }
 
+        components = {
+            toast
+        };
         config = {
             navigationBarTitleText: "产品管理",
             navigationBarBackgroundColor: "#fff",
@@ -276,16 +297,181 @@
             that.$parent.productManage = {};
             if (options.id) {
                 that.isAdd = false;
+                this.getProductData(options.id)
             }
+        }
+
+        getProductData (id = 0) {
+            let that = this;
+            that.showLoading();
+            that.ApiService.siteItemInfo({id, nodes: 1}).then(
+                res => {
+                    if (res.status === 1 && that.$azmUtil.common.isEmptyObject(res.info)) {
+                        let info = res.info,
+                            productData = that.data.productData,
+                            common = that.$azmUtil.common;
+                        if (common.isNumberOfNaN(info.category_id)) {
+                            info.category_id = [{id: info.category_id}]
+                        }
+                        if (common.isString(info.cover)) {
+                            info.cover = [info.cover]
+                        }
+                        if (info.isTheTerm !== undefined) {
+                            productData.period_of_use.isTheTerm = info.isTheTerm
+                        }
+                        if (info.start_date !== undefined) {
+                            productData.period_of_use.start_date = info.start_date
+                        }
+                        if (info.end_date !== undefined) {
+                            productData.period_of_use.end_date = info.end_date
+                        }
+                        if (info.start_time !== undefined) {
+                            productData.period_of_use.start_time = info.start_time
+                        }
+                        if (info.end_time !== undefined) {
+                            productData.period_of_use.end_time = info.end_time
+                        }
+                        if (info.note !== undefined) {
+                            productData.period_of_use.note = info.note
+                        }
+                        let data = Object.assign(productData, info);
+                        that.productData = data;
+                        that.$apply();
+                    } else {
+                        that.azmShowToast({
+                            message: '产品查询错误',
+                            success() {
+                                that.$azmUtil.go(-1);
+                            }
+                        })
+                    }
+                }
+            ).finally(res => {
+                that.hideLoading();
+            })
+        }
+
+        getSaveData (obj = {}) {
+            let that = this,
+                common = that.$azmUtil.common,
+                _this2 = that.__getPrevPage(),
+                data = that.$parent.globalData.productManage,
+                saveData = {
+                    cover: data.cover,
+                    service_flow: data.service_flow,
+                    nodes: data.nodes,
+                    label: data.label,
+                    category_id: data.category_id,
+                    item_brand: data.item_brand,
+                    taboo_crowd: data.taboo_crowd,
+                    other_instructions: data.other_instructions,
+                    group_num: data.group_num,
+                    group_price: data.group_price,
+                    is_valid: data.is_valid
+                },
+                period_of_use = data.period_of_use;
+            if (period_of_use && period_of_use.start_time) {
+                saveData.isTheTerm = period_of_use.isTheTerm;
+                if (period_of_use.isTheTerm) {
+                    saveData.start_date = period_of_use.start_date;
+                    saveData.end_date = period_of_use.end_date;
+                    saveData.note = period_of_use.note;
+                }
+                saveData.start_time = period_of_use.start_time;
+                saveData.end_time = period_of_use.end_time;
+            }
+            if (saveData.category_id && saveData.category_id.length > 0) {
+                let category_id = [];
+                for (let v of saveData.category_id) {
+                    category_id.push(v.id);
+                }
+                saveData.category_id = category_id;
+            }
+            saveData = {...obj, ...saveData};
+            for (let k in saveData) {
+                if (common.isString(saveData[k])) {
+                    saveData[k] = that.$azmUtil.trim(saveData[k])
+                }
+                if (common.isNumberOfNaN(saveData[k])) {
+                    saveData[k] = parseFloat(saveData[k])
+                }
+            }
+            return saveData;
+        }
+
+        saveFromData (data) {
+            let that = this,
+                p = that.ApiService.saveItemInfo(data);
+            p.catch(res => {
+
+            });
+            return p;
         }
 
         methods = {
             bindinputChang (k, e) {
-                let value = e.detail.value;
-                this[k] = value;
+                let value = this.$azmUtil.trim(e.detail.value);
+                this.productData[k] = value;
             },
             route (url) {
                 this.$azmUtil.go(url);
+            },
+            bindSubmit(e){
+                let that = this;
+                console.log(e);
+                try {
+                    let value = e.detail.value,
+                        productData = that.data.productData,
+                        active = e.detail.target.dataset.active,
+                        saveData = that.getSaveData({
+                            title: value.title,
+                            profile: value.profile,
+                            market_price: value.market_price,
+                            price: value.price,
+                            service: value.service,
+                            service_char: value.service_char,
+                        });
+                    if (productData.id) {
+                        saveData.id = productData.id;
+                    }
+                    if (!saveData.title) {
+                        let text = '产品名称不能为空';
+                        if (active === 'save') {
+                            text = '请至少填写一项产品名称'
+                        }
+                        that.azmShowToast(text);
+                        return;
+                    }
+                    if (active === 'save') {//保存
+                        saveData.isReview = 0;
+                        that.saveFromData(saveData);
+                        return;
+                    }
+                    if (!saveData.profile) {
+                        that.azmShowToast('副标题不能为空')
+                    } else if (saveData.market_price <= 0 || saveData.price <= 0) {
+                        that.azmShowToast('价格不能少于0.01元')
+                    } else if (saveData.market_price <= saveData.price) {
+                        that.azmShowToast('折扣价不能大于门市价')
+                    } else if (saveData.group_price && saveData.price <= saveData.group_price) {
+                        that.azmShowToast('拼团价格不得大于折扣价格')
+                    } else if (!saveData.category_id || saveData.category_id.length === 0) {
+                        that.azmShowToast('产品类别未完善')
+                    } else if (!saveData.cover || saveData.cover.length === 0) {
+                        that.azmShowToast('产品主图未完善')
+                    } else if (!saveData.service) {
+                        that.azmShowToast('服务内容不能为空')
+                    } else if (!saveData.service_char) {
+                        that.azmShowToast('服务特色不能为空')
+                    } else if (!saveData.service_flow || saveData.service_flow.length === 0) {
+                        that.azmShowToast('服务流程未完善')
+                    } else if (active === 'submit') {//提交
+                        saveData.isReview = 1;
+                        that.saveFromData(saveData);
+                    }
+                } catch (e) {
+
+                }
             }
         }
     }

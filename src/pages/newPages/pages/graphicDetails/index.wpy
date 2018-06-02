@@ -1,22 +1,22 @@
 <template>
     <view class="graphicDetails">
         <view class="container-main">
-            <view class="empty-area" wx:if="{{!intro.length}}">
+            <view class="empty-area" wx:if="{{!nodes.length}}">
                 <image class="pen-img" src="/imgs/pen.png"/>
                 <view class="empty-area-text"> 您还没有添加任何内容
                     <view>点击下方工具栏添加</view>
                 </view>
             </view>
             <view class="edit-area" wx:else>
-                <block wx:for="{{intro}}" wx:for-index="index" wx:for-item="item" wx:key="key">
+                <block wx:for="{{nodes}}" wx:for-index="index" wx:for-item="item" wx:key="key">
                     <view class="edit-block text-block" wx:if="{{item.type=='text'}}">
                         <view @tap="AddEditText({{index}})">{{item.content}}</view>
                         <image class="remove-btn" src="/imgs/closegray.png" @tap="removeImg({{index}})"/>
                     </view>
                     <view class="edit-block" wx:else>
                         <image class="edit-img" mode="aspectFill"
-                               style="{{item.height?'height:'+ item.height +'rpx':''}}"
-                               src="{{imageUrl + item.content}}" @tap="uploadImage({{index}})"/>
+                               style="{{item.height?'height:'+ item.height +'rpx':''}}" src="{{c.absUrl(item.content)}}"
+                               @tap="uploadImage({{index}})"/>
                         <image class="remove-btn" src="/imgs/closegray.png" @tap="removeImg({{index}})"/>
                     </view>
                 </block>
@@ -58,7 +58,7 @@
         data: {
             text: "Page productItemBrand",
             hasMoreData: false,//是否有更多
-            intro: []
+            nodes: []
         },
         onLoad (options){
             this.loadCb();
@@ -104,20 +104,20 @@
         loadCb () {
             let that = this,
                 options = that.data.options,
-                PrevPage = that.__getPrevPage(),
-                intro = PrevPage.data.intro;
-            this.intro = intro || [];
+                _this2 = that.__getPrevPage(),
+                nodes = _this2.data.nodes;
+            this.nodes = nodes || [];
         }
 
         methods = {
             getTextContent({idx}) {
-                return this.intro[idx].content;
+                return this.nodes[idx].content;
             },
             setTextContent({idx, content}) {
                 if (idx > -1) {
-                    this.intro[idx].content = content;
+                    this.nodes[idx].content = content;
                 } else {
-                    this.intro.push({
+                    this.nodes.push({
                         type: "text",
                         content: content
                     });
@@ -127,14 +127,14 @@
                 this.$azmUtil.go('/pages/product2/pages/editText/index', {data: {idx}})
             },
             setField(idx, e) {
-                this.intro[idx].content = e.detail.value.trim();
+                this.nodes[idx].content = e.detail.value.trim();
             },
             removeImg(idx) {
-                this.intro.splice(idx, 1);
+                this.nodes.splice(idx, 1);
                 this.$apply();
             },
             preview() {
-                this.$parent.globalData.preview = this.data.intro;
+                this.$parent.globalData.preview = this.data.nodes;
                 this.$azmUtil.go('/pages/product2/pages/preview/index');
             },
             uploadImage(idx) {
@@ -169,9 +169,9 @@
                                                 sizeinfo.height / sizeinfo.width * 689
                                             );
                                             if (typeof idx === "number") {
-                                                for (let i = 0; i < this.intro.length; i++) {
+                                                for (let i = 0; i < this.nodes.length; i++) {
                                                     if (i == idx) {
-                                                        this.intro[i] = {
+                                                        this.nodes[i] = {
                                                             type: "img",
                                                             content: data.info,
                                                             height: height
@@ -180,7 +180,7 @@
                                                     }
                                                 }
                                             } else {
-                                                this.intro.push({
+                                                this.nodes.push({
                                                     type: "img",
                                                     content: data.info,
                                                     height: height
@@ -198,8 +198,8 @@
                 });
             },
             dosure(){
-                let _this2 = this.__getPrevPage();
-                _this2.intro = this.data.intro;
+                let that = this, _this2 = that.__getPrevPage();
+                _this2.nodes = this.data.nodes;
                 _this2.$apply();
                 this.$azmUtil.go(-1)
             }

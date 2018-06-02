@@ -183,11 +183,6 @@
             button.exit-btn(@tap="sureExit") 店铺管理
 
         view.list-box
-            navigator.list-item.border-b(url="/pages/newPages/pages/productManage/index")
-                view.flex
-                    view.flex-con 产品管理
-                    view
-                        image.gt(src="/imgs/gt.png")
             navigator.list-item.border-b(url="products/index")
                 view.flex
                     view.flex-con 产品管理

@@ -1,149 +1,147 @@
 <template lang="pug">
-    view.flex.container-main.flex-stretch
-        view.nav-left
-            repeat(for="{{info}}" item="item")
-                view.nav-item(class="{{index==currentIdx?'active':''}}" @tap="toggleParentId({{index}})") {{item.title}}
-        view.nav-content.flex-con
-            view.content-list(wx:if="{{info[currentIdx] && info[currentIdx].son}}")
-                repeat(for="{{info[currentIdx].son}}")
-                    view.content-item.border-b(class="{{item.id==currentId?'selected':''}}" @tap="toggleCategoryId({{item.id}})")
-                        view.flex
-                            view.flex-con  {{item.title}}
-                            view(wx:if="{{item.id==currentId}}")
-                                image.selected-icon(src="/imgs/checked.png")
-
-        view.footer-before
-        view.footer-area
-            view.flex
-                view.flex-con.cancel-btn(@tap="goBack") 取消
-                view.flex-con.ok-btn(@tap="doSure") 确定
+view.flex.container-main.flex-stretch
+    view.nav-left   
+        repeat(for="{{info}}" item="item")
+            view.nav-item(class="{{index==currentIdx?'active':''}}" @tap="toggleParentId({{index}})") {{item.title}}
+    view.nav-content.flex-con    
+        view.content-list(wx:if="{{info[currentIdx] && info[currentIdx].son}}")
+            repeat(for="{{info[currentIdx].son}}")
+                view.content-item.border-b(class="{{item.id==currentId?'selected':''}}" @tap="toggleCategoryId({{item.id}})")
+                    view.flex                 
+                        view.flex-con  {{item.title}}
+                        view(wx:if="{{item.id==currentId}}")
+                            image.selected-icon(src="/imgs/checked.png")
+             
+    view.footer-before
+    view.footer-area
+        view.flex
+            view.flex-con.cancel-btn(@tap="goBack") 取消
+            view.flex-con.ok-btn(@tap="doSure") 确定
 
 </template>
 
 <style lang="less">
-    .container-main {
-        .footer-before {
-            height: 100 rpx;
-        }
-        .footer-area {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #fff;
-            height: 100 rpx;
-            line-height: 100 rpx;
-            text-align: center;
-            border-top: solid 1px #ff8000;
-        }
-        .cancel-btn {
-            color: #ff8000;
-        }
-        .ok-btn {
-            background-color: #ff8000;
-            color: #fff;
-        }
-        min-height: 680 rpx;
-        background-color: #fff;
-        .nav-left {
-            width: 242 rpx;
-            text-align: center;
+.container-main {
+  .footer-before {
+    height: 100rpx;
+  }
+  .footer-area {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    height: 100rpx;
+    line-height: 100rpx;
+    text-align: center;
+    border-top: solid 1px #ff8000;
+  }
+  .cancel-btn {
+    color: #ff8000;
+  }
+  .ok-btn {
+    background-color: #ff8000;
+    color: #fff;
+  }
+  min-height: 680rpx;
+  background-color: #fff;
+  .nav-left {
+    width: 242rpx;
+    text-align: center;
 
-            border-right: 1 rpx solid #eeeeee;
-            color: #282828;
+    border-right: 1rpx solid #eeeeee;
+    color: #282828;
 
-            .nav-item {
-                background-color: #f4f4f4;
-                height: 104 rpx;
-                line-height: 104 rpx;
-            }
-            .active {
-                background-color: #ff8000;
-                color: white;
-            }
-        }
-        .content-item {
-            padding: 28 rpx 26 rpx 28 rpx 54 rpx;
-            color: #282828;
-            &.selected {
-                color: #ff8000;
-            }
-        }
-        .selected-icon {
-            display: none;
-            width: 35 rpx;
-            height: 35 rpx;
-        }
-        .selected .selected-icon {
-            display: block;
-        }
+    .nav-item {
+      background-color: #f4f4f4;
+      height: 104rpx;
+      line-height: 104rpx;
     }
-
-    page {
-        background: #f4f4f4;
+    .active {
+      background-color: #ff8000;
+      color: white;
     }
+  }
+  .content-item {
+    padding: 28rpx 26rpx 28rpx 54rpx;
+    color: #282828;
+    &.selected {
+      color: #ff8000;
+    }
+  }
+  .selected-icon {
+    display: none;
+    width: 35rpx;
+    height: 35rpx;
+  }
+  .selected .selected-icon {
+    display: block;
+  }
+}
+page {
+  background: #f4f4f4;
+}
 </style>
 
 
 <script>
-    import wepy from "wepy";
-    import baseMixin from "../../../mixins/base";
-    export default class extends wepy.page {
-        config = {
-            navigationBarTitleText: "产品类别"
-        };
-        mixins = [baseMixin];
-        data = {
-            info: [],
-            currentIdx: 0,
-            currentId: 0
-        };
+import wepy from "wepy";
+import baseMixin from "../../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "产品类别"
+  };
+  mixins = [baseMixin];
+  data = {
+    info: [],
+    currentIdx: 0,
+    currentId: 0
+  };
 
-        onLoad (options) {
-            this.currentIdx = options.pid || 0
-            this.currentId = options.cid || 0
-            this.showLoading();
-            this.$get(
-                "/shopapi/iteminfo/category",
-                info => {
-                    this.info = info;
-                },
-                () => {
-                    this.hideLoading();
-                }
-            );
-        }
-
-        methods = {
-            doSure(){
-                if (!this.currentId) {
-                    this.$alert('请选择分类')
-                    return
-                }
-                let category_title = ''
-                this.info[this.currentIdx].son.every(el => {
-                    if (el.id == this.currentId) {
-                        category_title = el.title;
-                        return false
-                    }
-                    return true
-                })
-                this.$noticePage('setCategoryId', {
-                    category_id: this.currentId,
-                    parent_idx: this.currentIdx,
-                    title: category_title
-                })
-                this.$back()
-            },
-            toggleParentId(idx) {
-                this.currentIdx = idx
-            },
-            toggleCategoryId(category_id) {
-                this.currentId = category_id;
-            },
-            goBack() {
-                this.$back();
+  onLoad(options) {
+    this.currentIdx = options.pid || 0
+    this.currentId = options.cid || 0
+    this.showLoading();
+    this.$get(
+      "/shopapi/iteminfo/category",
+      info => {
+        this.info = info;
+      },
+      () => {
+        this.hideLoading();
+      }
+    );
+  }
+  methods = {
+      doSure(){
+          if(!this.currentId){
+              this.$alert('请选择分类')
+              return
+          }
+          let category_title = ''
+          this.info[this.currentIdx].son.every(el=>{
+            if(el.id == this.currentId){
+              category_title = el.title;
+              return false
             }
-        };
+            return true
+          })
+          this.$noticePage('setCategoryId',{
+              category_id:this.currentId,
+              parent_idx:this.currentIdx,
+              title:category_title
+          })
+          this.$back()
+      },
+    toggleParentId(idx) {
+        this.currentIdx = idx
+    },
+    toggleCategoryId(category_id) {
+      this.currentId = category_id;
+    },
+    goBack() {
+      this.$back();
     }
+  };
+}
 </script>

@@ -10,7 +10,7 @@ view.container1
     datalist(fetchurl="/shopapi/shop/site")
         view.item-box(slot="item-template")
           view.item-box-title.border-b 订单号：{{item.order_no}}
-          view.item-box-content(@tap="showOrderDetail({{item.bill_id}},{{item.group_open_id}})")
+          view.item-box-content(@tap="showOrderDetail({{item}})")
               view.item-box-content-title 【{{item.category}}】{{item.title}}
               view.item-box-row.flex
                   view.flex-con 验证时间
@@ -22,7 +22,25 @@ view.container1
                   view.flex-con 订单金额    
                   view.price ￥ 
                       view.ib {{item.total}}         
-        
+        view.order-item
+              view.p30.border-b
+                  view.flex
+                      view.flex-con.order-no 订单号:{{item.order_no}}
+                      view.order-status {{item.order_status}}
+                  view.p30.border-b(wx:for="{{item.items}}" wx:for-item="i" wx:key="i.id" @tap="showOrderDetail({{item.id}})")
+                      view.flex.flex-stretch
+                          view
+                              image(src="{{m1.absUrl(i.cover)}}" mode="aspectFill").item-cover
+                          view.pl20.flex-con
+                              view.flex
+                                  view.flex-con.item-title {{i.title}}
+                                  view.item-status(wx:if="{{i.item_status}}") {{i.item_status}}
+                              view.price-area.flex
+                                  view.price-unit ￥
+                                  view.price-num {{i.price}}
+                                  view.flex-con.market-price 门市价 ￥{{i.market_price}}
+                              view.item-count 数量：{{i.num}}
+                  view.total-sum.text-right 合计：￥{{item.total}} {{item.discount_money > 0?'(订单优惠-￥'+ item.discount_money +')':''}}
    
 </template>
 <script>
@@ -39,7 +57,8 @@ export default class Alterpwd extends wepy.page {
     datalist
   };
   data = {
-    kw: ""
+    kw: "",
+    type: 0
   };
 
   onPullDownRefresh() {
@@ -51,36 +70,39 @@ export default class Alterpwd extends wepy.page {
   }
 
   onLoad(options) {
-    let kw = decodeURIComponent(options.kw || "");
+    let kw = decodeURIComponent(options.kw || ""),
+      type = options.type;
     this.kw = kw;
+    this.type = type;
     this.$invoke("datalist", "addFilter", "kw", kw);
+    this.$invoke("datalist", "addFilter", "type", type);
     this.$invoke("datalist", "loadData");
   }
 
   methods = {
-    doSearchTxt(e){
-      let v = e.detail.value.trim()
-      this.methods.doSearch(v)
-      if(this.list && this.list.length > 10){
-          this.list = this.list.splice(10)
+    doSearchTxt(e) {
+      let v = e.detail.value.trim();
+      this.methods.doSearch(v);
+      if (this.list && this.list.length > 10) {
+        this.list = this.list.splice(10);
       }
-      this.list.unshift(v)
-      this.setStorage('_search_history_',this.list)
+      this.list && this.list.unshift(v);
+      this.setStorage("_search_history_", this.list);
     },
-    doSearch(kw){
+    doSearch(kw) {
       wx.navigateTo({
-        url: '/pages/home/result?kw='+encodeURIComponent(kw),
-      })
+        url: "/pages/home/result?kw=" + encodeURIComponent(kw)
+      });
     },
-    showOrderDetail(bill_id, group_open_id) {
-      if (!group_open_id) {
+    showOrderDetail(item) {
+      if (!item.group_open_id) {
         wx.navigateTo({
-          url: "/pages/order/detail?id=" + bill_id
+          url: "/pages/order/detail?id=" + item.bill_id
         });
         // this.$goto("/pages/order/detail?id=" + bill_id);
       } else {
         wx.navigateTo({
-          url: "/pages/order/groupdetail?id=" + group_open_id
+          url: "/pages/order/groupdetail?id=" + item.group_open_id
         });
         // this.$goto("/pages/order/groupdetail?id=" + group_open_id);
       }

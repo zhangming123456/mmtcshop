@@ -9,7 +9,7 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/newPages/pages/graphicDetails/index')">
-                        <block wx:if="{{intro&&intro.length>0}}">
+                        <block wx:if="{{nodes&&nodes.length>0}}">
                             <view class="azm-cell__ft_bd">
                                 <text class="azm-not_perfection">已完善</text>
                             </view>
@@ -122,7 +122,7 @@
         data: {
             text: "Page productDetails",
             hasMoreData: false,//是否有更多
-            intro: [],
+            nodes: [],
             label: [],
             period_of_use: {},
             item_brand: [],
@@ -174,14 +174,15 @@
         loadCb () {
             let that = this,
                 options = that.data.options,
-                productManage = that.$parent.globalData.productManage,
-                intro = productManage.intro || [],
-                label = productManage.label || [],
-                period_of_use = productManage.period_of_use || {},
-                item_brand = productManage.item_brand || [],
-                taboo_crowd = productManage.taboo_crowd || '',
-                other_instructions = productManage.other_instructions || '';
-            that.intro = intro;
+                _this2 = that.__getPrevPage(),
+                productData = _this2.data.productData,
+                nodes = productData.nodes || [],
+                label = productData.label || [],
+                period_of_use = productData.period_of_use || {},
+                item_brand = productData.item_brand || [],
+                taboo_crowd = productData.taboo_crowd || '',
+                other_instructions = productData.other_instructions || '';
+            that.nodes = nodes;
             that.label = this.$azmUtil.unique(label);
             that.period_of_use = period_of_use;
             that.item_brand = item_brand;
@@ -218,40 +219,27 @@
             },
             bindSubmit(e){
                 let that = this,
-                    intro = that.data.intro,
+                    nodes = that.data.nodes,
                     label = that.data.label,
                     period_of_use = that.data.period_of_use,
                     item_brand = that.data.item_brand,
                     taboo_crowd = that.data.taboo_crowd,
                     other_instructions = that.data.other_instructions,
-                    productManage = that.$parent.globalData.productManage,
+                    _this2 = that.__getPrevPage(),
+                    productData = _this2.data.productData,
                     data = {
-                        intro,
+                        nodes,
                         label,
                         period_of_use,
                         item_brand,
                         taboo_crowd,
                         other_instructions
-                    },
-                    isProductDetails = 0,
-                    num = 0, i = 0;
-
-                for (let v in data) {
-                    i++;
-                    if (v === '') {
-                        num++;
-                    }
-                }
-                if (num === 0) {
-                    isProductDetails = 2;
-                } else if (num < i) {
-                    isProductDetails = 1;
-                }
-                data.isProductDetails = isProductDetails;
-                that.$parent.globalData.productManage = {
-                    ...productManage,
+                    };
+                _this2.productData = {
+                    ...productData,
                     ...data
                 };
+                _this2.$apply();
                 that.$azmUtil.go(-1);
             }
         }

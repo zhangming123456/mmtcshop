@@ -12,12 +12,12 @@
           <view class="text-center">
             <view class="suc-line"/>
           </view>
-          <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'redclose'}}.png"/>
+          <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'shenlue'}}.png"/>
           <block  wx:if="{{info.status==3}}">
             <view class="text-center">
               <view class="suc-line"/>
             </view>
-            <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'redclose'}}.png"/>
+            <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'shenlue'}}.png"/>
           </block>
           <block wx:else>
             <view class="text-center">
@@ -43,9 +43,9 @@
       </view>
     </view>
   </view>
-  <block wx:if="{{info.status!=3}}">
+  <block wx:if="{{info.status==2||0}}">
     <view class="caption-title">修改建议</view>
-    <view class="caption-content">你绑定账号有误,请修改后点击下方按钮重新提现。</view>
+    <view class="caption-content">{{info.info}}</view>
     <view class="container1">
       <view class="form-area"> 
         <view class="button-area">

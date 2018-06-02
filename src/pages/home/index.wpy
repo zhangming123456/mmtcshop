@@ -117,7 +117,7 @@ export default class extends wepy.page {
       });
     },
     showSearchWin() {
-      this.$goto("/pages/home/search");
+      this.$goto("/pages/home/search?order_type=0");
     },
 
     showCheckValidPage() {

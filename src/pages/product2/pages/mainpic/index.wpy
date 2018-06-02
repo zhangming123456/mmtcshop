@@ -54,14 +54,21 @@
         mixins = [baseMixin];
 
         loadCb () {
-            let that = this,
-                options = that.data.options;
-            that.cover = that.$parent.globalData.productManage.cover || [];
+            try {
+                let that = this,
+                    options = that.data.options,
+                    _this2 = that.__getPrevPage(),
+                    cover = _this2.data.productData.cover || [];
+                that.cover = cover;
+            } catch (e) {
+                console.log(`${this.data.text}:${e}`);
+            }
         }
 
         saveImg () {
-            let that = this;
-            that.$parent.globalData.productManage.cover = that.data.cover;
+            let that = this, _this2 = that.__getPrevPage();
+            _this2.data.productData.cover = that.data.cover;
+            that.$apply();
         }
 
 

@@ -17,37 +17,43 @@ view.container1
 </template>
 <script>
 import wepy from "wepy";
-import baseMixin from '../../mixins/base';
+import baseMixin from "../../mixins/base";
 export default class Alterpwd extends wepy.page {
   config = {
     navigationBarTitleText: "搜索订单"
   };
-  mixins = [baseMixin]
+  mixins = [baseMixin];
   data = {
-    list:[]
-  }
+    list: [],
+    type: 0
+  };
   methods = {
-    clearHistories(){
-      wx.removeStorageSync('_search_history_')
-      this.list = []
+    clearHistories() {
+      wx.removeStorageSync("_search_history_");
+      this.list = [];
     },
-    doSearchTxt(e){
-      let v = e.detail.value.trim()
-      this.methods.doSearch(v)
-      if(this.list && this.list.length > 10){
-          this.list = this.list.splice(10)
+    doSearchTxt(e) {
+      let v = e.detail.value.trim();
+      this.methods.doSearch.call(this, v);
+      if (this.list && this.list.length > 10) {
+        this.list = this.list.splice(10);
       }
-      this.list.unshift(v)
-      this.setStorage('_search_history_',this.list)
+      this.list && this.list.unshift(v);
+      this.setStorage("_search_history_", this.list);
     },
-    doSearch(kw){
+    doSearch(kw) {
       wx.navigateTo({
-        url: '/pages/home/result?kw='+encodeURIComponent(kw),
-      })
+        url: `/pages/home/result?kw=${encodeURIComponent(kw)}&type=${
+          this.data.type
+        }`
+      });
     }
   };
-  onLoad(){
-    this.list = this.getStorage('_search_history_') || []
+  onLoad(options) {
+    if (options.order_type) {
+      this.type = options.order_type;
+    }
+    this.list = this.getStorage("_search_history_") || [];
   }
 }
 </script>
@@ -58,9 +64,9 @@ export default class Alterpwd extends wepy.page {
   .histories {
     padding-top: 51rpx;
     font-size: 26rpx;
-    .title{
-        font-size: 26rpx;
-	    color: #666666;
+    .title {
+      font-size: 26rpx;
+      color: #666666;
     }
   }
   .clear-btn {
@@ -68,7 +74,7 @@ export default class Alterpwd extends wepy.page {
     font-size: 28rpx;
   }
 }
-.search-box { 
+.search-box {
   font-size: 28rpx;
   color: #999999;
   border: solid 1px #eeeeee;
@@ -80,11 +86,11 @@ export default class Alterpwd extends wepy.page {
   width: 24rpx;
   height: 25rpx;
   margin-right: 15rpx;
-  vertical-align:middle;
+  vertical-align: middle;
 }
 .tags {
   overflow: hidden;
-  margin-left:-24rpx;
+  margin-left: -24rpx;
 }
 .tag {
   float: left;
@@ -96,12 +102,12 @@ export default class Alterpwd extends wepy.page {
   line-height: 60rpx;
   font-size: 30rpx;
   padding: 0 48rpx;
-  margin-top:30rpx;
-  margin-left:24rpx;
+  margin-top: 30rpx;
+  margin-left: 24rpx;
 }
-.search-box input{
-    width: 100%;
-    height: 27rpx;
+.search-box input {
+  width: 100%;
+  height: 27rpx;
 }
 </style>
  

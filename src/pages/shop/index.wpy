@@ -23,7 +23,7 @@ view.list-box
     view.list-item.border-b(@tap="editTelephone")
         view.flex
             view 服务电话
-            view.flex-con.list-item-value {{info.telephone}}
+            view.flex-con.list-item-value {{info.service_phone}}
             view.gt-wrapper
                 image.gt(src="/imgs/gt.png")
 
@@ -208,7 +208,8 @@ export default class extends wepy.page {
   wxs = {
     m1
   };
-  onLoad() {
+  onLoad() {}
+  onShow() {
     this.$get("/shopapi/shop_manager/index", ret => {
       this.info = ret;
       this.info.major_business = this.info.major_business.join("、");
@@ -394,6 +395,7 @@ export default class extends wepy.page {
               if (data.status == 1) {
                 this.img_src = this.absUrl(data.info);
                 let cover = data.info;
+
                 this.$post("/shopapi/shop_manager/setCover", {
                   cover
                 });

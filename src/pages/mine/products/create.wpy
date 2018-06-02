@@ -232,11 +232,11 @@ view.container-main
         view.flex.border-b
             view.label  产品名称
             view.flex-con
-                input.input-txt(placeholder="产品名称（主标题）" value="{{item.title}}" @input="setField('title')")
+                input.input-txt( style="color:#000" placeholder="产品名称（主标题）" value="{{item.title}}" @input="setField('title')")
         view.flex.border-b
             view.label  副标题
             view.flex-con 
-                input.input-txt(placeholder="产品副标题"   value="{{item.profile}}" @input="setField('profile')")                                        
+                input.input-txt(style="color:#000" placeholder="产品副标题"   value="{{item.profile}}" @input="setField('profile')")                                        
     view.p1.border-b
         view.flex
             view.flex-con

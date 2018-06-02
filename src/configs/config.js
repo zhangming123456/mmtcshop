@@ -1,12 +1,8 @@
 /**
  * 小程序配置文件
  */
-// var host = "http://192.168.134.254:8080/zhenler-server/api";
-// var host = "http://192.168.134.2:8082/api";
-// var host = 'http://192.168.134.116:8080/zhenler-server/api';
-// var host = 'https://vip.zhenler.com/api';//发布环境
-var host = 'https://app.mmtcapp.com';//开发环境
-// var host = 'http://119.23.132.192/zhenler-server/api';//测试环境
+var host = 'https://app.mmtcapp.com';//发布环境
+// var host = 'http://192.168.3.81';//开发环境
 var service = {
     // 下面的地址配合云端 Server 工作
     host,
@@ -14,7 +10,7 @@ var service = {
     version: '',
 
     // 图片服务器地址
-    imageUrl: `https://app.mmtcapp.com`,
+    imageUrl: host,
 
     // 登录地址，用于建立会话
     loginUrl: `https://${host}/login`,

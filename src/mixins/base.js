@@ -240,17 +240,7 @@ class baseMixin extends wepy.mixin {
         })
     }
 
-    $ajax ({
-               url = '',
-               headers = {},
-               method = "GET",
-               data = {}
-           }, {
-               success = noop,
-               error = null,
-               fail = this.$alert,
-               complete = noop
-           }) {
+    $ajax ({url = '', headers = {}, method = "GET", data = {}}, {success = noop, error = null, fail = this.$alert, complete = noop}) {
         error = error || this.$alert
         var sid = this.getSessionId();
         if (sid) {

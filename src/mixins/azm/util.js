@@ -15,6 +15,11 @@ module.exports.queryString = queryString;
 module.exports.md5 = utilMd5;
 module.exports.common = utilCommon;
 
+
+function type (ob) {
+    return Object.prototype.toString.call(ob).slice(8, -1).toLowerCase();
+}
+module.exports.type = type;
 function getDate (date) {
     let _date = new Date();
     if (regExpUtil.isDateTime(date)) {
@@ -372,6 +377,16 @@ function requestUrlMerge (url, params) {
 
 module.exports.requestUrlMerge = requestUrlMerge;
 
+function paramsStringify (params) {
+    let obj = {};
+    if (isEmptyObject(params)) {
+        for (let k in params) {
+            obj[k] += `${k}=${(["object", "array"].indexOf(type(data)) !== -1) ? JSON.stringify(params[k]) : params[k]}`;
+        }
+    }
+    return obj;
+}
+module.exports.paramsStringify = paramsStringify;
 function requestParametersMerge (params) {
     if (!params) return null;
     try {

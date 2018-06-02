@@ -93,6 +93,7 @@
                     data.message = options;
                 } else {
                     data.message = options.message;
+                    data.success = options.success;
                     data.timeout = options.timeout;
                 }
                 that.message = data.message;
@@ -101,6 +102,7 @@
                 that.azmToast = setTimeout(() => {
                     that.show = false;
                     that.$apply();
+                    data.success && data.success()
                 }, timeout);
                 that.$apply();
             };
