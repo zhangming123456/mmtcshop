@@ -3,8 +3,8 @@
         <view class="pic-item">
             <image class="pic-item-img" src="/imgs/updatepic.png" bindtap="pickImg"/>
         </view>
-        <block wx:if="{{cover && cover.length}}">
-            <view class="pic-item" wx:for="{{cover}}" wx:key="{{index}}">
+        <block wx:if="{{covers && covers.length}}">
+            <view class="pic-item" wx:for="{{covers}}" wx:key="{{index}}">
                 <image class="pic-item-img" src="{{imageUrl + item}}" mode="aspectFill"/>
                 <image class="pic-item-close" src="/imgs/closegray.png" bindtap="removePic(index)"/>
             </view>
@@ -17,20 +17,21 @@
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page mainpic",
             hasMoreData: false,//是否有更多
-            cover: []
+            covers: []
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb()
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -58,8 +59,8 @@
                 let that = this,
                     options = that.data.options,
                     _this2 = that.__getPrevPage(),
-                    cover = _this2.data.productData.cover || [];
-                that.cover = cover;
+                    covers = _this2.data.productData.covers || [];
+                that.covers = that.$azmUtil.extend(true, [], covers);
             } catch (e) {
                 console.log(`${this.data.text}:${e}`);
             }
@@ -67,22 +68,22 @@
 
         saveImg () {
             let that = this, _this2 = that.__getPrevPage();
-            _this2.data.productData.cover = that.data.cover;
+            _this2.data.productData.covers = that.data.covers;
             that.$apply();
         }
 
 
         methods = {
-            pickImg() {
+            pickImg () {
                 let that = this;
-                that.ImageUpload(9).then(
+                that.ImageUpload(9, 'covers').then(
                     res => {
                         that.saveImg();
                     }
                 );
             },
-            removePic(index){
-                this.cover.splice(index, 1);
+            removePic (index) {
+                this.covers.splice(index, 1);
                 this.saveImg()
             }
         }

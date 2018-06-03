@@ -4,6 +4,7 @@ import {
 } from "./httpRequest";
 
 const $http = new HttpRequest();
+
 class ShopApi {
     constructor () {
         this.shopApi = '/shopapi/'
@@ -55,7 +56,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    siteItemInfo (data = {nodes= 1, id= 0} = {}, resole, reject) {
+    siteItemInfo (data = {nodes = 1, id = 0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/site`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -145,7 +146,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoDownOn (data = {id=0} = {}, resole, reject) {
+    setIteminfoDownOn (data = {id = 0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/downOn`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -159,7 +160,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoUpOn (data = {id=0} = {}, resole, reject) {
+    setIteminfoUpOn (data = {id = 0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/upOn`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -173,9 +174,37 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoRevokeAuth (data = {id=0} = {}, resole, reject) {
+    setIteminfoRevokeAuth (data = {id = 0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/revokeAuth`;
+        const http = $http.get(that.url + api, data, resole, reject);
+        return http;
+    }
+
+    /**
+     * 商家产品管理——删除产品
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    deleteItem ({id = 0} = {}, resole, reject) {
+        let that = this, data = {id};
+        const api = `${that.shopApi}iteminfo/to_del`;
+        const http = $http.get(that.url + api, data, resole, reject);
+        return http;
+    }
+
+    /**
+     * 商家产品管理——提交审核
+     * @param id
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    examineItem ({id = 0} = {}, resole, reject) {
+        let that = this, data = {id};
+        const api = `${that.shopApi}iteminfo/to_examine`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
     }
@@ -194,6 +223,7 @@ class ShopApi {
         return http;
     }
 }
+
 class ApiService extends ShopApi {
     constructor (...args) {
         super(...args); // 调用父类的constructor(x, y)
@@ -242,4 +272,5 @@ class ApiService extends ShopApi {
         return http;
     }
 }
+
 module.exports = new ApiService();

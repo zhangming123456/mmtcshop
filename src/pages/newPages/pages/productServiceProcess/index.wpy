@@ -46,6 +46,7 @@
     import baseMixin from "../../../../mixins/base";
     import toast from "../../../../components/toast";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page productServiceProcess",
@@ -57,14 +58,14 @@
             },
             service_flow: []
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb()
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -97,7 +98,7 @@
                     _this2 = that.__getPrevPage(),
                     service_flow = _this2.data.productData.service_flow;
                 if (service_flow && service_flow.length > 0) {
-                    that.service_flow = service_flow;
+                    that.service_flow = that.$azmUtil.extend(true, [], service_flow);
                 } else {
                     that.methods.bindAddProcess.call(that);
                 }
@@ -107,7 +108,7 @@
         }
 
         getEleScrollOffset (el) {
-            if (!el)return;
+            if (!el) return;
             let node = null;
             let p = new Promise((resolve, reject) => {
                 wx.createSelectorQuery().select(el).boundingClientRect(function (res) {
@@ -122,15 +123,15 @@
         }
 
         methods = {
-            changeToTest(){
+            changeToTest () {
                 let that = this,
                     _this2 = that.__getPrevPage(),
-                    service_flow = this.data.service_flow,
+                    service_flow = that.data.service_flow,
                     flag = service_flow.findIndex(res => {
                         return res.name === '' || res.times === '' || res.time === ''
                     });
                 if (flag === -1) {
-                    that.$parent.globalData.productManage.service_flow = service_flow;
+                    _this2.productData.service_flow = service_flow;
                     that.$azmUtil.go(-1);
                 } else {
                     that.azmShowToast(`流程${flag + 1}内容还未完成，请完成后再添加新的流程哦~~~`);
@@ -138,9 +139,8 @@
                         that.$azmUtil.goToTop(res.height * flag);
                     })
                 }
-                console.log(flag)
             },
-            bindInputChang(index, key, e){
+            bindInputChang (index, key, e) {
                 let that = this,
                     value = e.detail.value;
                 if (key !== 'name' && value !== '' && value < 1) {
@@ -151,7 +151,7 @@
                     return value;
                 }
             },
-            bindInputBlur(index, key, e){
+            bindInputBlur (index, key, e) {
                 let that = this,
                     value = e.detail.value;
                 if (key !== 'name' && value === '') {
@@ -161,10 +161,10 @@
                     that.service_flow[index][key] = value;
                 }
             },
-            bindDeleteProcess(index){
+            bindDeleteProcess (index) {
                 this.service_flow.splice(index, 1);
             },
-            bindAddProcess(){
+            bindAddProcess () {
                 let that = this,
                     service_flow = that.data.service_flow, name;
                 if (service_flow.length) {

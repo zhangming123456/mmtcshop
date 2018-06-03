@@ -13,7 +13,7 @@
         </view>
         <block wx:if="{{items[tabList.selectedId].length>0}}">
             <block wx:for="{{items[tabList.selectedId]}}" wx:key="{{i}}" wx:for-item="v" wx:for-index="i">
-                <block wx:for="{{v}}" wx:key="{{item.id}}">
+                <block wx:for="{{v}}" wx:key="{{item.id}}" hidden="{{tabList.selectedId == 2 && item.status == 1}}">
                     <view class="t-refund">
                         <view class="t-topStatus flexBox">
                             <view class="t-shopName flexBox-item fb-all">产品ID：{{item.item_no}}</view>
@@ -98,7 +98,7 @@
                                     </block>
                                     <block wx:elif="{{tabList.selectedId == 2 && item.auth_status == 3}}">
                                         <button size="mini" plain hover-class="none" class="azm-btn"
-                                                @tap.stop="editAuth({{item}})">
+                                                @tap.stop="submitReview({{item}})">
                                             提交审核
                                         </button>
                                     </block>
@@ -275,9 +275,9 @@
         }
 
         methods = {
-            route(path, item){
+            route (path, item) {
                 console.log(path, item);
-                if (!item.id)return;
+                if (!item.id) return;
                 this.$azmUtil.go(path, {data: {id: item.id}});
             },
             bindTapChang (i) {
@@ -353,10 +353,10 @@
                 });
             },
             /**
-             * 下架产品
+             * 撤销审核
              * @param item
              **/
-            revokeAuthItem(item){
+            revokeAuthItem (item) {
                 let that = this,
                     id = item.id,
                     selectedId = that.data.tabList.selectedId,
@@ -375,6 +375,28 @@
                 });
             },
             /**
+             * 提交审核
+             * @param item
+             **/
+            submitReview (item) {
+                let that = this,
+                    id = item.id,
+                    selectedId = that.data.tabList.selectedId,
+                    page = that.data.tabList.list[selectedId];
+                this.confirm("是否提交审核该项目吗？", () => {
+                    this.showLoading();
+                    this.ApiService.examineItem({id}).then(
+                        res => {
+                            if (res.status === 1) {
+                                that.loadCb();
+                            }
+                        }
+                    ).finally(res => {
+                        that.hideLoading();
+                    });
+                });
+            },
+            /**
              * 删除产品
              * @param item
              */
@@ -382,14 +404,15 @@
                 let that = this;
                 that.confirm("是否删除产品，删除后将不能恢复？", () => {
                     this.showLoading();
-                    this.ApiService.setItemlistDownOn({id: item.id}).then(
+                    this.ApiService.deleteItem({id: item.id}).then(
                         res => {
                             if (res.status === 1) {
-                                that.items[selectedId] = res.info;
-                                that.$apply();
+
                             }
                         }
-                    );
+                    ).finally(res => {
+                        that.hideLoading();
+                    });
                 });
             }
         }

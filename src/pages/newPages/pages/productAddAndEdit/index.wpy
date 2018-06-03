@@ -51,11 +51,11 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/newPages/pages/productCategory/index')">
-                        <block wx:if="{{productData.category_id && productData.category_id.length>0}}">
+                        <block wx:if="{{productData.category_ids && productData.category_ids.length>0}}">
                             <view class="zan-ellipsis azm-cell__ft_bd">
-                                <block wx:for="{{productData.category_id}}" wx:key="{{index}}">
+                                <block wx:for="{{productData.category_ids}}" wx:key="{{index}}">
                                     <text>{{item.title}}</text>
-                                    <text wx:if="{{index !== productData.category_id.length-1}}">、</text>
+                                    <text wx:if="{{index !== productData.category_ids.length-1}}">、</text>
                                 </block>
                                 <text>等</text>
                             </view>
@@ -74,9 +74,9 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/product2/pages/mainpic/index')">
-                        <block wx:if="{{productData.cover && productData.cover.length>0}}">
+                        <block wx:if="{{productData.covers && productData.covers.length>0}}">
                             <view class="azm-cell__ft_bd">
-                                <image class="azm-image" src="{{imageUrl + productData.cover[0]}}"
+                                <image class="azm-image" src="{{imageUrl + productData.covers[0]}}"
                                        mode="aspectFill"></image>
                             </view>
                         </block>
@@ -133,10 +133,10 @@
                         <view class="flexBox">
                             <view class="flexBox-item fb-17 azm-text_left">越完善度排名越高(选填)</view>
                             <view class="flexBox-item fb-all">
-                                <block wx:if="{{productData.isProductDetails === 2}}">
+                                <block wx:if="{{isProductDetails === 2}}">
                                     <text class="azm-not_perfection" style="color: #282828">已添加</text>
                                 </block>
-                                <block wx:elif="{{productData.isProductDetails === 1}}">
+                                <block wx:elif="{{isProductDetails === 1}}">
                                     <text class="azm-not_perfection" style="color: #282828">部分添加</text>
                                 </block>
                                 <block wx:else>
@@ -156,19 +156,18 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/product2/pages/groupActivity/index')">
-                        <view class="flexBox">
+                        <block wx:if="{{productData.group_num && productData.group_price}}">
+                            <text class="azm-not_perfection azm-color_primary">拼团特惠{{productData.group_num}}人团</text>
+                            <text class="azm-not_perfection azm-color_primary"> ￥{{productData.group_price}}</text>
+                        </block>
+                        <view class="flexBox" wx:else>
                             <view class="flexBox-item fb-17 azm-text_left">目前可参加拼团(选填)</view>
                             <view class="flexBox-item fb-all">
-                                <block wx:if="{{productData.group_num && productData.group_price}}">
-                                    <text class="azm-not_perfection">已完善</text>
-                                </block>
-                                <block wx:else>
-                                    <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
-                                    <text class="azm-not_perfection azm-color_primary">未完善</text>
-                                </block>
+                                <text class="iconfont icon-gantanhao azm-icon azm-color_primary azm-icon_left"></text>
+                                <text class="azm-not_perfection azm-color_primary">未完善</text>
                             </view>
-                            <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
                         </view>
+                        <text class="iconfont icon-xiangyou azm-icon azm-icon_right"></text>
                     </view>
                 </view>
             </view>
@@ -209,8 +208,8 @@
                 profile: '',//副标题
                 market_price: null,//市场价格（门市价）
                 price: null,//价格（折扣）
-                category_id: [],//产品分类ID
-                cover: [],//产品封面
+                category_ids: [],//产品分类ID
+                covers: [],//产品封面
                 service: '',//服务内容
                 service_char: '',//服务特色
                 service_flow: [],//服务流程
@@ -237,15 +236,8 @@
             this.loadCb()
         },
         onShow () {
-//            let productManage = this.$parent.globalData.productManage;
             if (this.data.isShow && this.data.isRefresh) {
-                let productData = {};
-//                for (let k in productManage) {
-//                    if (productManage[k]) {
-//                        productData[k] = productManage[k];
-//                    }
-//                }
-//                this.productData = Object.assign(this.data.productData, productData);
+                this.isProductDetailsFn();
             }
         },
         onPullDownRefresh () {
@@ -301,6 +293,10 @@
             }
         }
 
+        /**
+         * 查看产品详情
+         * @param id
+         */
         getProductData (id = 0) {
             let that = this;
             that.showLoading();
@@ -310,11 +306,14 @@
                         let info = res.info,
                             productData = that.data.productData,
                             common = that.$azmUtil.common;
-                        if (common.isNumberOfNaN(info.category_id)) {
-                            info.category_id = [{id: info.category_id}]
+                        if (productData.category_ids && productData.category_ids.length > 0) {
+                            info.category_ids = productData.category_ids;
+                        } else if (common.isNumberOfNaN(info.category_id)) {
+                            info.category_ids = [{id: info.category_id, title: info.category}]
                         }
-                        if (common.isString(info.cover)) {
-                            info.cover = [info.cover]
+                        info.covers = info.covers_s;
+                        if (!(common.isArray(info.covers) && info.covers.length > 0) || common.isString(info.cover)) {
+                            info.covers = [info.cover];
                         }
                         if (info.isTheTerm !== undefined) {
                             productData.period_of_use.isTheTerm = info.isTheTerm
@@ -334,13 +333,12 @@
                         if (info.note !== undefined) {
                             productData.period_of_use.note = info.note
                         }
-                        let data = Object.assign(productData, info);
-                        that.productData = data;
+                        that.productData = Object.assign(productData, info);
                         that.$apply();
                     } else {
                         that.azmShowToast({
                             message: '产品查询错误',
-                            success() {
+                            success () {
                                 that.$azmUtil.go(-1);
                             }
                         })
@@ -348,20 +346,25 @@
                 }
             ).finally(res => {
                 that.hideLoading();
+                that.isProductDetailsFn();
             })
         }
 
+        /**
+         * 过滤保存信息
+         * @param obj
+         * @returns {{covers: Array, service_flow: Array, nodes: string, label: Array, category_ids: Array, item_brand: Array, taboo_crowd: string, other_instructions: string, group_num: string, group_price: string, is_valid: boolean}}
+         */
         getSaveData (obj = {}) {
             let that = this,
                 common = that.$azmUtil.common,
-                _this2 = that.__getPrevPage(),
-                data = that.$parent.globalData.productManage,
+                data = that.data.productData,
                 saveData = {
-                    cover: data.cover,
+                    cover: data.covers,
                     service_flow: data.service_flow,
                     nodes: data.nodes,
                     label: data.label,
-                    category_id: data.category_id,
+                    category_ids: data.category_ids,
                     item_brand: data.item_brand,
                     taboo_crowd: data.taboo_crowd,
                     other_instructions: data.other_instructions,
@@ -380,12 +383,12 @@
                 saveData.start_time = period_of_use.start_time;
                 saveData.end_time = period_of_use.end_time;
             }
-            if (saveData.category_id && saveData.category_id.length > 0) {
-                let category_id = [];
-                for (let v of saveData.category_id) {
-                    category_id.push(v.id);
+            if (saveData.category_ids && saveData.category_ids.length > 0) {
+                let category_ids = [];
+                for (let v of saveData.category_ids) {
+                    category_ids.push(v.id);
                 }
-                saveData.category_id = category_id;
+                saveData.category_id = category_ids;
             }
             saveData = {...obj, ...saveData};
             for (let k in saveData) {
@@ -400,12 +403,64 @@
         }
 
         saveFromData (data) {
+            if (this.data.isSubmit) return;
+            this.data.isSubmit = true;
             let that = this,
                 p = that.ApiService.saveItemInfo(data);
+            p.then(
+                res => {
+                    if (res.status === 1) {
+                        that.azmShowToast({
+                            title: data.isReview === 1 ? '提交项目成功' : '保存项目成功',
+                            success () {
+                                that.$azmUtil.go(-1);
+                            }
+                        })
+                    } else {
+                        this.data.isSubmit = false;
+                    }
+                });
             p.catch(res => {
-
+                this.data.isSubmit = false;
             });
             return p;
+        }
+
+        isProductDetailsFn () {
+            let that = this,
+                data = {
+                    nodes: '',//产品详情介绍 (图文详情)
+                    label: [], //产品标签 ["a","b"]
+                    period_of_use: {
+                        isTheTerm: 0,// 是否设置使用限制日期
+                        start_date: '',// 限制起始日期
+                        end_date: '',// 限制结束日期
+                        note: '',// 期限说明
+                        start_time: '',// 开始时间
+                        end_time: ''// 结束时间
+                    },
+                    item_brand: [],//使用物料（商品）
+                    taboo_crowd: '',//禁忌人群
+                    other_instructions: '',//其它说明}
+                },
+                productData = that.data.productData,
+                common = that.$azmUtil.common,
+                num = 0, len = 0;
+            for (let k in data) {
+                let val = productData[k];
+                len++;
+                if (val && ((common.isEmptyObject(val) && !!val.start_time) || (common.isArray(val) && val.length > 0))) {
+                    num++;
+                }
+            }
+            if (len === num) {
+                that.isProductDetails = 2;
+            } else if (num > 0) {
+                that.isProductDetails = 1;
+            } else {
+                that.isProductDetails = 0;
+            }
+            that.$apply()
         }
 
         methods = {
@@ -416,9 +471,8 @@
             route (url) {
                 this.$azmUtil.go(url);
             },
-            bindSubmit(e){
+            bindSubmit (e) {
                 let that = this;
-                console.log(e);
                 try {
                     let value = e.detail.value,
                         productData = that.data.productData,

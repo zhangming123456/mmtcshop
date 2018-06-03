@@ -54,7 +54,7 @@
                             <view class="flexBox-item fb-8">
                                 <view class="t-shopdetail">
                                     <icon class="t-delete" type="clear" size="14.5"
-                                          @tap="bindItemDelete('index')"></icon>
+                                          @tap="bindItemDelete({{index}})"></icon>
                                     <view class="t-skii">
                                         <image class="azm-image" src="{{imageUrl + item.cover}}"
                                                mode="aspectFill"></image>
@@ -84,6 +84,7 @@
     import toast from "../../../../components/toast";
     import popup from "../../../../components/popup";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page productItemBrand",
@@ -93,19 +94,19 @@
             cover: '',// 图片
             item_brand: []
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb();
         },
-        onShow(){
+        onShow () {
             if (this.data.isShow && this.data.isRefresh) {
                 this.loadCb()
             }
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -140,24 +141,24 @@
             let that = this,
                 options = that.data.options,
                 _this2 = that.__getPrevPage(),
-                item_brand = _this2.data.item_brand;
-            that.item_brand = item_brand || [];
+                item_brand = _this2.data.item_brand || [];
+            that.item_brand = that.$azmUtil.extend(true, [], item_brand) || [];
         }
 
         methods = {
-            bindItemDelete(index){
+            bindItemDelete (index) {
                 this.item_brand.splice(index, 1);
             },
-            bindImageUpload(){
+            bindImageUpload () {
                 let that = this;
                 this.ImageUpload(1).then(res => {
 
                 });
             },
-            bindInputChang(key, e){
+            bindInputChang (key, e) {
                 this[key] = e.detail.value;
             },
-            bindAddTo(e){
+            bindAddTo (e) {
                 let value = e.detail.value,
                     title = value.title,
                     brand = value.brand,
@@ -178,7 +179,7 @@
                 this.cover = '';
 
             },
-            binSubmit(){
+            binSubmit () {
                 let that = this,
                     item_brand = this.data.item_brand,
                     _this2 = that.__getPrevPage();
@@ -190,7 +191,7 @@
                     that.azmShowToast('未添加物料');
                 }
             },
-            bindCancelBtn(){
+            bindCancelBtn () {
                 this.$azmUtil.go(-1)
             }
         }

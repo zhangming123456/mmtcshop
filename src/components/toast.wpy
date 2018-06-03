@@ -65,6 +65,7 @@
 <script>
     import wepy from 'wepy'
     import baseMixin from '../mixins/base'
+
     export default class toast1 extends wepy.component {
         props = {
             message: String,
@@ -89,28 +90,36 @@
             that.$parent.azmShowToast = function (options) {
                 let data = {};
                 if (typeof options === 'string') {
-                    console.log(1);
                     data.message = options;
                 } else {
                     data.message = options.message;
                     data.success = options.success;
                     data.timeout = options.timeout;
                 }
-                that.message = data.message;
-                let timeout = data.timeout || that.timeout;
-                that.show = true;
-                that.azmToast = setTimeout(() => {
-                    that.show = false;
-                    that.$apply();
-                    data.success && data.success()
-                }, timeout);
-                that.$apply();
-            };
+                that.__azmShowToast(data);
+            }
         };
+
+        __azmShowToast ({
+                            message = '', success = () => {
+            }, timeout = 0
+                        } = {}) {
+            let that = this,
+                data = {message, success, timeout};
+            that.message = data.message;
+            let _timeout = data.timeout || that.timeout;
+            that.show = true;
+            that.azmToast = setTimeout(() => {
+                that.show = false;
+                that.$apply();
+                data.success();
+            }, _timeout);
+            that.$apply();
+        }
 
         watch = {};
         methods = {
-            clearAzmToast(){
+            clearAzmToast () {
                 clearTimeout(this.data.time);
                 this.show = false
             }

@@ -1,27 +1,27 @@
 const $ = require('../../mixins/base.js').default.prototype;
 Page({
     data: {
-        isShowPage:false,
+        isShowPage: false,
         items: [],
         startX: 0, //开始坐标
         startY: 0
     },
-    onReady(){
+    onReady () {
         this.setData({
-            isShowPage:true
+            isShowPage: true
         })
     },
-    onLoad: function onLoad() {
+    onLoad: function onLoad () {
         this.loadData()
         $.addEventListener('addNewTechnician', this, this.onAddNewTech)
     },
-    onShow(){
-        if(this.data.isShowPage){
+    onShow () {
+        if (this.data.isShowPage) {
             this.loadData()
         }
     },
     // 跳转页面 
-    changeToTest: function changeToTest(e) {
+    changeToTest: function changeToTest (e) {
         console.log(e)
         var id = e.currentTarget.dataset.id;
         var shop_id = e.currentTarget.dataset.shopid;
@@ -35,14 +35,14 @@ Page({
             });
         }
     },
-    loadData() {
+    loadData () {
         $.$get('/shopapi/technician/technician/major', res => {
             this.setData({
                 items: res
             });
         })
     },
-    onAddNewTech(data) {    
+    onAddNewTech (data) {
         if (!data.isNew) {
             this.data.items.forEach(element => {
                 if (element.id == data.id) {
@@ -58,7 +58,7 @@ Page({
         })
     },
     //手指触摸动作开始 记录起点X坐标
-    touchstart: function touchstart(e) {
+    touchstart: function touchstart (e) {
         var that = this;
         //开始触摸时 重置所有删除
         that.data.items.forEach(function (v, i) {
@@ -72,7 +72,7 @@ Page({
         });
     },
     //滑动事件处理
-    touchmove: function touchmove(e) {
+    touchmove: function touchmove (e) {
         var that = this,
             index = e.currentTarget.dataset.index,
 
@@ -94,9 +94,9 @@ Page({
                 X: startX,
                 Y: startY
             }, {
-                    X: touchMoveX,
-                    Y: touchMoveY
-                });
+                X: touchMoveX,
+                Y: touchMoveY
+            });
         that.data.items.forEach(function (v, i) {
             v.isTouchMove = false;
             //滑动超过30度角 return
@@ -117,14 +117,14 @@ Page({
      * @param {Object} start 起点坐标
      * @param {Object} end 终点坐标
      */
-    angle: function angle(start, end) {
+    angle: function angle (start, end) {
         var _X = end.X - start.X,
             _Y = end.Y - start.Y;
         //返回角度 /Math.atan()返回数字的反正切值
         return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
     },
     //删除事件
-    del: function del(e) {
+    del: function del (e) {
         // debugger;
         var that = this;
         var id = e.currentTarget.dataset.id;
@@ -134,7 +134,7 @@ Page({
             url: url,
             data: {},
             method: 'GET',
-            success: function success(res) {
+            success: function success (res) {
                 that.data.items.splice(e.currentTarget.dataset.index, 1);
                 that.setData({
                     items: that.data.items

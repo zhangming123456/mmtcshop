@@ -481,31 +481,31 @@
 
                 "pages/loginMessage/index",
             ],
-//            subPackages: [
-//                {
-//                    "root": "pages/newPages",
-//                    "pages": [
-//                        "pages/productManage/index",
-//                        "pages/productAddAndEdit/index",
-//                        "pages/productCategory/index",
-//                        "pages/productServiceProcess/index",
-//                        "pages/productDetails/index",
-//                        "pages/productPeriodOfUse/index",
-//                        "pages/productItemBrand/index",
-//                        "pages/graphicDetails/index",
-//                    ]
-//                },
-//                {
-//                    "root": "pages/product2",
-//                    "pages": [
-//                        "pages/mainpic/index",
-//                        "pages/preview/index",
-//                        "pages/editText/index",
-//                        "pages/groupActivity/index",
-//                        "pages/detail/index",
-//                    ]
-//                }
-//            ],
+            subPackages: [
+                {
+                    "root": "pages/newPages",
+                    "pages": [
+                        "pages/productManage/index",
+                        "pages/productAddAndEdit/index",
+                        "pages/productCategory/index",
+                        "pages/productServiceProcess/index",
+                        "pages/productDetails/index",
+                        "pages/productPeriodOfUse/index",
+                        "pages/productItemBrand/index",
+                        "pages/graphicDetails/index",
+                    ]
+                },
+                {
+                    "root": "pages/product2",
+                    "pages": [
+                        "pages/mainpic/index",
+                        "pages/preview/index",
+                        "pages/editText/index",
+                        "pages/groupActivity/index",
+                        "pages/detail/index",
+                    ]
+                }
+            ],
             window: {
                 backgroundTextStyle: "light",
                 navigationBarBackgroundColor: "#fff",

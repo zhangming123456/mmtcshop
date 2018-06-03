@@ -1,7 +1,8 @@
 <template>
     <view class="form-area">
         <view class="container1">
-            <textarea class="textarea" placeholder="请在这里输入文字~" value="{{content}}" @input="setField"/>
+            <textarea class="textarea" placeholder="请在这里输入文字~" value="{{content}}" @input="setField" maxlength="-1"
+                      focus="true" auto-height="true"/>
             <button class="btn-primary" type="default" @tap="doSubmit" hover-class="tapmode">提 交</button>
         </view>
     </view>
@@ -10,6 +11,7 @@
     import wepy from "wepy";
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
+
     const appPage = new utilPage({
         data: {
             text: "Page editText",
@@ -17,17 +19,17 @@
             content: "",
             idx: -1
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb();
         },
-        onShow(){
+        onShow () {
 
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -61,10 +63,10 @@
         }
 
         methods = {
-            setField(e) {
+            setField (e) {
                 this.content = e.detail.value.trim();
             },
-            doSubmit() {
+            doSubmit () {
                 let that = this,
                     content = this.data.content,
                     idx = this.data.idx;

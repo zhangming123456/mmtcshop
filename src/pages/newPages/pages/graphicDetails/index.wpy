@@ -54,24 +54,25 @@
     import toast from "../../../../components/toast";
     import popup from "../../../../components/popup";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
-            text: "Page productItemBrand",
+            text: "Page graphicDetails",
             hasMoreData: false,//是否有更多
             nodes: []
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb();
         },
-        onShow(){
+        onShow () {
             if (this.data.isShow && this.data.isRefresh) {
 
             }
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
         onPageScroll (options) {
@@ -105,15 +106,15 @@
             let that = this,
                 options = that.data.options,
                 _this2 = that.__getPrevPage(),
-                nodes = _this2.data.nodes;
+                nodes = that.$azmUtil.extend(true, [], _this2.data.nodes) || [];
             this.nodes = nodes || [];
         }
 
         methods = {
-            getTextContent({idx}) {
+            getTextContent ({idx}) {
                 return this.nodes[idx].content;
             },
-            setTextContent({idx, content}) {
+            setTextContent ({idx, content}) {
                 if (idx > -1) {
                     this.nodes[idx].content = content;
                 } else {
@@ -123,21 +124,20 @@
                     });
                 }
             },
-            AddEditText(idx) {
+            AddEditText (idx) {
                 this.$azmUtil.go('/pages/product2/pages/editText/index', {data: {idx}})
             },
-            setField(idx, e) {
+            setField (idx, e) {
                 this.nodes[idx].content = e.detail.value.trim();
             },
-            removeImg(idx) {
+            removeImg (idx) {
                 this.nodes.splice(idx, 1);
                 this.$apply();
             },
-            preview() {
-                this.$parent.globalData.preview = this.data.nodes;
+            preview () {
                 this.$azmUtil.go('/pages/product2/pages/preview/index');
             },
-            uploadImage(idx) {
+            uploadImage (idx) {
                 wx.chooseImage({
                     count: 1, // 默认9
                     sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
@@ -197,7 +197,7 @@
                     }
                 });
             },
-            dosure(){
+            dosure () {
                 let that = this, _this2 = that.__getPrevPage();
                 _this2.nodes = this.data.nodes;
                 _this2.$apply();

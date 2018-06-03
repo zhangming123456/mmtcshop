@@ -111,24 +111,26 @@
 <script>
     import wepy from "wepy";
     import utilPage from "../../../../mixins/utilPage";
+    import baseMixin from "../../../../mixins/base";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page preview",
             hasMoreData: false,//是否有更多
             preview: []
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb();
         },
-        onShow(){
+        onShow () {
 
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -149,12 +151,18 @@
         wxs = {
             c
         };
+        mixins = [baseMixin];
 
         loadCb (options) {
             let that = this,
                 _this2 = that.__getPrevPage();
             try {
-                this.preview = _this2.data.nodes || '';
+                let arr = [],
+                    preview = _this2.data.nodes || '';
+                for (let v of preview) {
+                    arr.push(that.$azmUtil.extend(true, {}, v));
+                }
+                that.preview = arr;
                 this.$apply();
             } catch (e) {
 

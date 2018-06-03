@@ -6,8 +6,8 @@
                     <view class="flexBox-item left">选着项目:</view>
                     <view class="flexBox-item right fb-all">
                         <scroll-view scroll-x class="azm-scroll_x">
-                            <block wx:if="{{category_id.length>0}}">
-                                <block wx:for="{{category_id}}" wx:key="{{index}}">
+                            <block wx:if="{{category_ids.length>0}}">
+                                <block wx:for="{{category_ids}}" wx:key="{{index}}">
                                     <view class="azm-category_select">
                                         <text>{{item.title}}</text>
                                         <button class="azm-btn zan-ellipsis" plain="true" size="mini" hover-class="none"
@@ -38,7 +38,7 @@
                                     <view class="azm-title">{{v.title}}</view>
                                     <view class="azm-select_btns flexBox flexBox-start">
                                         <view class="flexBox-item" wx:for="{{v.children}}" wx:key="{{index}}">
-                                            <button class="azm-btn zan-ellipsis {{c.isSealedCategory(category_id,item)?'azm-btn_active':''}}"
+                                            <button class="azm-btn zan-ellipsis {{c.isSealedCategory(category_ids,item)?'azm-btn_active':''}}"
                                                     plain="true" size="mini" hover-class="none"
                                                     @tap.stop="bindSelect({{item}})">
                                                 {{item.title}}
@@ -70,23 +70,24 @@
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
     import c from "../../../../wxs/common.wxs";
+
     const appPage = new utilPage({
         data: {
             text: "Page productCategory",
             hasMoreData: false,//是否有更多
             info: [],
-            _category_id: [],
-            category_id: [],
+            _category_ids: [],
+            category_ids: [],
             select_id: 0,
         },
-        onLoad (options){
+        onLoad (options) {
             this.loadCb()
         },
-        onPullDownRefresh(){
+        onPullDownRefresh () {
             let that = this
         },
 
-        onReachBottom(){
+        onReachBottom () {
             let that = this
         },
 
@@ -115,13 +116,13 @@
                     options = that.data.options,
                     arr = [],
                     _this2 = that.__getPrevPage();
-                let category_id = _this2.data.productData.category_id || [];
-                for (let v of category_id) {
+                let category_ids = _this2.data.productData.category_ids || [];
+                for (let v of category_ids) {
                     if (v.id) {
                         arr.push(v.id + '')
                     }
                 }
-                that._category_id = arr || [];
+                that._category_ids = arr || [];
                 that.getItemInfoCategory()
             } catch (e) {
 
@@ -137,17 +138,18 @@
             this.ApiService.getItemInfoCategory().then(
                 res => {
                     if (res.status === 1) {
-                        let arr = [];
+                        let arr = [], category_ids = [];
                         for (let v of res.info) {
                             for (let val of v.children) {
                                 for (let value of val.children) {
-                                    let flag = that.data._category_id.indexOf(value.id + '') >= 0;
+                                    let flag = that.data._category_ids.indexOf(value.id + '') >= 0;
                                     if (flag) {
-                                        that.category_id.push(value)
+                                        category_ids.push(value)
                                     }
                                 }
                             }
                         }
+                        that.category_ids = category_ids;
                         that.info = res.info;
                         that.$apply();
                     }
@@ -158,15 +160,15 @@
         }
 
         methods = {
-            bindTapIndex(index){
+            bindTapIndex (index) {
                 this.select_id = index
             },
-            bindSelect(item){
-                let arr = this.data.category_id;
+            bindSelect (item) {
+                let arr = this.data.category_ids;
                 for (let i = 0; i < arr.length; i++) {
                     let v = arr[i];
                     if (v.id === item.id) {
-                        this.category_id.splice(i, 1);
+                        this.category_ids.splice(i, 1);
                         return;
                     }
                 }
@@ -175,21 +177,21 @@
                     this.$alert('最多三个标签');
                     return;
                 }
-                this.category_id.push(item);
+                this.category_ids.push(item);
             },
-            bindconfirm(){
+            bindconfirm () {
                 let that = this,
-                    category_id = that.data.category_id,
+                    category_ids = that.data.category_ids,
                     _this2 = that.__getPrevPage();
-                if (category_id.length < 1) {
+                if (category_ids.length < 1) {
                     this.$alert('最少一个标签');
                     return;
                 }
-                _this2.productData.category_id = category_id;
+                _this2.productData.category_ids = category_ids;
                 _this2.$apply();
                 this.$back();
             },
-            bindcancel() {
+            bindcancel () {
                 this.$back();
             }
         }

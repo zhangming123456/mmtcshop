@@ -4,6 +4,7 @@
 "use strict";
 const authorize = require('./azm/authorize');
 import config from '../configs/config';
+
 const events = {
     /**
      * 生命周期函数--监听页面加载
@@ -81,7 +82,7 @@ const events = {
         that.isPullDownRefresh = true;
     },
 
-    stopPullDownRefresh(options){
+    stopPullDownRefresh (options) {
         console.warn(`下拉触发事件${this.data.text}结束`, options, 'onPullDownRefresh');
         let that = this;
         that.isPullDownRefresh = false;
@@ -107,7 +108,7 @@ const events = {
         this.__page.onPageScroll && this.__page.onPageScroll.call(this, options);
     },
 
-    onTabItemTap(options) {
+    onTabItemTap (options) {
         console.warn(`用户点击tap事件触发${this.data.text}`, options, 'onTabItemTap');
         this.__page.onTabItemTap && this.__page.onTabItemTap.call(this, options);
     },
@@ -124,10 +125,10 @@ const events = {
         return new Promise((resolve, reject) => {
             function login () {
                 wx.login({
-                    success(res){
+                    success (res) {
                         resolve(res)
                     },
-                    fail(){
+                    fail () {
                         reject()
                     }
                 })
@@ -159,7 +160,7 @@ const events = {
                 success (res) {
                     resolve(res)
                 },
-                fail(res){
+                fail (res) {
                     reject(res)
                 }
             };
@@ -194,7 +195,7 @@ const events = {
      * i是文件路径数组的指标
      * length是文件路径数组的长度
      */
-    uploadDIY (filePaths, successUp, failUp, i, length, callback) {
+    uploadDIY (filePaths, successUp, failUp, i, length, callback, count) {
         let that = this;
         wx.uploadFile({
             url: `${config.host}/services/uploader/uploadImg`,
@@ -206,7 +207,7 @@ const events = {
                 if (typeof data === "string") {
                     try {
                         data = JSON.parse(data);
-                        if (length > 1) {
+                        if (count > 1) {
                             if (!that[that.__imageUploadKey]) {
                                 that[that.__imageUploadKey] = [];
                             }
@@ -263,12 +264,12 @@ const events = {
                         i = 0; //第几个
                     that.uploadDIY(tempFilePaths, successUp, failUp, i, length, res => {
                         resolve()
-                    });
+                    }, count);
                 },
-                fail(res){
+                fail (res) {
                     reject();
                 },
-                complete(){
+                complete () {
                     that.isRefresh = true;
                     that.$apply();
                 }
@@ -280,13 +281,13 @@ const events = {
         return p;
     },
 
-    __getPrevPage(){
+    __getPrevPage () {
         let path = this.$azmUtil.getCurrentPage(2).__route__,
             pervPage = this.$parent.$pages[`/${path}`];
         console.log(this, pervPage);
         return pervPage;
     },
-    __route(path, data){
+    __route (path, data) {
         this.$azmUtil.go(path, {data})
     }
 };
