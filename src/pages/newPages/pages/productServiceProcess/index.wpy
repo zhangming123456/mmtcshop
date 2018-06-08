@@ -19,13 +19,15 @@
                 <veiw class="azm-productServiceProcess_num flexBox">
                     <view class="flexBox-item fb-12">
                         <view class="t-serveProject">服务次数</view>
-                        <input class="t-serveNum" value="{{item.times}}" @input="bindInputChang({{index}},'times')"
+                        <input type="number" class="t-serveNum" value="{{item.times}}"
+                               @input="bindInputChang({{index}},'times')"
                                @blur="bindInputBlur({{index}},'times')"/>
                         <view class="t-num">次</view>
                     </view>
                     <veiw class="flexBox-item fb-12">
                         <view class="t-serveProject">服务时间</view>
-                        <input class="t-serveNum" value="{{item.time}}" @input="bindInputChang({{index}},'time')"
+                        <input type="number" class="t-serveNum" value="{{item.time}}"
+                               @input="bindInputChang({{index}},'time')"
                                @blur="bindInputBlur({{index}},'time')"/>
                         <view class="t-num">分钟</view>
                     </veiw>
@@ -73,10 +75,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -96,12 +103,15 @@
                 let that = this,
                     options = that.data.options,
                     _this2 = that.__getPrevPage(),
+                    common = that.$azmUtil.common,
                     service_flow = _this2.data.productData.service_flow;
-                if (service_flow && service_flow.length > 0) {
+                if (service_flow && common.isArray(service_flow) && service_flow.length > 0) {
                     that.service_flow = that.$azmUtil.extend(true, [], service_flow);
+                    that.$apply();
                 } else {
                     that.methods.bindAddProcess.call(that);
                 }
+
             } catch (e) {
 
             }
@@ -166,9 +176,10 @@
             },
             bindAddProcess () {
                 let that = this,
-                    service_flow = that.data.service_flow, name;
-                if (service_flow.length) {
-                    name = service_flow[service_flow.length - 1].name
+                    service_flow = that.data.service_flow,
+                    name;
+                if (service_flow && service_flow.length) {
+                    name = service_flow[service_flow.length - 1].name;
                     name = that.$azmUtil.trim(name);
                 }
                 if (service_flow.length === 0 || name.length > 0) {

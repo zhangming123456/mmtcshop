@@ -144,85 +144,85 @@ export default class extends wepy.page {
   justify-content: space-between;
 }
 .picker-titles {
-  padding-top: 72rpx;
-  padding-bottom: 72rpx;
+  padding-top: 72*1rpx;
+  padding-bottom: 72*1rpx;
   text-align: center;
-  font-size: 30rpx;
+  font-size: 30*1rpx;
   color: #999999;
   justify-content: space-between;
 }
 .picker-titles view {
-  width: 300rpx;
+  width: 300*1rpx;
 }
 .timepicker,
 .picker-inner-view {
   text-align: center;
-  line-height: 80rpx;
-  font-size: 40rpx;
-  height: 80rpx;
+  line-height: 80*1rpx;
+  font-size: 40*1rpx;
+  height: 80*1rpx;
 }
 .timepicker-wrap {
-  width: 300rpx;
-  height: 400rpx;
+  width: 300*1rpx;
+  height: 400*1rpx;
   display: inline-block;
 }
 .p30 {
   padding-bottom: 0;
 }
 .title-line {
-  width: 6rpx;
-  height: 23rpx;
+  width: 6*1rpx;
+  height: 23*1rpx;
   background-color: #ff8000;
-  border-radius: 2rpx;
+  border-radius: 2*1rpx;
   display: inline-block;
-  margin-right: 14rpx;
+  margin-right: 14*1rpx;
 }
 .hot-title {
-  font-size: 32rpx;
-  padding-bottom: 30rpx;
+  font-size: 32*1rpx;
+  padding-bottom: 30*1rpx;
 }
 .hot-tags {
-  margin-right: -30rpx;
+  margin-right: -30*1rpx;
 }
 .hot-tags-wrap {
-  padding: 50rpx 30rpx;
+  padding: 50*1rpx 30*1rpx;
 }
 .hr24 {
   background-color: #f4f4f4;
-  height: 24rpx;
+  height: 24*1rpx;
 }
 .hot-tag {
-  height: 56rpx;
-  line-height: 56rpx;
-  font-size: 30rpx;
+  height: 56*1rpx;
+  line-height: 56*1rpx;
+  font-size: 30*1rpx;
   display: inline-block;
   color: #999999;
-  padding: 0 23rpx;
+  padding: 0 23*1rpx;
   border: solid 1px #999999;
-  margin-right: 30rpx;
-  margin-bottom: 30rpx;
+  margin-right: 30*1rpx;
+  margin-bottom: 30*1rpx;
 }
 .addbtn-area {
-  padding-left: 27rpx;
+  padding-left: 27*1rpx;
 }
 .tags {
-  margin-right: -30rpx;
+  margin-right: -30*1rpx;
 }
 .tags .tag {
-  height: 56rpx;
-  line-height: 56rpx;
+  height: 56*1rpx;
+  line-height: 56*1rpx;
   background-color: transparent;
-  border-radius: 5rpx;
+  border-radius: 5*1rpx;
   text-align: center;
-  font-size: 30rpx;
+  font-size: 30*1rpx;
   display: inline-block;
   color: #999999;
   border: solid 1px #999999;
   position: relative;
-  margin-right: 25rpx;
-  width: 150rpx;
+  margin-right: 25*1rpx;
+  width: 150*1rpx;
 
-  margin-bottom: 30rpx;
+  margin-bottom: 30*1rpx;
 }
 .tag.selected {
   color: #fefefe;
@@ -231,41 +231,41 @@ export default class extends wepy.page {
 }
 .tag-remove {
   position: absolute;
-  right: -15rpx;
-  top: -15rpx;
-  width: 29rpx;
-  height: 29rpx;
+  right: -15*1rpx;
+  top: -15*1rpx;
+  width: 29*1rpx;
+  height: 29*1rpx;
 }
 .addbtn {
-  width: 119rpx;
+  width: 119*1rpx;
   text-align: center;
-  height: 56rpx;
-  line-height: 56rpx;
+  height: 56*1rpx;
+  line-height: 56*1rpx;
   background-color: transparent;
   padding: 0;
-  font-size: 30rpx;
+  font-size: 30*1rpx;
   color: #ff8000;
-  border-radius: 5rpx;
+  border-radius: 5*1rpx;
   border: solid 1px #ff8000;
 }
 .main-container {
-  width: 750rpx;
+  width: 750*1rpx;
 }
 .main-item {
-  width: 750rpx;
+  width: 750*1rpx;
 }
 .photo-item {
-  width: 330rpx;
-  margin-bottom: 30rpx;
+  width: 330*1rpx;
+  margin-bottom: 30*1rpx;
 }
 .photo-item-txt {
-  font-size: 30rpx;
+  font-size: 30*1rpx;
   color: #282828;
-  padding-top: 30rpx;
+  padding-top: 30*1rpx;
 }
 .photo-item-img {
-  width: 330rpx;
-  height: 330rpx;
+  width: 330*1rpx;
+  height: 330*1rpx;
 }
 .photos {
   flex-wrap: wrap;
@@ -282,11 +282,11 @@ export default class extends wepy.page {
 }
 .btn1,
 .btn2 {
-  height: 100rpx;
+  height: 100*1rpx;
   display: inline-block;
-  font-size: 36rpx;
+  font-size: 36*1rpx;
   border-radius: 0;
-  line-height: 100rpx;
+  line-height: 100*1rpx;
   text-align: center;
   flex: 1;
 }
@@ -297,13 +297,13 @@ export default class extends wepy.page {
   right: 0;
 }
 .pic-item {
-  margin-right: 5rpx;
-  margin-bottom: 5rpx;
+  margin-right: 5*1rpx;
+  margin-bottom: 5*1rpx;
 }
 .pic-item,
 .pic-item-img {
-  width: 168rpx;
-  height: 168rpx;
+  width: 168*1rpx;
+  height: 168*1rpx;
   position: relative;
 }
 .img-area {
@@ -315,29 +315,29 @@ export default class extends wepy.page {
   position: absolute;
   right: 0;
   top: 0;
-  width: 40rpx;
-  height: 40rpx;
+  width: 40*1rpx;
+  height: 40*1rpx;
 }
 .toolbar {
   text-align: center;
-  font-size: 29rpx;
+  font-size: 29*1rpx;
   position: relative;
-  padding: 47rpx 0 0 0;
+  padding: 47*1rpx 0 0 0;
 }
 .toolbar .flex-con {
-  padding-bottom: 20rpx;
+  padding-bottom: 20*1rpx;
 }
 .active {
   color: #ff8000;
-  font-size: 31rpx;
+  font-size: 31*1rpx;
 }
 .footer-hr {
-  width: 129rpx;
+  width: 129*1rpx;
   height: 3px;
   background-color: #ff8000;
   position: absolute;
   bottom: 0;
-  left: 124rpx;
+  left: 124*1rpx;
 }
 </style>
 

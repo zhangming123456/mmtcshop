@@ -234,10 +234,10 @@ const events = {
                     callback && callback();
                     that.isShow = true;
                     that.__imageUploadKey = null;
-                    that.showToast('总共' + successUp + '张上传成功,' + failUp + '张上传失败！');
+                    that.showToast(`成功上传${successUp}张`);
                     that.$apply();
                 } else {//递归调用uploadDIY函数
-                    that.uploadDIY(filePaths, successUp, failUp, i, length, callback);
+                    that.uploadDIY(filePaths, successUp, failUp, i, length, callback, count);
                 }
             },
         });
@@ -262,9 +262,17 @@ const events = {
                         failUp = 0, //失败个数
                         length = tempFilePaths.length, //总共个数
                         i = 0; //第几个
-                    that.uploadDIY(tempFilePaths, successUp, failUp, i, length, res => {
-                        resolve()
-                    }, count);
+                    that.uploadDIY(
+                        tempFilePaths,
+                        successUp,
+                        failUp,
+                        i,
+                        length,
+                        res => {
+                            resolve()
+                        },
+                        count
+                    );
                 },
                 fail (res) {
                     reject();
@@ -289,6 +297,13 @@ const events = {
     },
     __route (path, data) {
         this.$azmUtil.go(path, {data})
+    },
+    __inputMoney (key, value) {
+        let v = parseFloat(value);
+        if (!this.$azmUtil.common.isNumberOfNaN(v)) {
+            v = ''
+        }
+        return v
     }
 };
 
@@ -303,7 +318,8 @@ class Page {
             isRefresh: true,
             isPullDownRefresh: false,
             options: {},
-            imageUrl: config.imageUrl
+            imageUrl: config.imageUrl,
+            imageErrs: {}
         }, appPage.data);
         this.__page = appPage;
         this.__prevPage__ = null;
@@ -312,6 +328,19 @@ class Page {
         }
         for (let k in methods) {
             this[k] = methods[k]
+        }
+    }
+
+    methods = {
+        ImageErr(key = 'imageErr_url', e){
+            console.log(key, e);
+            this.imageErrs[key] = '/imgs/imageErr.png'
+        },
+        BindInputMoney(key, e){
+            let value = this.$azmUtil.trim(e.detail.value),
+                v = this.__inputMoney(key, value);
+            this[key] = v;
+            return v;
         }
     }
 }

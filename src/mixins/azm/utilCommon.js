@@ -58,10 +58,12 @@ function isNumber (arg) {
 module.exports.isNumber = isNumber;
 
 function isNumberOfNaN (arg) {
-    if (arg) {
+    if (!!arg || +arg === 0) {
         arg = Number(arg);
+        return typeof arg === 'number' && !isNaN(arg);
+    } else {
+        return false;
     }
-    return typeof arg === 'number' && !isNaN(arg);
 }
 
 module.exports.isNumberOfNaN = isNumberOfNaN;

@@ -49,7 +49,8 @@
                           @tap="route('/pages/newPages/pages/productPeriodOfUse/index')">
                         <view class="zan-ellipsis azm-cell__ft_bd">
                             <block wx:if="{{period_of_use&&period_of_use.start_time}}">
-                                <text>{{period_of_use.start_date}}~{{period_of_use.end_date}}</text>
+                                <text class="azm-color_black">{{period_of_use.start_date}}</text>
+                                <text class="azm-color_black">~{{period_of_use.end_date}}</text>
                             </block>
                             <text wx:else>1 年</text>
                         </view>
@@ -87,7 +88,7 @@
                         <text class="azm-label">禁忌人群</text>
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
-                        <input placeholder="填写禁忌人群" name="taboo_crowd" value="{{taboo_crowd}}"
+                        <input placeholder="填写禁忌人群" name="taboo_crowd" value="{{taboo_crowd}}" class="azm-color_black"
                                @input="bindInputChang('taboo_crowd')"/>
                     </view>
                 </view>
@@ -97,6 +98,7 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
                         <input placeholder="填写说明" name="other_instructions" value="{{other_instructions}}"
+                               class="azm-color_black"
                                @input="bindInputChang('other_instructions')"/>
                     </view>
                 </view>
@@ -148,10 +150,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 

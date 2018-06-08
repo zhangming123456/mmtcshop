@@ -6,9 +6,9 @@ view.container1
                 view.flex-con
                     input(placeholder="请输入手机号" @input="setField('telephone')" type="number")
                 button.ib.validbtn(hover-class="tapmode" @tap="getCheckcode"  class="{{timestr?'disabled-btn':''}}") {{timestr||'获取验证码'}}
-        input(placeholder="请输入验证码" @input="setField('checkcode')" type="number")
+        input(placeholder="请输入验证码"  @input="setField('code')" type="number")
         view.button-area
-            button.btn-disabled.btn-primary(type="default" @tap="gotoNext" hover-class="tapmode") 下一步
+            button.btn-disabled.btn-primary(type="default" @tap="gotoNext" hover-class="tapmode") 确认
 </template>
 
 <style lang="less">
@@ -80,7 +80,7 @@ export default class extends wepy.page {
         return;
       }
       this.$post(
-        "/api/index/getCheckCode?docheck=1",
+        "/shopapi/my/getCheckCode",
         {
           telephone: this.telephone
         },
@@ -124,7 +124,7 @@ export default class extends wepy.page {
         this.$alert("请输入正确的手机号码");
         return;
       }
-      if (!this.checkcode) {
+      if (!this.code) {
         this.$alert("请输入验证码");
         return;
       }
@@ -133,7 +133,8 @@ export default class extends wepy.page {
       this.$post(
         "/shopapi/shop/changeServicePhone",
         {
-          telephone: this.telephone
+          telephone: this.telephone,
+          code:this.code
         },
         info => {
           this.toast("修改成功", () => {

@@ -11,7 +11,7 @@ module.exports.cashStatus = function (status, status2, is_display) {
         return '已下架';
     }
     if (status > 1) {
-        return ['已下架', '已上架'][parseInt(status2)]
+        return ['已下架', '已上架'][parseInt(status2)] 
     }
     return ['审核中', '审核未通过', '审核通过', '已完成'][parseInt(status)]
 }

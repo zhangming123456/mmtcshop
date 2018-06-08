@@ -1,260 +1,453 @@
 <style lang="less">
-@import "../../../wxparse/wxParse.wxss";
+    @import "../../../wxparse/wxParse.wxss";
 
-.container-main {
-  .group_price {
-    color: #ff8000;
-    font-size: 32rpx;
-    display: inline;
-  }
-  .p1:first-child {
-    padding-top: 46rpx;
-  }
-  .p1 {
-    background-color: #fff;
-    font-size: 30rpx;
-    padding: 30rpx;
-    .label {
-      font-size: 32rpx;
-      width: 178rpx;
-      color: #282828;
-      font-size: 32rpx;
+    .azm-cells {
+        padding: 30*1rpx;
+        box-sizing: border-box;
+        &.azm-service_info {
+            font-size: 30*1rpx;
+            > view {
+                margin-bottom: 19*1rpx;
+            }
+            .azm-title {
+                color: #282828;
+                font-size: 32*1rpx;
+            }
+            .azm-color_999 {
+                font-size: 30*1rpx;
+            }
+        }
     }
-    
-    & > .flex {
-      padding-bottom: 30rpx;
+
+    .container-main {
+        .group_price {
+            color: #ff8000;
+            font-size: 32*1rpx;
+            display: inline;
+        }
+        .p1:first-child {
+            padding-top: 46*1rpx;
+        }
+        .p1 {
+            background-color: #fff;
+            font-size: 30*1rpx;
+            padding: 30*1rpx;
+            .label {
+                font-size: 32*1rpx;
+                width: 178*1rpx;
+                color: #282828;
+                font-size: 32*1rpx;
+            }
+
+            & > .flex {
+                padding-bottom: 30*1rpx;
+            }
+            & > .flex:last-child {
+                padding-bottom: 0;
+            }
+            .title1 {
+                font-size: 32*1rpx;
+                color: #282828;
+            }
+            .title2 {
+                font-size: 32*1rpx;
+                color: #ff8000;
+                padding-top: 29*1rpx;
+            }
+            .p1-line {
+                width: 1px;
+                height: 90*1rpx;
+                background-color: #eeeeee;
+            }
+            .pl30 {
+                padding-left: 30*1rpx;
+            }
+        }
     }
-    & > .flex:last-child {
-      padding-bottom: 0;
+
+    .product-img {
+        width: 63*1rpx;
+        height: 63*1rpx;
     }
-    .title1 {
-      font-size: 32rpx;
-      color: #282828;
+
+    .p2 {
+        background-color: #fff;
+        padding: 14*1rpx 30*1rpx;
+        font-size: 32*1rpx;
+        color: #282828;
     }
-    .title2 {
-      font-size: 32rpx;
-      color: #ff8000;
-      padding-top: 29rpx;
+
+    .gt-img {
+        width: 15*1rpx;
+        height: 25*1rpx;
+        margin-left: 20*1rpx;
     }
-    .p1-line {
-      width: 1px;
-      height: 90rpx;
-      background-color: #eeeeee;
+
+    .caption-title {
+        padding: 0;
+        font-size: 32*1rpx;
+        color: #282828;
     }
-    .pl30 {
-      padding-left: 30rpx;
+
+    .plast {
+        font-size: 32*1rpx;
+        color: #282828;
+        line-height: 48*1rpx;
+        padding: 30*1rpx;
+        padding-top: 10*1rpx;
+        background-color: #fff;
     }
-  }
-}
-.product-img {
-  width: 63rpx;
-  height: 63rpx;
-}
-.p2 {
-  background-color: #fff;
-  padding: 14rpx 30rpx;
-  font-size: 32rpx;
-  color: #282828;
-}
-.gt-img {
-  width: 15rpx;
-  height: 25rpx;
-  margin-left: 20rpx;
-}
-.caption-title {
-  padding: 0;
-  font-size: 32rpx;
-  color: #282828;
-}
-.tags {
-  padding-top: 29rpx;
-  .tag {
-    color: #ff8000;
-    height: 41rpx;
-    border-radius: 5rpx;
-    border: solid 1px #ff8000;
-    line-height: 41rpx;
-    font-size: 28rpx;
-    display: inline-block;
-    margin-bottom:20rpx;
-    margin-right: 30rpx;
-    padding: 0 22rpx;
-  }
-}
-.plast {
-  font-size: 32rpx;
-  color: #282828;
-  line-height: 48rpx;
-  padding: 30rpx;
-  padding-top: 10rpx;
-  background-color: #fff;
-}
-page {
-  background-color: #f4f4f4;
-}
-.box-footer {
-  padding: 30rpx;
-  .box-btn {
-    display: inline-block;
-    height: 56rpx;
-    line-height: 56rpx;
-    padding: 0 46rpx;
-    border: solid 1px #ff8000;
-    border-radius: 5rpx;
-    font-size: 30rpx;
-    margin-left: 30rpx;
-    color: #ff8000;
-  }
-  .box-btn-primary {
-    background-color: #ff8000;
-    color: #ffffff;
-  }
-}
-.wxParse-img {
-    width:100%;
-    margin-bottom: 20rpx;
-}
+
+    page {
+        background-color: #f4f4f4;
+    }
+
+    .box-footer {
+        padding: 30*1rpx;
+        .box-btn {
+            display: inline-block;
+            height: 56*1rpx;
+            line-height: 56*1rpx;
+            padding: 0 46*1rpx;
+            border: solid 1px #ff8000;
+            border-radius: 5*1rpx;
+            font-size: 30*1rpx;
+            margin-left: 30*1rpx;
+            color: #ff8000;
+        }
+        .box-btn-primary {
+            background-color: #ff8000;
+            color: #ffffff;
+        }
+    }
+
+    .wxParse-img {
+        width: 100%;
+        margin-bottom: 20*1rpx;
+    }
+
+    .azm-footer {
+        background-color: #fff;
+        z-index: 100;
+    }
+
+    .azm-materials {
+        .azm-image {
+            box-sizing: border-box;
+            width: 100%;
+            height: 220*1rpx;
+            padding-right: 14*1rpx;
+            :nth-child(1+2n) {
+                padding-right: 0;
+            }
+            image {
+                width: inherit;
+                height: inherit;
+                border: 1px solid #b7b7b7;
+                border-radius: 20*1rpx;
+            }
+        }
+        .azm-materials_title {
+            font-size: 28*1rpx;
+            color: #282828;
+            text-align: center;
+            line-height: 1;
+            margin-top: 24*1rpx;
+        }
+        .azm-materials_brand {
+            font-size: 28*1rpx;
+            color: #000000;
+            text-align: center;
+            line-height: 1;
+            margin-top: 24*1rpx;
+        }
+    }
+
+    .azm-service_flow {
+        color: #6b6b6b;
+        font-size: 26*1rpx;
+    }
+
+    .tag {
+        color: #ff8000;
+        height: 41*1rpx;
+        border-radius: 5*1rpx;
+        border: solid 1px #ff8000;
+        line-height: 41*1rpx;
+        font-size: 28*1rpx;
+        display: inline-block;
+        padding: 0 22*1rpx;
+    }
+
+    .azm-label {
+        border-bottom: 1px solid #eee;
+        .flexBox-item {
+            box-sizing: border-box;
+            padding-right: 30*1rpx;
+            margin-bottom: 30*1rpx;
+        }
+    }
 </style>
-<template lang="pug">
-view.container-main
-    view.p1.border-b
-        view.flex
-            view.label  产品名称
-            view.flex-con {{info.title}}
-        view.flex
-            view.label  副标题
-            view.flex-con {{info.profile||'--'}}
-        view.flex(wx:if="{{info.group_price}}")
-            view.label  参与活动
-            view.flex-con  拼团特惠  {{info.num}}人团  拼团价
-                view.group_price ￥{{info.group_price}}
-        view.flex
-            view.label  产品类别
-            view.flex-con  {{info.category}}
-    view.p1.border-b
-        view.flex
-            view.flex-con
-                view.title1 门市价(门店标价）
-                view.title2 ￥{{info.market_price}}
-            view.p1-line
-            view.flex-con.pl30
-                view.title1 折扣价
-                view.title2 ￥{{info.price}}
-    view.p1.border-b
-        view.flex
-            view.label 产品ID
-            view.flex-con {{info.item_no}}
-        view.flex
-            view.label  产品状态
-            view.flex-con {{m1.cashStatus(info.auth_status,info.status,info.is_display)}}
-        view.flex
-            view.label  {{info.timeflag}}时间
-            view.flex-con {{info.create_time}}
-    view.p2.flex(@tap="showPicDetail")
-        view.flex-con   产品主图
-        view
-            image.product-img(src="{{info.cover}}")
-        view
-            image.gt-img(src='/imgs/gt.png')
-    view.hr24
-    view.p1.border-b(wx:if="{{info.label && info.label.length}}") 
-        view.caption-title  产品标签
-        view.tags
-            repeat(for="{{info.label}}" item="item")
-                view.tag {{item}}
-    
-    view.plast
-        html2wxml(:parserName="name" :parserContent.sync="textContent")
-    view.box-footer.text-right(wx:if="{{info.is_display==1}}")
-        view.box-btn.box-btn-outed(wx:if="{{info.auth_status==0}}")(@tap="revokeAuth") 撤销申请
-        view.box-btn.box-btn-primary(@tap="editAuth") 编辑 
+<template>
+    <view class="container-main" style="padding-bottom: 100rpx;">
+        <view class="p1 border-b">
+            <view class="flex">
+                <view class="label">产品名称</view>
+                <view class="flex-con azm-color_999">{{info.title}}</view>
+            </view>
+            <view class="flex">
+                <view class="label">副标题</view>
+                <view class="flex-con azm-color_999">{{info.profile || '--'}}</view>
+            </view>
+            <view class="flex" wx:if="{{info.group_price}}">
+                <view class="label">参与活动</view>
+                <view class="flex-con"> 拼团特惠  {{info.group_num}}人团  拼团价
+                    <view class="group_price">￥{{info.group_price}}</view>
+                </view>
+            </view>
+            <view class="flex">
+                <view class="label">产品类别</view>
+                <view class="flex-con azm-color_999">
+                    <block wx:if="{{info.category_ids && info.category_ids.length>0}}">
+                        <text wx:for="{{info.category_ids}}" wx:key="{{index}}"> {{item.title}}</text>
+                    </block>
+                    <block wx:else>
+                        <text> {{info.category}}</text>
+                    </block>
+                </view>
+            </view>
+        </view>
+        <view class="p1 border-b">
+            <view class="flex">
+                <view class="flex-con">
+                    <view class="title1">门市价(门店标价）</view>
+                    <view class="title2">￥{{info.market_price}}</view>
+                </view>
+                <view class="p1-line"/>
+                <view class="flex-con pl30">
+                    <view class="title1">折扣价</view>
+                    <view class="title2">￥{{info.price}}</view>
+                </view>
+            </view>
+        </view>
+        <view class="p1 border-b">
+            <view class="flex">
+                <view class="label">产品ID</view>
+                <view class="flex-con azm-color_999">{{info.item_no}}</view>
+            </view>
+            <view class="flex">
+                <view class="label">产品状态</view>
+                <view class="flex-con azm-color_999">{{m1.cashStatus(info.auth_status, info.status, info.is_display)}}
+                </view>
+            </view>
+            <view class="flex">
+                <view class="label"> {{info.timeflag}}时间</view>
+                <view class="flex-con azm-color_999">{{info.create_time}}</view>
+            </view>
+        </view>
+        <view class="p2 flex" bindtap="showPicDetail">
+            <view class="flex-con"> 产品主图</view>
+            <view>
+                <image class="product-img" src="{{info.cover}}" mode="aspectFill"/>
+            </view>
+            <view>
+                <image class="gt-img" src="/imgs/gt.png" mode="aspectFill"/>
+            </view>
+        </view>
+
+
+        <view class="azm-cells azm-service_info">
+            <view class="azm-title">服务内容：
+                <text class="azm-color_999">{{info.service}}</text>
+            </view>
+            <view class="azm-title">服务特色/功效：
+                <text class="azm-color_999">{{info.service_char}}</text>
+            </view>
+            <view class="azm-title">有效期：</view>
+            <view>
+                <text class="azm-color_999">{{info.start_date}}至{{info.end_date}}</text>
+                <text class="azm-color_999" wx:if="{{info.note}}">({{info.note}})</text>
+            </view>
+            <view>使用时间</view>
+            <view class="azm-color_999">{{info.start_time}}-{{info.end_time}}</view>
+            <view>禁忌人群：</view>
+            <view class="azm-color_999">{{info.taboo_crowd}}</view>
+            <view>其他说明：</view>
+            <view class="azm-color_999">{{info.other_instructions}}</view>
+            <!--使用物料-->
+            <view class="flexBox flexBox-start azm-materials">
+                <view class="flexBox-item fb-8" wx:for="{{info.item_brand}}" wx:key="{{index}}">
+                    <view class="azm-image">
+                        <image src="{{imageUrl + item.cover}}" mode="aspectFill"></image>
+                    </view>
+                    <view class="azm-materials_title">{{item.title}}</view>
+                    <view class="azm-materials_brand">{{item.brand}}</view>
+                </view>
+            </view>
+        </view>
+
+        <!--产品标签-->
+        <view class="azm-cells azm-service_info">
+            <block wx:if="{{info.label && info.label.length}}">
+                <view>产品标签</view>
+                <view class="flexBox flexBox-start azm-label" style="flex-wrap:wrap;">
+                    <view class="flexBox-item" wx:for="{{info.label}}" wx:key="{{index}}">
+                        <view class="tag">{{item}}</view>
+                    </view>
+                </view>
+            </block>
+            <block wx:if="{{info.service_flow && info.service_flow.length}}">
+                <view>服务流程</view>
+                <view class="flexBox flexBox-start azm-service_flow" wx:for="{{info.service_flow}}" wx:key="{{index}}">
+                    <view class="flexBox-item fb-8">{{index + 1}} {{item.name}}</view>
+                    <view class="flexBox-item fb-8 azm-text_right">{{item.times}}次</view>
+                    <view class="flexBox-item fb-8 azm-text_right">{{item.time}}分钟</view>
+                </view>
+            </block>
+        </view>
+        <!--图文详情-->
+        <view class="plast azm-cells" wx:if="{{article.nodes&&article.nodes.length>0}}">
+            <import src="../../../wxparse/wxParse.wxml"/>
+            <view>图文详情</view>
+            <template is="wxParse" data="{{wxParseData:article.nodes}}"/>
+        </view>
+    </view>
+    <view class="azm-footer" wx:if="{{info.is_display==1}}">
+        <view class="azm-btn__mini_right">
+            <!--<button class="azm-btn__mini azm-btn__mini__cancel" plain="true" size="mini" @tap="bindcancel"-->
+            <!--hover-class="none">{{timeflag}}-->
+            <!--</button>-->
+            <button class="azm-btn__mini azm-btn__mini__submit" plain="true" size="mini" @tap="editAuth"
+                    hover-class="none">编辑
+            </button>
+        </view>
+    </view>
 
 </template>
 
 <script>
-import wepy from "wepy";
-import baseMixin from "../../../mixins/base";
-import html2wxml from "../../../components/html2wxml";
-import m1 from "../../../wxs/common.wxs";
+    import wepy from "wepy";
+    import baseMixin from "../../../mixins/base";
+    import utilPage from "../../../mixins/utilPage";
+    import html2wxml from "../../../components/html2wxml";
+    import m1 from "../../../wxs/common.wxs";
+    import WxParse from '../../../wxparse/wxParse';
 
-export default class extends wepy.page {
-  config = {
-    navigationBarTitleText: "产品详情"
-  };
-  mixins = [baseMixin];
-  data = {
-    name: "myHtmlParserKiner",
-    textContent: "",
-    info: {}
-  };
-  wxs = {
-    m1
-  };
-  components = {
-    html2wxml
-  };
-  onLoad(options) {
-    let id = options.id || 0;
-    this.id = id;
-    this.showLoading();
-    this.$get(
-      "/shopapi/iteminfo/site",
-      { id },
-      info => {
-        this.textContent = info.intro;
-        info.cover = this.absUrl(info.cover);
-        this.info = info;
-        if (this.info.auth_status == 0) {
-          this.timeflag = "申请";
-        } else if (this.status == 1) {
-          this.timeflag = "上架";
-        } else {
-          this.timeflag = "下架";
+    const appPage = new utilPage({
+        data: {
+            text: "Page productDetail",
+            name: "myHtmlParserKiner",
+            info: {},
+            article: {},
+            timeflag: ''
+        },
+        onLoad (options) {
+            this.loadCb();
+        },
+        onShow () {
+            if (this.data.isShow && this.data.isRefresh) {
+
+            }
+        },
+        onPullDownRefresh () {
+            let that = this
+        },
+        onReachBottom () {
+            let that = this
+        },
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor (...args) {
+            super(...args);
+            for (let k in appPage) {
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
+            }
         }
-        this.$apply();
-        this.$invoke("html2wxml", "htmlParserNotice");
-      },
-      () => {
-        this.hideLoading();
-      }
-    );
-  }
-  methods = {
-    revokeAuth() {
-      //撤销
-      let id = this.id;
-      this.confirm("确定撤销申请吗？", () => {
-        this.showLoading();
-        this.$get(
-          "/shopapi/iteminfo/revokeAuth",
-          {
-            id
-          },
-          info => {
-            this.$noticePage('refreshState')
-            this.$back()
-          },
-          () => {
-            this.hideLoading();
-          }
-        );
-      });
-    },
 
-    editAuth() {
-      this.$goto("create?id=" + this.id);
-    },
-    showPicDetail() {
-      if (this.info) {
-        this.$goto("pics?url=" + encodeURIComponent(this.info.cover));
-      }
-    },
-    wxParseImgTap(e) {
-      wx.previewImage({
-        current: e.currentTarget.dataset.idx, // 当前显示图片的http链接
-        urls: [e.currentTarget.dataset.src]
-      });
+        config = {
+            navigationBarTitleText: "产品详情"
+        };
+        mixins = [baseMixin];
+        wxs = {m1};
+        components = {html2wxml};
+
+        loadCb () {
+            let that = this,
+                options = this.data.options,
+                id = options.id || 0;
+            that.id = id;
+            that.showLoading();
+            that.ApiService.siteItemInfo({id}).then(
+                res => {
+                    if (res.status === 1) {
+                        let info = res.info;
+                        info.cover = this.absUrl(info.cover);
+                        that.info = info;
+                        if (that.info.auth_status == 0) {
+                            that.timeflag = "提交";
+                        } else if (that.status == 1) {
+                            that.timeflag = "上架";
+                        } else {
+                            that.timeflag = "下架";
+                        }
+                        that.article = WxParse.wxParse('article', 'html', info.intro, that, 5).article;
+                        that.$apply();
+                        that.$invoke("html2wxml", "htmlParserNotice");
+                    }
+                }
+            ).finally(res => {
+                that.hideLoading();
+            })
+        }
+
+        methods = {
+            revokeAuth() {
+                //撤销
+                let id = this.id;
+                this.confirm("确定撤销申请吗？", () => {
+                    this.showLoading();
+                    this.$get(
+                        "/shopapi/iteminfo/revokeAuth",
+                        {
+                            id
+                        },
+                        info => {
+                            this.$noticePage('refreshState')
+                            this.$back()
+                        },
+                        () => {
+                            this.hideLoading();
+                        }
+                    );
+                });
+            },
+
+            /**
+             * 编辑
+             */
+            editAuth() {
+                let id = this.data.info.id;
+                this.$azmUtil.go('/pages/newPages/pages/productAddAndEdit/index', {data: {id}, type: 'blank'})
+            },
+
+            showPicDetail() {
+                if (this.info) {
+                    this.$goto("pics");
+                }
+            },
+            wxParseImgTap(e) {
+                wx.previewImage({
+                    current: e.currentTarget.dataset.idx, // 当前显示图片的http链接
+                    urls: [e.currentTarget.dataset.src]
+                });
+            }
+        };
     }
-  };
-}
 </script>

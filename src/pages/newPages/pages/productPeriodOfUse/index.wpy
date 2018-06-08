@@ -18,14 +18,14 @@
                 <view class="t-beginTime flexBox-item fb-8">
                     <picker mode="date" value="{{start_date}}" start="{{limit_start_date}}" end="{{limit_end_date}}"
                             @change="bindDateChange('start_date')">
-                        <text>{{start_date}}</text>
+                        <text class="zan-font-bold">{{start_date}}</text>
                     </picker>
                 </view>
                 <view class="flexBox-item fb-8"></view>
                 <view class="t-overTime flexBox-item fb-8">
                     <picker mode="date" value="{{end_date}}" start="{{start_date}}"
                             @change="bindDateChange('end_date')">
-                        <text>{{end_date}}</text>
+                        <text class="zan-font-bold">{{end_date}}</text>
                     </picker>
                 </view>
             </view>
@@ -47,7 +47,8 @@
             </view>
             <view class="flexBox">
                 <view class="flexBox-item fb-12">
-                    <picker-view class="timepicker-wrap" value="{{start_time}}" @change="bindTimeChang('start_time')">
+                    <picker-view class="timepicker-wrap" indicator-class="timepicker" value="{{start_time}}"
+                                 @change="bindTimeChang('start_time')">
                         <picker-view-column>
                             <view class="picker-inner-view" wx:for="{{24}}" wx:key="{{index}}" wx:key="{{index}}">
                                 <block wx:if="{{item < 10}}">{{'0' + item}}</block>
@@ -63,8 +64,8 @@
                     </picker-view>
                 </view>
                 <view class="flexBox-item fb-12">
-                    <picker-view class="timepicker-wrap" value="{{end_time}}" @change="bindTimeChang('end_time')"
-                                 indicator-class="timepicker">
+                    <picker-view class="timepicker-wrap" indicator-class="timepicker" value="{{end_time}}"
+                                 @change="bindTimeChang('end_time')">
                         <picker-view-column>
                             <view class="picker-inner-view" wx:for="{{24}}" wx:key="{{index}}" wx:key="{{index}}">
                                 <block wx:if="{{item < 10}}">{{'0' + item}}</block>
@@ -82,8 +83,8 @@
             </view>
         </view>
 
-        <view class="footer-area">
-            <view class="flexBox">
+        <view class="azm-footer">
+            <view class="flexBox" style="height: 100%;">
                 <view class="flexBox-item fb-12 left">
                     <button class="azm-btn" plain="true" hover-class="none" @tap="bindCancelBtn">取消</button>
                 </view>
@@ -137,10 +138,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -172,13 +178,19 @@
                 limit_end_date = this.$azmUtil.formatTime(start_date, {M: 6, spacer: '-'}, 'YYYY-MM-DD'),
                 isTheTerm = period_of_use.isTheTerm || 0;
             if (isTheTerm) {
-                end_date = end_date || period_of_use.end_date;
+                end_date = period_of_use.end_date || end_date;
             }
             if (period_of_use.start_time) {
                 start_time = period_of_use.start_time.split(':');
+                if (start_time.length < 2) {
+                    start_time[1] = 0
+                }
             }
             if (period_of_use.end_time) {
                 end_time = period_of_use.end_time.split(':');
+                if (end_time.length < 2) {
+                    end_time[1] = 0
+                }
             }
             this.start_date = start_date;
             this.end_date = end_date;
@@ -189,6 +201,7 @@
             if (end_time) {
                 this.end_time = end_time;
             }
+            this.note = period_of_use.note;
             this.limit_start_date = start_date;
             this.limit_end_date = limit_end_date;
             this.days = this.$azmUtil.date_range(start_date, end_date, 'DD').length;
@@ -233,8 +246,12 @@
                         spacer: '-'
                     }, 'YYYY-MM-DD');
                 }
-                start_time = `${start_time[0] < 10 ? '0' + start_time[0] : start_time[0]}:${start_time[1] < 10 ? '0' + start_time[1] : start_time[1]}`;
-                end_time = `${end_time[0] < 10 ? '0' + end_time[0] : end_time[0]}:${end_time[1] < 10 ? '0' + end_time[1] : end_time[1]}`;
+                let start_time0 = parseInt(start_time[0]),
+                    start_time1 = parseInt(start_time[1]),
+                    end_time0 = parseInt(end_time[0]),
+                    end_time1 = parseInt(end_time[1]);
+                start_time = `${start_time0 > 9 ? start_time0 : '0' + start_time0}:${start_time1 > 9 ? start_time1 : '0' + start_time1}`;
+                end_time = `${end_time0 > 9 ? end_time0 : '0' + end_time0}:${end_time1 > 9 ? end_time1 : '0' + end_time1}`;
                 _this2.period_of_use = {
                     isTheTerm,
                     start_date,
@@ -262,6 +279,21 @@
         background-color: #f4f4f4;
         box-sizing: border-box;
         margin-bottom: 100*1rpx;
+        .azm-footer {
+            .azm-btn {
+                border: none;
+                padding-top: 17*2rpx;
+                padding-bottom: 17*2rpx;
+                border-radius: 0;
+                color: #ff8000;
+            }
+            .right {
+                .azm-btn {
+                    background-color: #ff8000;
+                    color: #fff;
+                }
+            }
+        }
         .azm-days {
             margin-top: 24*1rpx;
             padding: 30*1rpx;
@@ -293,7 +325,7 @@
             .t-exceptDate {
                 display: flex;
                 border-top: 2*1rpx solid #b7b7b7;
-                padding: 10*1rpx 0 0;
+                padding: 24*1rpx 0 0;
             }
 
             .t-exceptDate .t-except {
@@ -303,8 +335,11 @@
 
             .t-exceptDate .t-input {
                 font-size: 32*1rpx;
-                border-radius: 10*1rpx;
-                border: 2*1rpx solid #999999;
+                border-radius: 7*1rpx;
+                border: 1px solid #999999;
+                input {
+                    color: #000000;
+                }
             }
         }
 
@@ -380,9 +415,9 @@
         .timepicker,
         .picker-inner-view {
             text-align: center;
+            height: 80*1rpx;
             line-height: 80*1rpx;
             font-size: 40*1rpx;
-            height: 80*1rpx
         }
 
         .footer-area {

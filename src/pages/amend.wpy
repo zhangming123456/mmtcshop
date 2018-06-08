@@ -1,0 +1,207 @@
+<template>
+    <from bindreset="cleanInput">
+        <view class="input-area text999 fz28">
+            <view class="passworkBox">
+                <input class="passwordInput" value="{{phone}}" placeholder="请输入绑定手机号" type=""
+                       @input="bindInputTelephone('phone')" maxlength="11"/>
+                <button class="getCode" plain="true" hover-class="none" disabled='{{disabled}}' data-id="2"
+                        @tap="getVerificationCode">{{time}}
+                </button>
+            </view>
+            <input class="textInput" value="{{code}}" @input="bindInputTelephone('code')" placeholder="请输入验证码"
+                   maxlength="6" type="number"/>
+            <button class="login" bindtap="validPhone" formType="reset">下一步</button>
+        </view>
+    </from>
+    <toast></toast>
+</template>
+
+<script>
+    import wepy from "wepy";
+    import baseMixin from "../mixins/base";
+    import toast from "../components/toast";
+    import utilPage from "../mixins/utilPage";
+    var interval = null; //倒计时函数
+    const appPage = new utilPage({
+        data: {
+            text: "Page loginAmend",
+            date: "请选择日期",
+            fun_id: 2,
+            time: "获取验证码", //倒计时
+            currentTime: 60,
+            disabled: false,
+            phone: "",
+            code: ""
+        },
+        onLoad(options) {
+            this.loadCb();
+        },
+        onShow() {
+
+        },
+        onPullDownRefresh() {
+            let that = this;
+        },
+
+        onReachBottom() {
+            let that = this;
+        },
+
+        onPageScroll(options) {
+        }
+    });
+    export default class extends wepy.page {
+        constructor (...args) {
+            super(...args);
+            for (let k in appPage) {
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
+            }
+        }
+
+        components = {toast};
+        mixins = [baseMixin];
+        config = {
+            navigationBarTitleText: "修改密码"
+        };
+
+        loadCb () {
+            let options = this.data.options;
+        }
+
+        methods = {
+            bindInputTelephone(key, e) {
+                console.log(e);
+                let value = e.detail.value;
+                this[key] = value;
+            },
+            getCode: function (options) {
+                var that = this;
+                var currentTime = that.data.currentTime;
+                interval = setInterval(function () {
+                    currentTime--;
+                    that.time = "重新获取" + currentTime + "s";
+                    if (currentTime <= 0) {
+                        clearInterval(interval);
+                        that.time = "获取验证码";
+                        that.currentTime = 60;
+                        that.disabled = false;
+                    }
+                    that.$apply();
+                }, 1000);
+            },
+            getVerificationCode() {
+                let that = this,
+                    phone = that.data.phone,
+                    reg = that.$azmUtil.regExpUtil;
+                if (!reg.isPhone(phone)) {
+                    that.azmShowToast("请输入正确的手机号码");
+                    return;
+                }
+                that.methods.getCode.call(this);
+                that.disabled = true;
+                this.ApiService.getShopapiCheckCode({phone}).then(res => {
+                    if (res.status === 1) {
+                    } else {
+                        this.$alert(
+                            "您还未绑定手机号，您可以尝试预留服务电话账号+后六位密码的方式登录，若还有疑问请您及时联系我们"
+                        );
+                        return;
+                    }
+                });
+            },
+
+            validPhone(e) {
+                let that = this,
+                    code = that.data.code,
+                    phone = that.data.phone,
+                    reg = that.$azmUtil.regExpUtil;
+                if (!reg.isPhone(phone)) {
+                    that.azmShowToast('手机号码格式不正确~')
+                    return;
+                }
+                if (this.$azmUtil.trim(code).length !== 6) {
+                    that.azmShowToast('验证码格式不正确');
+                    return;
+                }
+                this.ApiService.getcheckCode({code, phone}).then(res => {
+                    if (res.status === 1) {
+                        wx.navigateTo({
+                            url: "/pages/newPassword?code=" + code + "&phone=" + phone
+                        });
+                        this.setData({
+                            phone: "",
+                            code: ""
+                        });
+                    } else {
+                        this.$alert("验证码错误");
+                        return;
+                    }
+                });
+            }
+        };
+    }
+</script>
+
+<style lang="less">
+    .textInput {
+        width: 670 *1rpx;
+        height: 90 *1rpx;
+        border-radius: 5 *1rpx;
+        border: solid 1px rgba(153, 153, 153, 0.3);
+        padding-left: 30 *1rpx;
+        padding-right: 30 *1rpx;
+        margin-bottom: 96 *1rpx;
+        text-align: left;
+        display: inline-block;
+        margin-left: 40 *1rpx;
+    }
+
+    .passworkBox {
+        width: 670 *1rpx;
+        height: 90 *1rpx;
+        border-radius: 5 *1rpx;
+        border: solid 1px rgba(153, 153, 153, 0.3);
+        margin-left: 40 *1rpx;
+        margin-right: 30 *1rpx;
+        margin-bottom: 30 *1rpx;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 106 *1rpx;
+    }
+
+    .passwordInput {
+        padding-left: 30 *1rpx;
+        text-align: left;
+        display: inline-block;
+    }
+
+    button.getCode {
+        padding: 16 *1rpx 24 *1rpx;
+        height: auto;
+        border: 1 *1rpx solid #ff8000;
+        border-radius: 5 *1rpx;
+        color: #ff8000;
+        line-height: 1;
+        font-size: 28 *1rpx;
+        margin-right: 20 *1rpx;
+    }
+
+    .login {
+        width: 670 *1rpx;
+        height: 90 *1rpx;
+        background-color: #ff8000;
+        font-size: 32 *1rpx;
+        color: #ffffff;
+        line-height: 90 *1rpx;
+        text-align: center;
+        margin-left: 40 *1rpx;
+        border-radius: 5 *1rpx;
+    }
+</style>

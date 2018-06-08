@@ -12,8 +12,8 @@ Promise.prototype.finally = function (callback) {
 const app = getApp(),
     util = require('./util'),
     utilCommon = require('./utilCommon'),
-    Fly = require('./fly'),
-    contentType = "Content-Type";
+    Fly = require('./fly.min'),
+    ContentType = "Content-Type";
 function getFly (params = {}) {
     let fly = new Fly();
     let sid = util.getSessionId(),
@@ -44,24 +44,45 @@ function getFly (params = {}) {
         (res) => {
             app.interceptors && app.interceptors.response && app.interceptors.response('success', res);
             //只将请求结果的data字段返回
-            res.data.status = parseInt(res.data.status);
-            let setCookie = res.headers['Set-Cookie'];
-            if (setCookie && setCookie.indexOf('PHPSESSID=') !== -1) {
-                let lpos = setCookie.indexOf(';');
-                if (lpos != -1) {
-                    setCookie = setCookie.substr(0, lpos);
+            try {
+                res.data.status = parseInt(res.data.status);
+                let setCookie = res.headers['Set-Cookie'];
+                if (setCookie && setCookie.indexOf('PHPSESSID=') !== -1) {
+                    let lpos = setCookie.indexOf(';');
+                    if (lpos != -1) {
+                        setCookie = setCookie.substr(0, lpos);
+                    }
+                    wx.setStorageSync('sid', setCookie);
                 }
-                wx.setStorageSync('sid', setCookie);
-            }
-            wx.hideNavigationBarLoading();//停止标题loading
-            // wx.hideLoading();
+                wx.hideNavigationBarLoading();//停止标题loading
+                // wx.hideLoading();
 
-            let page = util.getCurrentPage(),
-                path = page.route;
-            if (res.data.status === 202 && path !== 'pages/login') {
-                util.go('/pages/login', {type: 'blank'})
+                let page = util.getCurrentPage(),
+                    path = page.route;
+                if (res.data.status === 202 && path !== 'pages/login') {
+                    util.go('/pages/login', {type: 'blank'});
+                    return {
+                        info: null,
+                        message: '未登入',
+                        status: 0
+                    }
+                } else {
+                    let info = res.data.info,
+                        status = res.data.status;
+                    if (status === 0) {
+                        res.data.message = info;
+                        res.data.info = null;
+                    }
+                    return res.data
+                }
+            } catch (e) {
+                util.go('/pages/common/404');
+                return {
+                    info: null,
+                    message: '请求失败',
+                    status: 0
+                }
             }
-            return res.data
         },
         (err) => {
             app.interceptors && app.interceptors.response && app.interceptors.response('err', err);
@@ -120,12 +141,11 @@ class HttpRequest {
             delete params.data.options;
         }
         for (let k in params.data) {
-            params.data[k] = utilCommon.isFalse(params.data[k]);
-            if (util.trim(params.data[k]) === '' || !params.data[k] && !utilCommon.isNumberOfNaN(params.data[k])) {
+            let _value = utilCommon.isFalse(params.data[k]);
+            if ((util.trim(params.data[k]) === '' || !params.data[k]) && !utilCommon.isNumberOfNaN(params.data[k])) {
                 delete params.data[k]
             }
         }
-
         function failCallback (res) {
             retryNum++;
             let text = '网络连接失败，或服务器错误' + '{' + res.errMsg + '}';
@@ -182,7 +202,7 @@ class HttpRequest {
                     params.header = {
                         "Content-Type": params.contentType
                     };
-                    if (util.trim((params.header[contentType] || "").toLowerCase()) === _contentType) {
+                    if (util.trim((params.header[ContentType] || "").toLowerCase()) === _contentType) {
 
                     } else if (params.data && ["object", "array"].indexOf(util.type(params.data)) !== -1) {
                         _data = params.data;

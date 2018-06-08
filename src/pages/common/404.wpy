@@ -1,45 +1,94 @@
-<template lang='pug'>
-view.container1.text-center
-    image.avatar(src='/imgs/404.png')
-    view.txt 好像是网络问题，请联网后刷新下撒~
-    view.button-area
-        button.btn-primary(type="default" @tap="refresh" hover-class="tapmode") 刷新一下
+<template>
+    <view class="container1 text-center">
+        <image class="avatar" src="/imgs/404.png"/>
+        <view class="txt">好像是网络问题，请联网后刷新下撒~</view>
+        <view class="button-area">
+            <button class="btn-primary" type="default" @tap="refresh" hover-class="tapmode">刷新一下</button>
+        </view>
+    </view>
 </template>
 <script>
-import wepy from "wepy";
-export default class Alterpwd extends wepy.page {
-    config = {
-      navigationBarTitleText: '网路异常'
-    }
-    methods = {
-        refresh(){
+    import wepy from "wepy";
+    import baseMixin from "../../mixins/base";
+    import utilPage from '../../mixins/utilPage'
+    const appPage = new utilPage({
+        data: {
+            text: "Page 404"
+        },
+        onLoad (options) {
+            this.loadCb();
+        },
+        onShow () {
+            if (this.data.isShow && this.data.isRefresh) {
+
+            }
+        },
+        onPullDownRefresh () {
+            let that = this
+        },
+
+        onReachBottom () {
+            let that = this
+        },
+
+        onPageScroll (options) {
 
         }
+    });
+    export default class Alterpwd extends wepy.page {
+        constructor (...args) {
+            super(...args);
+            for (let k in appPage) {
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: '网路异常'
+        };
+        mixins = [baseMixin];
+
+        loadCb () {
+
+        };
+
+        methods = {
+            refresh(){
+                this.$azmUtil.go(-1);
+            }
+        }
     }
-}
 </script>
 
 <style lang="less">
 
-.avatar{ 
-    width: 394rpx;
-	height: 296rpx;
-}
-.container1{
-    padding-top: 183rpx;
-    .txt{
-        font-size: 28rpx;
-        color: #999999;
-        padding-top: 28rpx;
+    .avatar {
+        width: 394*1rpx;
+        height: 296*1rpx;
     }
-}
-.button-area {
-    padding-top: 142rpx;
-}
-button.btn-primary{
-    border: solid 1px #ff8000;
-	font-size: 32rpx;
-	color: #ff8000;
-    background-color: transparent;
-}
+
+    .container1 {
+        padding-top: 183*1rpx;
+        .txt {
+            font-size: 28*1rpx;
+            color: #999999;
+            padding-top: 28*1rpx;
+        }
+    }
+
+    .button-area {
+        padding-top: 142*1rpx;
+    }
+
+    button.btn-primary {
+        border: solid 1px #ff8000;
+        font-size: 32*1rpx;
+        color: #ff8000;
+        background-color: transparent;
+    }
 </style>

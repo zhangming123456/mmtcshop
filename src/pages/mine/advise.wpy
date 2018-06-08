@@ -51,7 +51,7 @@ export default class  extends wepy.page {
               }
               if(data.status ==1){
                  this.img_src = this.absUrl(data.info)
-                 this._img_src = data.info
+                 this._img_src = data.info  
                  this.$apply()
               }else{
                   this.$alert(data.info)

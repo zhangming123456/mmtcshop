@@ -1,95 +1,107 @@
 <style lang="less">
-button.btn-account {
-  font-size: 32rpx;
-  position: fixed;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  height: 100rpx;
-  line-height: 100rpx;
-}
-.container-main {
-  .close-icon {
-    width: 72rpx;
-    height: 72rpx;
-    margin-right: 30rpx;
-  }
-}
-.caption-title {
-  padding: 19rpx 30rpx;
-}
-.title1 {
-  font-size: 32rpx;
-  padding-bottom: 18rpx;
-  color: #333333;
-  line-height: 1;
-}
-.title2 {
-  font-size: 28rpx;
-  color: #999999;
-}
-.p30 {
-  padding: 45rpx 30rpx 30rpx 30rpx;
-  background-color: #fff;
-}
-.reback-info {
-  font-size: 32rpx;
-  line-height: 48rpx;
-  color: #ff8000;
-  min-height: 303rpx;
-  padding: 30rpx;
-  background-color: #fff;
-}
-page {
-  background-color: #f5f5f5;
-  color: #ff8000;
-  line-height: 48rpx;
-  font-size: 32rpx;
-}
+    button.btn-account {
+        font-size: 32*1rpx;
+        position: fixed;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        height: 100*1rpx;
+        line-height: 100*1rpx;
+    }
+
+    .container-main {
+        .close-icon {
+            width: 72*1rpx;
+            height: 72*1rpx;
+            margin-right: 30*1rpx;
+        }
+    }
+
+    .caption-title {
+        padding: 19*1rpx 30*1rpx;
+    }
+
+    .title1 {
+        font-size: 32*1rpx;
+        padding-bottom: 18*1rpx;
+        color: #333333;
+        line-height: 1;
+    }
+
+    .title2 {
+        font-size: 28*1rpx;
+        color: #999999;
+    }
+
+    .p30 {
+        padding: 45*1rpx 30*1rpx 30*1rpx 30*1rpx;
+        background-color: #fff;
+    }
+
+    .reback-info {
+        font-size: 32*1rpx;
+        line-height: 48*1rpx;
+        color: #ff8000;
+        min-height: 303*1rpx;
+        padding: 30*1rpx;
+        background-color: #fff;
+    }
+
+    page {
+        background-color: #f5f5f5;
+        color: #ff8000;
+        line-height: 48*1rpx;
+        font-size: 32*1rpx;
+    }
 </style>
 
 <template lang="pug">
-view.container-main
-    view.p30
-        view.flex
-            view
-                image.close-icon(src="/imgs/close3.png")
-            view.flex-con
-                view.title1 未通过审核
-                view.title2 请按照修改意见进行修改
-    view.caption-title 修改意见:
-    view.reback-info  {{content||'（无）'}}
-    button.btn-account.bg-primary.btn-block(type="default" hover-class="tapmode" @tap="addAccount")  重新编辑
+    view.container-main
+        view.p30
+            view.flex
+                view
+                    image.close-icon(src="/imgs/close3.png")
+                view.flex-con
+                    view.title1 未通过审核
+                    view.title2 请按照修改意见进行修改
+        view.caption-title 修改意见:
+        view.reback-info  {{content||'（无）'}}
+        button.btn-account.bg-primary.btn-block(type="default" hover-class="tapmode" @tap="addAccount")  重新编辑
 </template>
 
 <script>
-import wepy from "wepy";
-import baseMixin from "../../../mixins/base";
-export default class extends wepy.page {
-  config = {
-    navigationBarTitleText: "审核反馈"
-  };
-  data = {
-      content:''
-  };
-  mixins = [baseMixin];
-  onLoad(options) {
-    this.id = options.id || 0;
-    if(this.id){
-        this.showLoading()
-        this.$get('/shopapi/iteminfo/authDetail',{
-            id:this.id
-        },info=>{
-            this.content = info
-        },()=>{  
-            this.hideLoading()
-        })
+    import wepy from "wepy";
+    import baseMixin from "../../../mixins/base";
+    export default class extends wepy.page {
+        config = {
+            navigationBarTitleText: "审核反馈"
+        };
+        data = {
+            content: ''
+        };
+        mixins = [baseMixin];
+
+        onLoad (options) {
+            this.id = options.id || 0;
+            if (this.id) {
+                this.showLoading()
+                this.$get('/shopapi/iteminfo/authDetail', {
+                    id: this.id
+                }, info => {
+                    this.content = info
+                }, () => {
+                    this.hideLoading()
+                })
+            }
+        }
+
+        methods = {
+            addAccount() {
+                this.$azmUtil.go('/pages/newPages/pages/productAddAndEdit/index', {
+                    data: {id: this.id, isEdit: 1},
+                    type: 'blank'
+                })
+            }
+        };
     }
-  }
-  methods = {
-    addAccount() {
-      this.$goto("create?id=" + this.id);
-    }
-  };
-}
 </script>

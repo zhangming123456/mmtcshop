@@ -1,4 +1,8 @@
 <style lang="less">
+    view {
+        line-height: 1;
+    }
+
     .container-main {
         .header {
             background-color: #2c2e3e;
@@ -167,82 +171,117 @@
         padding-bottom: 47*1rpx;
     }
 </style>
-<template lang='pug'>
-    view.container-main
-        view.header
-            view.flex
-                view.avatar-area
-                    image.avatar-img(src="{{c.absUrl(userInfo.cover)}}")
-                    view.avatar-txt-wrap
-                        view.avatar-txt(wx:if="{{userInfo.auth_status>0}}") 已认证
-                view.flex-con
-                    view.title1 {{userInfo.nickname}}
-                        image.level-img(src='/imgs/level.png')
-                        view.level-num {{userInfo.level}}
-                    view.title2 超级管理员
-            button.exit-btn(@tap="sureExit") 店铺管理
-
-        view.list-box
-            navigator.list-item.border-b(url="products/index")
-                view.flex
-                    view.flex-con 产品管理
-                    view
-                        image.gt(src="/imgs/gt.png")
-            navigator.list-item.border-b(url="withdraw")
-                view.flex
-                    view.flex-con 财务管理
-                    view
-                        image.gt(src="/imgs/gt.png")
-            //- view.list-item.border-b(@tap="showQrcodeImage")
-            navigator.list-item.border-b(url="../jishi/index")
-                view.flex
-                    view.flex-con 技师管理
-                    view
-                        image.gt(src="/imgs/gt.png")
-
-        view.list-box
-            navigator.list-item.border-b(url="alterpwdcheckphone")
-                view.flex
-                    view.flex-con 密码修改
-                    view
-                        image.gt(src="/imgs/gt.png")
-            navigator.list-item.border-b(url="alterphone")
-                view.flex
-                    view.flex-con 手机绑定
-                    view
-                        image.gt(src="/imgs/gt.png")
-
-
-        view.list-box
-            view.list-item.border-b(wx:if="{{bdInfo.discount_code}}" @tap="callDiscountCode")
-                view.flex
-                    view.flex-con 商务经理
-                    view.manager-name  {{bdInfo.discount_name}} {{bdInfo.discount_code}}
-                    view
-                        image.gt(src="/imgs/gt.png")
-            navigator.list-item.border-b(url="advise")
-                view.flex
-                    view.flex-con 意见反馈
-                    view
-                        image.gt(src="/imgs/gt.png")
-
-            navigator.list-item.border-b(url="about")
-                view.flex
-                    view.flex-con 关于我们
-                    view
-                        image.gt(src="/imgs/gt.png")
-        view.hr24
-        view.qrcode-masker(@tap="closeMasker" wx:if='{{_showMasker}}')
-            view.qrcode-masker-inner
-                view.qrcode(@tap.stop="noop")
-                    view.qrcode-title
-                        view.flex
-                            view
-                                image.qrcode-avatar(src="{{userInfo.pic}}")
-                            view.flex-con.one-line.fz30.text282828 {{userInfo.nickname}}
-                    view.qrcode-wrap
-                        image.qrcode-img(src="{{qrcode}}" @load="onLoadQrcode")
-                    view.qrcode-txt(@tap="downQrcode") 下载二维码分享朋友圈
+<template>
+    <view class="container-main">
+        <view class="header">
+            <view class="flex">
+                <view class="avatar-area">
+                    <image class="avatar-img" src="{{c.absUrl(userInfo.cover)}}"/>
+                    <view class="avatar-txt-wrap">
+                        <view class="avatar-txt" wx:if="{{userInfo.auth_status>0}}">已认证</view>
+                    </view>
+                </view>
+                <view class="flex-con">
+                    <view class="title1">{{userInfo.nickname}}
+                        <image class="level-img" src="/imgs/level.png"/>
+                        <view class="level-num">{{userInfo.level}}</view>
+                    </view>
+                    <view class="title2">超级管理员</view>
+                </view>
+            </view>
+            <button class="exit-btn" @tap="sureExit">店铺管理</button>
+        </view>
+        <view class="list-box">
+            <navigator class="list-item border-b" url="/pages/newPages/pages/productManage/index">
+                <view class="flex">
+                    <view class="flex-con">产品管理</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+            <navigator class="list-item border-b" url="withdraw">
+                <view class="flex">
+                    <view class="flex-con">财务管理</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+            <navigator class="list-item border-b" url="../jishi/index">
+                <view class="flex">
+                    <view class="flex-con">技师管理</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+        </view>
+        <view class="list-box">
+            <navigator class="list-item border-b" url="alterpwdcheckphone">
+                <view class="flex">
+                    <view class="flex-con">密码修改</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+            <navigator class="list-item border-b" url="alterphone">
+                <view class="flex">
+                    <view class="flex-con">手机绑定</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+        </view>
+        <view class="list-box">
+            <view class="list-item border-b" wx:if="{{bdInfo.discount_code}}" @tap="callDiscountCode">
+                <view class="flex">
+                    <view class="flex-con">商务经理</view>
+                    <view class="manager-name"> {{bdInfo.discount_name}} {{bdInfo.discount_code}}</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </view>
+            <navigator class="list-item border-b" url="advise">
+                <view class="flex">
+                    <view class="flex-con">意见反馈</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+            <navigator class="list-item border-b" url="about">
+                <view class="flex">
+                    <view class="flex-con">关于我们</view>
+                    <view>
+                        <image class="gt" src="/imgs/gt.png"/>
+                    </view>
+                </view>
+            </navigator>
+        </view>
+        <view class="hr24"/>
+        <view class="qrcode-masker" @tap="closeMasker" wx:if="{{_showMasker}}">
+            <view class="qrcode-masker-inner">
+                <view class="qrcode" @tap.stop="noop">
+                    <view class="qrcode-title">
+                        <view class="flex">
+                            <view>
+                                <image class="qrcode-avatar" src="{{userInfo.pic}}"/>
+                            </view>
+                            <view class="flex-con one-line fz30 text282828">{{userInfo.nickname}}</view>
+                        </view>
+                    </view>
+                    <view class="qrcode-wrap">
+                        <image class="qrcode-img" src="{{qrcode}}" bindload="onLoadQrcode"/>
+                    </view>
+                    <view class="qrcode-txt" @tap="downQrcode">下载二维码分享朋友圈</view>
+                </view>
+            </view>
+        </view>
+    </view>
 </template>
 <script>
     import wepy from "wepy";

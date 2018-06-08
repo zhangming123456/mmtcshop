@@ -4,7 +4,6 @@ import {
 } from "./httpRequest";
 
 const $http = new HttpRequest();
-
 class ShopApi {
     constructor () {
         this.shopApi = '/shopapi/'
@@ -12,7 +11,7 @@ class ShopApi {
 
     /**
      * 提交保存产品
-     * @api {post} /shopapi/iteminfo/sav
+     * @api {post} /shopapi/iteminfo/sav_new
      * @param data
      * @param {Number} [id] 产品ID 编辑模式需要
      * @param {String} title 标题
@@ -56,7 +55,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    siteItemInfo (data = {nodes = 1, id = 0} = {}, resole, reject) {
+    siteItemInfo (data = {nodes= 1, id= 0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/site`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -146,7 +145,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoDownOn (data = {id = 0} = {}, resole, reject) {
+    setIteminfoDownOn (data = {id=0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/downOn`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -160,7 +159,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoUpOn (data = {id = 0} = {}, resole, reject) {
+    setIteminfoUpOn (data = {id=0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/upOn`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -174,7 +173,7 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoRevokeAuth (data = {id = 0} = {}, resole, reject) {
+    setIteminfoRevokeAuth (data = {id=0} = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/revokeAuth`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -190,7 +189,7 @@ class ShopApi {
      */
     deleteItem ({id = 0} = {}, resole, reject) {
         let that = this, data = {id};
-        const api = `${that.shopApi}iteminfo/to_del`;
+        const api = `${that.shopApi}iteminfo/del`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
     }
@@ -223,7 +222,6 @@ class ShopApi {
         return http;
     }
 }
-
 class ApiService extends ShopApi {
     constructor (...args) {
         super(...args); // 调用父类的constructor(x, y)
@@ -271,6 +269,51 @@ class ApiService extends ShopApi {
         const http = $http.post(that.url + api, data, resole, reject);
         return http;
     }
-}
 
+
+    /**
+     * 修改密码获取手机号码验证
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    getShopapiCheckCode (data = {
+        telephone: 0,
+        docheck: 1
+    }, resole, reject) {
+        let that = this;
+        const api = `${that.shopApi}pwd/getCheckCode`;
+        const http = $http.post(that.url + api, data, resole, reject);
+        return http;
+    }
+
+    /**
+     * 验证验证码接口
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    getcheckCode (data = {}, resole, reject) {
+        let that = this;
+        const api = `${that.shopApi}pwd/checkCode`;
+        const http = $http.post(that.url + api, data, resole, reject);
+        return http;
+    }
+
+    /**
+     * 修改密码接口
+     * @param data
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    getEdit ({pwd = "", code = "", phone = ""} = {}, resole, reject) {
+        let that = this, data = {pwd, code, phone};
+        const api = `${that.shopApi}pwd/edit`;
+        const http = $http.post(that.url + api, data, resole, reject);
+        return http;
+    }
+}
 module.exports = new ApiService();

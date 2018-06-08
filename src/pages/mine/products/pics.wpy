@@ -1,51 +1,98 @@
 <style lang="less">
-page {
-  background-color: #fff;
-}
-.container-main {
-    padding:16rpx 30rpx;
-    overflow: hidden;
-    margin-right:-5rpx;
-}
-.avatar1{
-    width: 168rpx;
-    height: 167rpx;
-    float:left;
-    margin-left:5rpx;
-    margin-bottom: 8rpx;
-    background-color: #eeeeee;
-}
+    page {
+        background-color: #fff;
+    }
 
-</style> 
-<template lang="pug">
-view.container-main         
-    image.avatar1(src='{{url}}' @tap="showBigPic")
+    .container-main {
+        padding: 16*1rpx 30*1rpx;
+        overflow: hidden;
+        margin-right: -5*1rpx;
+    }
+
+    .avatar1 {
+        width: 168*1rpx;
+        height: 167*1rpx;
+        float: left;
+        margin-left: 5*1rpx;
+        margin-bottom: 8*1rpx;
+        background-color: #eeeeee;
+    }
+
+</style>
+<template>
+    <view class="container-main">
+        <block wx:for="{{covers}}" wx:key="{{index}}">
+            <image class="avatar1" src="{{item}}" @tap="showBigPic" mode="aspectFill"/>
+        </block>
+    </view>
 </template>
 
 <script>
-import wepy from "wepy";
-import baseMixin from "../../../mixins/base";
-export default class extends wepy.page {
-  config = {
-    navigationBarTitleText: "产品主图"
-  };
-  mixins = [baseMixin];
-  data = {
-      url:''
-  };
-  onLoad(options){
-    this.url = decodeURIComponent(options.url || '')    
-  };
-  methods = {
-    addAccount() {
-      this.$goto("addaccount");
-    },
-    showBigPic(){
-        wx.previewImage({
-            current: 0, // 当前显示图片的http链接
-            urls: [this.url]
-        });
+    import wepy from "wepy";
+    import baseMixin from "../../../mixins/base";
+    import utilPage from '../../../mixins/utilPage';
+    const appPage = new utilPage({
+        data: {
+            text: "Page productPics",
+            hasMoreData: false,//是否有更多
+            covers: []
+        },
+        onLoad (options) {
+            this.loadCb();
+        },
+        onShow () {
+            if (this.data.isShow && this.data.isRefresh) {
+
+            }
+        },
+        onPullDownRefresh () {
+            let that = this
+        },
+        onReachBottom () {
+            let that = this
+        },
+        onPageScroll (options) {
+        },
+    });
+    export default class extends wepy.page {
+        constructor (...args) {
+            super(...args);
+            for (let k in appPage) {
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
+            }
+        }
+
+        config = {
+            navigationBarTitleText: "产品主图"
+        };
+        mixins = [baseMixin];
+
+        loadCb (options) {
+            let that = this,
+                _this2 = that.__getPrevPage(),
+                covers = _this2.data.info.covers, arr = [];
+            if (covers && that.$azmUtil.common.isArray(covers) && covers.length) {
+                for (let v of covers) {
+                    arr.push(`${that.data.imageUrl}${v}`)
+                }
+            } else {
+                arr = [_this2.data.info.cover]
+            }
+            that.covers = arr;
+        };
+
+        methods = {
+            showBigPic(){
+                wx.previewImage({
+                    current: 0, // 当前显示图片的http链接
+                    urls: this.data.covers
+                });
+            }
+        };
     }
-  };
-}
 </script>

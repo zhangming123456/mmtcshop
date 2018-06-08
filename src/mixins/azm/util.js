@@ -432,25 +432,28 @@ function moneyToFloat (num) {
 
 module.exports.moneyToFloat = moneyToFloat;
 
+let timer_toast = null;
+
 /**
  * 提示框（微信内置）
  * @param text
  */
 function showToast (option) {
+    clearTimeout(timer_toast);
     let data = {
         title: option,
         icon: 'success',
         mask: true,
-        duration: 1500
+        duration: 2000
     };
     if (utilCommon.isObject(option)) {
         data.title = option.title;
         data.icon = option.icon || 'success';
         data.image = option.image || data.image;
         data.mask = option.mask || true;
-        data.duration = option.duration || 2000;
+        data.duration = option.duration || 1500;
         data.success = option.success ? () => {
-            setTimeout(() => {
+            timer_toast = setTimeout(() => {
                 option.success();
             }, data.duration)
         } : null;
@@ -458,11 +461,13 @@ function showToast (option) {
         data.complete = option.complete;
     } else {
         if (arguments[1] && utilCommon.isFunction(arguments[1])) {
-            data.complete = arguments[1];
+            data.complete = () => {
+                timer_toast = setTimeout(() => {
+                    arguments[1]();
+                }, data.duration)
+            };
         }
     }
-    wx.hideToast();
-    wx.hideLoading();
     wx.showToast(data);
 }
 
@@ -470,21 +475,22 @@ module.exports.showToast = showToast;
 
 
 function failToast (option) {
+    clearTimeout(timer_toast);
     let data = {
         title: option,
         icon: 'fail',
-        image: '../../../imgs/fail.png',
+        image: '/imgs/icon/fail.png',
         mask: true,
-        duration: 1500
+        duration: 2000
     };
     if (utilCommon.isObject(option)) {
         data.title = option.title;
         data.icon = option.icon || 'success';
         data.image = option.image || data.image;
         data.mask = option.mask || true;
-        data.duration = option.duration || 2000;
+        data.duration = option.duration || 1500;
         data.success = option.success ? () => {
-            setTimeout(() => {
+            timer_toast = setTimeout(() => {
                 option.success();
             }, data.duration)
         } : null;
@@ -492,29 +498,54 @@ function failToast (option) {
         data.complete = option.complete;
     } else {
         if (arguments[1] && utilCommon.isFunction(arguments[1])) {
-            data.complete = arguments[1];
+            data.complete = () => {
+                timer_toast = setTimeout(() => {
+                    arguments[1]();
+                }, data.duration)
+            };
         }
     }
-    wx.hideToast();
-    wx.hideLoading();
     wx.showToast(data);
 }
 
 module.exports.failToast = failToast;
+module.exports.hideToast = wx.hideToast;
+module.exports.hideLoading = function () {
+    clearTimeout(timer_toast);
+    timer_toast = setTimeout(res => {
+        wx.hideLoading()
+    }, 1500)
+};
 
 
-function showLoading (text, cb) {
-    wx.hideToast();
-    wx.hideLoading();
-    wx.showLoading({
-        title: text,
+function showLoading (option) {
+    clearTimeout(timer_toast);
+    let data = {
+        title: option || '加载中...',
         mask: true,
-        success() {
-            setTimeout(function () {
-                cb && cb();
-            }, 1500);
+        duration: 2000
+    };
+    if (utilCommon.isObject(option)) {
+        data.title = option.title;
+        data.mask = option.mask || true;
+        data.duration = option.duration || 1500;
+        data.success = option.success ? () => {
+            timer_toast = setTimeout(() => {
+                option.success();
+            }, data.duration)
+        } : null;
+        data.fail = option.fail;
+        data.complete = option.complete;
+    } else {
+        if (arguments[1] && utilCommon.isFunction(arguments[1])) {
+            data.complete = () => {
+                timer_toast = setTimeout(() => {
+                    arguments[1]();
+                }, data.duration)
+            };
         }
-    });
+    }
+    wx.showLoading(data);
 }
 
 module.exports.showLoading = showLoading;
@@ -630,17 +661,16 @@ function CurrentPages () {
 
 module.exports.CurrentPages = CurrentPages;
 module.exports.isGoRouter = false;
+
+let isGoRouter = false;
 /**
  * 跳转路径
  * @param a{String|Number} 页面路径地址
  * @param options{Object} type{String}:跳转类型 （blank：关闭当前页面跳转；tab:关闭其他tabBar页面，跳转到tabBar页面；blankAll：关闭所有页面跳转）；data{Object}：跳转携带参数对象
  */
-function go (a, options) {
-    let stringify = '',
-        that = getCurrentPage();
-    if (that.isGoRouter) return;
-    that.isGoRouter = true;
-    if (!options) options = {};
+function go (a, options = {}) {
+    let stringify = '';
+    if (isGoRouter) return;
     if (options.data) {
         stringify = queryString.stringify(options.data);
     }
@@ -658,6 +688,7 @@ function go (a, options) {
         }
         let url = a + stringify;
         if (options.type === 'blank') {
+            isGoRouter = true;
             wx.redirectTo({
                 url: url,
                 success() {
@@ -667,11 +698,12 @@ function go (a, options) {
                     options.fail && options.fail()
                 },
                 complete() {
-                    that.isGoRouter = false;
+                    isGoRouter = false;
                     options.complete && options.complete()
                 }
             })
         } else if (options.type === 'tab') {
+            isGoRouter = true;
             wx.switchTab({
                 url: url,
                 success() {
@@ -681,7 +713,7 @@ function go (a, options) {
                     options.fail && options.fail()
                 },
                 complete() {
-                    that.isGoRouter = false;
+                    isGoRouter = false;
                     options.complete && options.complete()
                 }
             })
@@ -712,6 +744,7 @@ function go (a, options) {
                 }
             )
         } else if (options.type === 'blankAll') {
+            isGoRouter = true;
             wx.reLaunch({
                 url: url,
                 success() {
@@ -721,24 +754,40 @@ function go (a, options) {
                     options.fail && options.fail()
                 },
                 complete() {
-                    that.isGoRouter = false;
+                    isGoRouter = false;
                     options.complete && options.complete()
                 }
             })
         } else {
-            wx.navigateTo({
-                url: url,
-                success() {
-                    options.success && options.success()
-                },
-                fail(res) {
-                    options.fail && options.fail()
-                },
-                complete() {
-                    that.isGoRouter = false;
-                    options.complete && options.complete()
-                }
-            })
+            isGoRouter = true;
+            if (getCurrentPages().length === 5) {
+                wx.redirectTo({
+                    url: url,
+                    success() {
+                        options.success && options.success()
+                    },
+                    fail(res) {
+                        options.fail && options.fail()
+                    },
+                    complete() {
+                        isGoRouter = false;
+                        options.complete && options.complete()
+                    }
+                })
+            } else
+                wx.navigateTo({
+                    url: url,
+                    success() {
+                        options.success && options.success()
+                    },
+                    fail(res) {
+                        options.fail && options.fail()
+                    },
+                    complete() {
+                        isGoRouter = false;
+                        options.complete && options.complete()
+                    }
+                })
         }
     }
 }
@@ -957,3 +1006,8 @@ function unique (arr) {
     return res;
 }
 module.exports.unique = unique;
+
+
+function pwd () {
+
+}

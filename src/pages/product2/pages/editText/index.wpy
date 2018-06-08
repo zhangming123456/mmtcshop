@@ -1,9 +1,9 @@
 <template>
     <view class="form-area">
-        <view class="container1">
+        <view class="container1 footer azm-footer__de">
             <textarea class="textarea" placeholder="请在这里输入文字~" value="{{content}}" @input="setField" maxlength="-1"
                       focus="true" auto-height="true"/>
-            <button class="btn-primary" type="default" @tap="doSubmit" hover-class="tapmode">提 交</button>
+            <button class="azm-btn azm-btn_submit" plain="true" size="mini" @tap.stop="doSubmit">提 交</button>
         </view>
     </view>
 </template>
@@ -37,10 +37,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -87,6 +92,18 @@
 </script>
 
 <style lang="less">
+    .form-area {
+        .textarea {
+            min-height: 250*1rpx;
+        }
+        button.azm-btn {
+            box-sizing: border-box;
+            margin-top: 101*1rpx;
+            padding-top: 12.5*1rpx;
+            padding-bottom: 12.5*1rpx;
+        }
+    }
+
     .btn-primary {
         margin-top: 101*1rpx;
     }

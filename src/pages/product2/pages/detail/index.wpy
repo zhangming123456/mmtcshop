@@ -168,10 +168,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -184,9 +189,7 @@
             let options = this.data.options;
         }
 
-        methods = {
-
-        };
+        methods = {};
     }
 </script>
 

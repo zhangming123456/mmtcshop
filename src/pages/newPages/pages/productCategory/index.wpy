@@ -95,10 +95,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -303,12 +308,13 @@
         vertical-align: middle;
         background-color: transparent;
         border-radius: 26*1rpx;
-        padding: 15*1rpx 28*1rpx;
+        padding: 15*1rpx 25*1rpx;
         line-height: 1;
         font-size: 26*1rpx;
         color: #666666;
-        border: 1*2rpx solid #d1d1d1;
+        border: 1px solid #d1d1d1;
         max-width: 100%;
+        box-sizing: border-box;
     }
 
     .productCategory {
@@ -418,7 +424,7 @@
                                 &.azm-btn_active {
                                     color: #fff;
                                     background-color: #ff8000;
-                                    border: 1*2rpx solid #ff8000;
+                                    border: 1px solid #ff8000;
                                 }
                             }
                         }

@@ -21,18 +21,23 @@
                                 <block wx:if="{{tabList.selectedId == 2}}">
                                     <view class="t-statusBar" wx:if="{{item.auth_status == 1}}">审核未通过</view>
                                     <view class="t-statusBar" wx:elif="{{item.auth_status == 2}}">审核通过</view>
-                                    <view class="t-statusBar" wx:elif="{{item.auth_status == 3}}">代提交</view>
+                                    <view class="t-statusBar" wx:elif="{{item.auth_status == 3}}">待提交</view>
                                     <view class="t-statusBar" wx:else>审核中</view>
                                 </block>
                                 <view class="t-statusBar" wx:if="{{item.is_group == 1}}">拼团</view>
                             </view>
                         </view>
                         <view class="t-item-info pr" :class="{'touch-move-active' :item.isTouchMove}">
-                            <view class="pr flexBox" style="flex-wrap: nowrap;width: 100%">
+                            <view class="pr flexBox" style="flex-wrap: nowrap;width: 100%"
+                                  @tap.stop="itemRoute({{item}})">
                                 <view class="flexBox-item left">
-                                    <view class='azm-group-num' wx:if="{{item.group_num > 0}}">{{item.group_num}}人团
+                                    <view class='azm-group-num' wx:if="{{item.group_num > 0}}">
+                                        <text>{{item.group_num}}人团</text>
                                     </view>
-                                    <image class='t-shopPhoto' src="{{imageUrl + item.cover}}"
+                                    <image class='t-shopPhoto'
+                                           src="{{imageErrs['images'+index] || imageUrl + item.cover}}"
+                                           lazy-load
+                                           @error="ImageErr('images{{index}}')"
                                            mode="aspectFill"></image>
                                 </view>
                                 <view class="flexBox-item fb-all right">
@@ -52,12 +57,19 @@
                                         <text class='t-shop-price'>门市价 ￥{{item.market_price}}</text>
                                     </view>
                                     <view class="zan-ellipsis t-shopNum">
-                                        <text>上架时间</text>
+                                        <block wx:if="{{tabList.selectedId == 0}}">
+                                            <text>上架时间</text>
+                                        </block>
+                                        <block wx:if="{{tabList.selectedId == 1}}">
+                                            <text>下架时间</text>
+                                        </block>
+                                        <block wx:if="{{tabList.selectedId == 2}}">
+                                            <text>申请时间</text>
+                                        </block>
                                         <text>{{item.create_time}}</text>
                                     </view>
                                     <view class="zan-ellipsis azm-seview__status azm-text_right"
-                                          wx:if="{{tabList.selectedId == 2 && item.auth_status==1}}"
-                                          @tap="route('/pages/product2/pages/detail/index',{{item}})">
+                                          wx:if="{{tabList.selectedId == 2 && item.auth_status==1}}">
                                         <text>查看详情></text>
                                     </view>
                                 </view>
@@ -69,7 +81,8 @@
                         </view>
                         <block wx:if="{{item.auth_status!=1}}">
                             <view class="t-shopCompile flexBox">
-                                <view class="flexBox-item left" wx:if="{{tabList.selectedId != 0}}">
+                                <view class="flexBox-item left"
+                                      wx:if="{{tabList.selectedId != 0 && item.auth_status != 0}}">
                                     <button size="mini" plain hover-class="none" class="azm-btn azm-del"
                                             @tap.stop="deleteItem({{item}})">删除
                                     </button>
@@ -118,7 +131,8 @@
             </view>
         </block>
         <view class="t-issue" @tap.stop="addItem">
-            +发布产品
+            <text class="iconfont icon-jia azm-icon"></text>
+            <text>发布产品</text>
         </view>
     </view>
 </template>
@@ -126,6 +140,7 @@
     import wepy from "wepy";
     import utilPage from "../../../../mixins/utilPage";
     import baseMixin from "../../../../mixins/base";
+    import toast from "../../../../components/toast";
     import c from "../../../../wxs/common.wxs";
 
     const appPage = new utilPage({
@@ -148,7 +163,7 @@
                     },
                     {
                         id: 2,
-                        title: '代审核',
+                        title: '待审核',
                         num: 0
                     }
                 ],
@@ -158,7 +173,8 @@
             pages: [1, 1, 1],
             items: [],
             startX: 0, //开始坐标
-            startY: 0
+            startY: 0,
+            images: []
         },
         onLoad (options) {
             this.loadCb()
@@ -192,10 +208,15 @@
         }
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -217,7 +238,7 @@
             let that = this,
                 selectedId = that.tabList.selectedId,
                 page = that.data.pages[selectedId];
-            that.showLoading();
+            that.$azmUtil.showLoading();
             that.getItemlistFigure();
             that.getItemlistSite({p: 1, t: selectedId});
         }
@@ -227,7 +248,7 @@
          * @returns {PromiseLike<TResult2|TResult1>|Promise<TResult2|TResult1>|Promise.<TResult>}
          */
         getItemlistFigure () {
-            let that = this;
+            let that = this, tabList = that.data.tabList;
             return this.ApiService.getItemlistFigure().then(
                 res => {
                     if (res.status === 1) {
@@ -268,7 +289,7 @@
                     }
                 );
             _p.finally(res => {
-                that.hideLoading();
+                that.$azmUtil.hideLoading();
                 wx.stopPullDownRefresh();
             });
             return _p;
@@ -279,6 +300,14 @@
                 console.log(path, item);
                 if (!item.id) return;
                 this.$azmUtil.go(path, {data: {id: item.id}});
+            },
+            itemRoute(item){
+                console.log(item);
+                if (item.auth_status == 1) {
+                    this.$azmUtil.go('/pages/mine/products/reback', {data: {id: item.id}})
+                } else {
+                    this.$azmUtil.go('/pages/mine/products/detail', {data: {id: item.id}})
+                }
             },
             bindTapChang (i) {
                 let that = this,
@@ -314,19 +343,25 @@
              **/
             shelfItem (item) {
                 let that = this,
-                    id = item.id,
+                    id = item.id, flag = false,
                     selectedId = that.data.tabList.selectedId,
                     page = that.data.tabList.list[selectedId];
                 this.confirm("确定上架该项目吗？", () => {
-                    this.showLoading();
+                    this.$azmUtil.showLoading();
                     this.ApiService.setIteminfoUpOn({id}).then(
                         res => {
                             if (res.status === 1) {
-                                that.loadCb();
+                                flag = true;
                             }
                         }
                     ).finally(res => {
-                        that.hideLoading();
+                        if (flag) {
+                            that.$azmUtil.showToast('上架成功', function () {
+                                that.loadCb();
+                            });
+                        } else {
+                            that.$azmUtil.failToast('上架失败');
+                        }
                     });
                 });
             },
@@ -336,19 +371,25 @@
              **/
             downItem (item) {
                 let that = this,
-                    id = item.id,
+                    id = item.id, flag = false,
                     selectedId = that.data.tabList.selectedId,
                     page = that.data.tabList.list[selectedId];
                 this.confirm("确定下架该项目吗？", () => {
-                    this.showLoading();
+                    this.$azmUtil.showLoading();
                     this.ApiService.setIteminfoDownOn({id}).then(
                         res => {
                             if (res.status === 1) {
-                                that.loadCb();
+                                flag = true;
                             }
                         }
                     ).finally(res => {
-                        that.hideLoading();
+                        if (flag) {
+                            that.$azmUtil.showToast('下架成功', function () {
+                                that.loadCb();
+                            });
+                        } else {
+                            that.$azmUtil.failToast('下架失败');
+                        }
                     });
                 });
             },
@@ -359,18 +400,25 @@
             revokeAuthItem (item) {
                 let that = this,
                     id = item.id,
+                    flag = false,
                     selectedId = that.data.tabList.selectedId,
                     page = that.data.tabList.list[selectedId];
                 this.confirm("是否撤销审核该项目吗？", () => {
-                    this.showLoading();
+                    this.$azmUtil.showLoading();
                     this.ApiService.setIteminfoRevokeAuth({id}).then(
                         res => {
                             if (res.status === 1) {
-                                that.loadCb();
+                                flag = true;
                             }
                         }
                     ).finally(res => {
-                        that.hideLoading();
+                        if (flag) {
+                            that.$azmUtil.showToast('撤销审核成功', function () {
+                                that.loadCb();
+                            });
+                        } else {
+                            that.$azmUtil.failToast('撤销审核失败');
+                        }
                     });
                 });
             },
@@ -381,18 +429,25 @@
             submitReview (item) {
                 let that = this,
                     id = item.id,
+                    flag = false,
                     selectedId = that.data.tabList.selectedId,
                     page = that.data.tabList.list[selectedId];
                 this.confirm("是否提交审核该项目吗？", () => {
-                    this.showLoading();
+                    this.$azmUtil.showLoading();
                     this.ApiService.examineItem({id}).then(
                         res => {
                             if (res.status === 1) {
-                                that.loadCb();
+                                flag = true;
                             }
                         }
                     ).finally(res => {
-                        that.hideLoading();
+                        if (flag) {
+                            that.$azmUtil.showToast('提交审核成功', function () {
+                                that.loadCb();
+                            });
+                        } else {
+                            that.$azmUtil.failToast('提交审核失败');
+                        }
                     });
                 });
             },
@@ -401,17 +456,24 @@
              * @param item
              */
             deleteItem (item) {
-                let that = this;
+                let that = this,
+                    flag = false;
                 that.confirm("是否删除产品，删除后将不能恢复？", () => {
-                    this.showLoading();
+                    this.$azmUtil.showLoading();
                     this.ApiService.deleteItem({id: item.id}).then(
                         res => {
                             if (res.status === 1) {
-
+                                flag = true;
                             }
                         }
                     ).finally(res => {
-                        that.hideLoading();
+                        if (flag) {
+                            that.$azmUtil.showToast('删除成功', function () {
+                                that.loadCb();
+                            });
+                        } else {
+                            that.$azmUtil.failToast('删除失败');
+                        }
                     });
                 });
             }
@@ -491,6 +553,7 @@
 
         .t-topStatus {
             height: 85*1rpx;
+            line-height: 85*1rpx;
             width: 100%;
             /* background-color: skyblue; */
             border: 1*1rpx solid #eeeeee;
@@ -517,7 +580,7 @@
             min-width: 17*1rpx;
             height: 38*1rpx;
             padding: 0 12*1rpx;
-            border: 1*1rpx solid #ff8000;
+            border: 1px solid #ff8000;
             line-height: 38*1rpx;
             text-align: center;
             border-radius: 10*1rpx;
@@ -535,6 +598,9 @@
                 width: 218*1rpx;
             }
             .right {
+                > view {
+                    line-height: 1;
+                }
                 .t-shopTitle {
                     margin-bottom: 30*1rpx;
                     font-size: 36*1rpx;
@@ -543,11 +609,11 @@
                     margin-bottom: 24*1rpx;
                     .t-ShopUnit {
                         font-size: 24*1rpx;
-                        color: #ff538b;
+                        color: #ff8000;
                     }
                     .t-ShopPrice {
                         font-size: 45*1rpx;
-                        color: #ff538b;
+                        color: #ff8000;
                     }
                     .azm-TeamworkMoner {
                         font-family: PingFang-SC-Regular;
@@ -613,11 +679,15 @@
             padding-right: 30*1rpx;
             box-sizing: border-box;
             .right {
+                height: inherit;
+                line-height: inherit;
                 button.azm-btn {
                     margin-left: 20*1rpx;
                 }
             }
             .left {
+                height: inherit;
+                line-height: inherit;
                 button.azm-btn {
                     border: none;
                     color: #999;
@@ -657,7 +727,12 @@
             width: 100%;
             line-height: 98*1rpx;
             text-align: center;
-            font-size: 35*1rpx
+            font-size: 35*1rpx;
+            .azm-icon {
+                margin-right: 11*1rpx;
+                font-size: 30*1rpx;
+                color: #fff;
+            }
         }
 
         .touch-move-active .content,

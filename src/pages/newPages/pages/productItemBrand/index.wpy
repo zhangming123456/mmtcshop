@@ -15,7 +15,7 @@
                             <text class="azm-label">商品名称</text>
                         </view>
                         <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
-                            <input placeholder="填写名称，例如精油" name="title" value="{{title}}"
+                            <input placeholder="填写名称，例如精油" name="title" value="{{title}}" class="azm-color_black"
                                    @input="bindInputChang('title')"/>
                         </view>
                     </view>
@@ -24,7 +24,7 @@
                             <text class="azm-label">商品品牌</text>
                         </view>
                         <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
-                            <input placeholder="填写品牌，例如德国kneipp" name="brand" value="{{brand}}"
+                            <input placeholder="填写品牌，例如德国kneipp" name="brand" value="{{brand}}" class="azm-color_black"
                                    @input="bindInputChang('brand')"/>
                         </view>
                     </view>
@@ -49,22 +49,32 @@
                 </view>
 
                 <view class="azm-cells azm-item__brand">
-                    <view class="flexBox flexBox-start">
-                        <block wx:for="{{item_brand}}" wx:key="{{index}}">
-                            <view class="flexBox-item fb-8">
-                                <view class="t-shopdetail">
-                                    <icon class="t-delete" type="clear" size="14.5"
-                                          @tap="bindItemDelete({{index}})"></icon>
-                                    <view class="t-skii">
-                                        <image class="azm-image" src="{{imageUrl + item.cover}}"
-                                               mode="aspectFill"></image>
+                    <block wx:if="{{item_brand&&item_brand.length>0}}">
+                        <view class="flexBox flexBox-start">
+                            <block wx:for="{{item_brand}}" wx:key="{{index}}">
+                                <view class="flexBox-item fb-8">
+                                    <view class="t-shopdetail">
+                                        <icon class="t-delete" type="clear" size="14.5"
+                                              @tap="bindItemDelete({{index}})"></icon>
+                                        <view class="t-skii">
+                                            <image class="azm-image" src="{{imageUrl + item.cover}}"
+                                                   mode="aspectFill"></image>
+                                        </view>
+                                        <view class="t-title zan-ellipsis">{{item.title}}</view>
+                                        <view class="t-shopName zan-ellipsis">{{item.brand}}</view>
                                     </view>
-                                    <view class="t-title zan-ellipsis">{{item.title}}</view>
-                                    <view class="t-shopName zan-ellipsis">{{item.brand}}</view>
                                 </view>
+                            </block>
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <view class="azm-empty_area">
+                            <view class="empty-img">
+                                <image src="/imgs/emptyorders.png"/>
                             </view>
-                        </block>
-                    </view>
+                            <view class="empty-txt">您还未添加任何物料哦～</view>
+                        </view>
+                    </block>
                 </view>
             </view>
         </form>
@@ -114,10 +124,15 @@
         },
     });
     export default class extends wepy.page {
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -334,6 +349,7 @@
             height: 220*1rpx;
             border: 1px solid #b7b7b7;
             border-radius: 10*1rpx;
+            overflow: hidden;
             .azm-image {
                 width: inherit;
                 height: inherit;
@@ -350,6 +366,7 @@
             margin-top: 16*1rpx;
             text-align: center;
             color: #000;
+            font-size: 22*1rpx;
         }
 
         .t-shopdetail .t-delete {

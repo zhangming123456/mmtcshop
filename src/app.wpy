@@ -10,8 +10,24 @@
         box-sizing: border-box;
     }
 
+    icon, .azm-icon {
+        background-color: inherit;
+    }
+
+    view {
+        line-height: 1;
+    }
+
     .azm-color_primary {
         color: #ff8000 !important;
+    }
+
+    .azm-color_black {
+        color: #000 !important;
+    }
+
+    .azm-color_999 {
+        color: #999 !important;
     }
 
     .azm-text_left {
@@ -22,13 +38,58 @@
         text-align: right;
     }
 
+    button.azm-btn__mini {
+        height: 72*1rpx;
+        line-height: 72*1rpx;
+        border: none;
+        text-align: center;
+        padding-left: 56*1rpx;
+        padding-right: 56*1rpx;
+        border-radius: 5*1px;
+        vertical-align: middle;
+        margin-right: 30*1rpx;
+        &.azm-btn__mini__save,
+        &.azm-btn__mini__cancel {
+            background-color: transparent;
+            color: #ff8000;
+            border: 2*1rpx solid #ff8000;
+        }
+        &.azm-btn__mini__submit {
+            background-color: #ff8000;
+            color: #fff;
+            border: 2*1rpx solid #ff8000;
+        }
+    }
+
+    .azm-btn__mini_right {
+        width: inherit;
+        height: inherit;
+        line-height: inherit;
+        box-sizing: inherit;
+        text-align: right;
+    }
+
     button.azm-btn {
         height: auto;
         line-height: 1;
         font-size: 32*1rpx;
         vertical-align: middle;
+        &.azm-btn_submit {
+            border: none;
+            border-radius: 0;
+            background-color: #ff8000;
+            height: inherit;
+            line-height: inherit;
+            color: #fff;
+        }
+        &.azm-btn_save {
+            background-color: transparent;
+            color: #ff8000;
+            border: 2*1rpx solid #ff8000;
+        }
     }
 
+    /*btn样式*/
     .azm-footer {
         position: fixed;
         height: 98*1rpx;
@@ -41,41 +102,11 @@
         border-top: 1px solid #f4f4f4;
         color: #fff;
         z-index: 100;
-        .azm-btn_submit {
-            border: none;
-            border-radius: 0;
-            background-color: #ff8000;
-            height: inherit;
-            line-height: inherit;
-            color: #fff;
-        }
-        .azm-btn__mini_right {
-            width: inherit;
-            height: inherit;
-            line-height: inherit;
-            box-sizing: inherit;
-            text-align: right;
-            button.azm-btn__mini {
-                height: 72*1rpx;
-                line-height: 72*1rpx;
-                border: none;
-                text-align: center;
-                padding-left: 56*1rpx;
-                padding-right: 56*1rpx;
-                border-radius: 5*1px;
-                vertical-align: middle;
-                margin-right: 30*1rpx;
-                &.azm-btn__mini__save, &.azm-btn__mini__cancel {
-                    background-color: transparent;
-                    color: #ff8000;
-                    border: 2*1rpx solid #ff8000;
-                }
-                &.azm-btn__mini__submit {
-                    background-color: #ff8000;
-                    color: #fff;
-                    border: 2*1rpx solid #ff8000;
-                }
-            }
+        &.azm-footer__default {
+            position: relative;
+            bottom: auto;
+            left: 0;
+            top: 0;
         }
     }
 
@@ -97,6 +128,7 @@
         }
     }
 
+    /*列表项样式stars*/
     .azm-cells__title + .azm-cells {
         margin-top: 0;
     }
@@ -206,6 +238,8 @@
 
     }
 
+    /*列表项样式end*/
+
     .azm-font-8 {
         font-size: 8*2rpx;
     }
@@ -270,6 +304,7 @@
         width: 100%;
     }
 
+    /*flex布局*/
     .flexBox {
         display: -webkit-box;
         display: -webkit-flex;
@@ -314,6 +349,8 @@
             white-space: normal;
             min-width: 0;
             word-break: break-all;
+            height: inherit;
+            line-height: inherit;
             &.fb-all {
                 -webkit-box-flex: 1;
                 -webkit-flex: 1;
@@ -394,6 +431,7 @@
         }
     }
 
+    /*多人团标签样式*/
     .azm-group-num {
         position: absolute;
         left: 0;
@@ -473,12 +511,12 @@
                 "pages/mine/withdrawrecords",
                 "pages/mine/advise",
                 "pages/mine/about",
-
                 "pages/alterpwd",
                 "pages/bindphone",
                 "pages/login",
+                "pages/amend",
+                "pages/newPassword",
                 "pages/common/404",
-
                 "pages/loginMessage/index",
             ],
             subPackages: [
@@ -542,8 +580,8 @@
             }
         };
 
-        constructor () {
-            super();
+        constructor (...args) {
+            super(...args);
         }
 
         globalData = {

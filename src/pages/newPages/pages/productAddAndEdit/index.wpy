@@ -5,14 +5,14 @@
                 <view class="t-itmeName">产品名称</view>
                 <view class="t-itmeText">
                     <input placeholder="产品名称（主标题）" name="title" value="{{productData.title}}" disabled="{{!isAdd}}"
-                           @input="bindinputChang('title')"/>
+                           @input="bindInputChang('title')"/>
                 </view>
             </view>
             <view class="t-itme">
                 <view class="t-itmeName">副标题</view>
                 <view class="t-itmeText">
                     <input placeholder="产品副标题" name="profile" value="{{productData.profile}}"
-                           @input="bindinputChang('profile')"/>
+                           @input="bindInputChang('profile')"/>
                 </view>
             </view>
             <view class="t-itmeBox">
@@ -24,7 +24,7 @@
                         </view>
                         <view class="flexBox-item fb-all zan-ellipsis">
                             <input type="digit" maxlength="8" name="market_price" value="{{productData.market_price}}"
-                                   @input="bindinputChang('market_price')"/>
+                                   @input="bindInputChang('market_price')"/>
                         </view>
                     </view>
                 </view>
@@ -36,7 +36,7 @@
                         </view>
                         <view class="flexBox-item fb-all zan-ellipsis">
                             <input type="digit" maxlength="8" name="price" value="{{productData.price}}"
-                                   @input="bindinputChang('price')"/>
+                                   @input="bindInputChang('price')"/>
                         </view>
                     </view>
                 </view>
@@ -52,7 +52,7 @@
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/newPages/pages/productCategory/index')">
                         <block wx:if="{{productData.category_ids && productData.category_ids.length>0}}">
-                            <view class="zan-ellipsis azm-cell__ft_bd">
+                            <view class="zan-ellipsis azm-cell__ft_bd azm-color_black">
                                 <block wx:for="{{productData.category_ids}}" wx:key="{{index}}">
                                     <text>{{item.title}}</text>
                                     <text wx:if="{{index !== productData.category_ids.length-1}}">、</text>
@@ -96,7 +96,8 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
                         <input placeholder="一句话介绍" name="service" value="{{productData.service}}"
-                               @input="bindinputChang('service')"/>
+                               class="azm-color_black"
+                               @input="bindInputChang('service')"/>
                     </view>
                 </view>
                 <view class="azm-cell flexBox">
@@ -105,7 +106,7 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all azm-text_left">
                         <input placeholder="可以填写特色或功效" name="service_char" value="{{productData.service_char}}"
-                               @input="bindinputChang('service_char')"/>
+                               class="azm-color_black" @input="bindInputChang('service_char')"/>
                     </view>
                 </view>
                 <view class="azm-cell flexBox">
@@ -156,7 +157,10 @@
                     </view>
                     <view class="azm-cell__ft flexBox-item fb-all"
                           @tap="route('/pages/product2/pages/groupActivity/index')">
-                        <block wx:if="{{productData.group_num && productData.group_price}}">
+                        <block wx:if="{{!productData.is_valid && productData.group_num && productData.group_price}}">
+                            <text class="azm-not_perfection azm-color_primary">未参与</text>
+                        </block>
+                        <block wx:elif="{{productData.group_num && productData.group_price}}">
                             <text class="azm-not_perfection azm-color_primary">拼团特惠{{productData.group_num}}人团</text>
                             <text class="azm-not_perfection azm-color_primary"> ￥{{productData.group_price}}</text>
                         </block>
@@ -228,12 +232,12 @@
                 other_instructions: '',//其它说明
                 group_num: '',//成团要求数量
                 group_price: '',//成团价格
-                is_valid: true//是否有效
+                is_valid: false//是否有效
             }
         },
         onLoad (options) {
             this.$parent.globalData.productManage = {};
-            this.loadCb()
+            this.loadCb();
         },
         onShow () {
             if (this.data.isShow && this.data.isRefresh) {
@@ -256,7 +260,12 @@
         constructor (...args) {
             super(...args);
             for (let k in appPage) {
-                this[k] = appPage[k]
+                if (k === 'methods') {
+                    for (let j in appPage[k]) {
+                        this[k][j] = appPage[k][j]
+                    }
+                } else
+                    this[k] = appPage[k]
             }
         }
 
@@ -298,41 +307,53 @@
          * @param id
          */
         getProductData (id = 0) {
-            let that = this;
+            let that = this,
+                common = that.$azmUtil.common;
             that.showLoading();
             that.ApiService.siteItemInfo({id, nodes: 1}).then(
                 res => {
-                    if (res.status === 1 && that.$azmUtil.common.isEmptyObject(res.info)) {
+                    if (res.status === 1 && common.isEmptyObject(res.info)) {
                         let info = res.info,
-                            productData = that.data.productData,
-                            common = that.$azmUtil.common;
-                        if (productData.category_ids && productData.category_ids.length > 0) {
-                            info.category_ids = productData.category_ids;
-                        } else if (common.isNumberOfNaN(info.category_id)) {
-                            info.category_ids = [{id: info.category_id, title: info.category}]
+                            productData = that.data.productData;
+                        if (info.category_ids && common.isArray(info.category_ids) && info.category_ids.length > 0) {
+                            info.category_ids = info.category_ids || [];
+                        } else if (+info.category_id) {
+                            info.category_ids = [{id: info.category_id, title: info.category || ''}]
                         }
-                        info.covers = info.covers_s;
-                        if (!(common.isArray(info.covers) && info.covers.length > 0) || common.isString(info.cover)) {
+                        if (info.covers && common.isArray(info.covers) && info.covers.length > 0) {
+                            info.covers = info.covers;
+                        } else if (info.cover && common.isString(info.cover)) {
                             info.covers = [info.cover];
                         }
-                        if (info.isTheTerm !== undefined) {
-                            productData.period_of_use.isTheTerm = info.isTheTerm
+                        if (!info.period_of_use || !common.isEmptyObject(info.period_of_use)) {
+                            info.period_of_use = {
+                                isTheTerm: 0,
+                                start_date: '',
+                                end_date: '',
+                                start_time: '',
+                                end_time: '',
+                                note: ''
+                            }
+                        }
+                        if (info.istheterm !== undefined) {
+                            info.period_of_use.isTheTerm = info.istheterm
                         }
                         if (info.start_date !== undefined) {
-                            productData.period_of_use.start_date = info.start_date
+                            info.period_of_use.start_date = info.start_date
                         }
                         if (info.end_date !== undefined) {
-                            productData.period_of_use.end_date = info.end_date
+                            info.period_of_use.end_date = info.end_date
                         }
                         if (info.start_time !== undefined) {
-                            productData.period_of_use.start_time = info.start_time
+                            info.period_of_use.start_time = info.start_time
                         }
                         if (info.end_time !== undefined) {
-                            productData.period_of_use.end_time = info.end_time
+                            info.period_of_use.end_time = info.end_time
                         }
                         if (info.note !== undefined) {
-                            productData.period_of_use.note = info.note
+                            info.period_of_use.note = info.note
                         }
+                        info.is_valid = +info.is_valid === 0 ? false : true;
                         that.productData = Object.assign(productData, info);
                         that.$apply();
                     } else {
@@ -370,7 +391,7 @@
                     other_instructions: data.other_instructions,
                     group_num: data.group_num,
                     group_price: data.group_price,
-                    is_valid: data.is_valid
+                    is_valid: data.is_valid ? 1 : 0
                 },
                 period_of_use = data.period_of_use;
             if (period_of_use && period_of_use.start_time) {
@@ -389,6 +410,7 @@
                     category_ids.push(v.id);
                 }
                 saveData.category_id = category_ids;
+                delete saveData.category_ids;
             }
             saveData = {...obj, ...saveData};
             for (let k in saveData) {
@@ -402,30 +424,46 @@
             return saveData;
         }
 
+        /**
+         * 提交表单
+         **/
         saveFromData (data) {
             if (this.data.isSubmit) return;
             this.data.isSubmit = true;
+            this.$azmUtil.showToast('提交中...');
             let that = this,
-                p = that.ApiService.saveItemInfo(data);
+                p = that.ApiService.saveItemInfo(data),
+                title = '保存',
+                common = this.$azmUtil.common;
+            if (data.isReview === 1) {
+                title = '提交';
+            }
             p.then(
                 res => {
                     if (res.status === 1) {
-                        that.azmShowToast({
-                            title: data.isReview === 1 ? '提交项目成功' : '保存项目成功',
+                        that.$azmUtil.showToast({
+                            title: `${title}成功`,
                             success () {
                                 that.$azmUtil.go(-1);
                             }
-                        })
+                        });
                     } else {
+                        that.azmShowToast(res.message || `${title}失败`);
                         this.data.isSubmit = false;
                     }
                 });
             p.catch(res => {
+                that.$azmUtil.showToast(`${title}失败`);
                 this.data.isSubmit = false;
+            });
+            p.finally(res => {
             });
             return p;
         }
 
+        /**
+         * 判断产品细节是否完善
+         */
         isProductDetailsFn () {
             let that = this,
                 data = {
@@ -449,7 +487,11 @@
             for (let k in data) {
                 let val = productData[k];
                 len++;
-                if (val && ((common.isEmptyObject(val) && !!val.start_time) || (common.isArray(val) && val.length > 0))) {
+                if (!!val && common.isString(val)) {
+                    num++;
+                } else if (!!val && common.isEmptyObject(val) && !!val.start_time) {
+                    num++;
+                } else if (!!val && common.isArray(val) && val.length > 0) {
                     num++;
                 }
             }
@@ -464,9 +506,14 @@
         }
 
         methods = {
-            bindinputChang (k, e) {
-                let value = this.$azmUtil.trim(e.detail.value);
+            bindInputChang (k, e) {
+                let that = this,
+                    value = this.$azmUtil.trim(e.detail.value);
+                if (k === 'market_price' || k === 'price') {
+                    value = that.__inputMoney(k, value)
+                }
                 this.productData[k] = value;
+                return value
             },
             route (url) {
                 this.$azmUtil.go(url);
@@ -524,7 +571,7 @@
                         that.saveFromData(saveData);
                     }
                 } catch (e) {
-
+                    that.azmShowToast('操作失败');
                 }
             }
         }
