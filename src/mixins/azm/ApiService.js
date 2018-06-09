@@ -55,8 +55,8 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    siteItemInfo (data = {nodes= 1, id= 0} = {}, resole, reject) {
-        let that = this;
+    siteItemInfo ({nodes = 1, id = 0} = {}, resole, reject) {
+        let that = this, data = {nodes, id};
         const api = `${that.shopApi}iteminfo/site`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -69,10 +69,8 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    getShopManagerOrderDetail (data = {
-        id: 0
-    }, resole, reject) {
-        let that = this;
+    getShopManagerOrderDetail ({id = 0} = {}, resole, reject) {
+        let that = this, data = {id};
         const api = `${that.shopApi}shop_manager/orderDetail`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -128,11 +126,8 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    getItemlistSite (data = {
-        p: 1,
-        t: 0
-    }, resole, reject) {
-        let that = this;
+    getItemlistSite ({p = 1, t = 0} = {}, resole, reject) {
+        let that = this, data = {p, t};
         const api = `${that.shopApi}itemlist/site`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -221,6 +216,23 @@ class ShopApi {
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
     }
+
+    /**
+     * 商家登入
+     * @param username 用户名
+     * @param password 密码
+     * @param resole
+     * @param reject
+     * @returns {*}
+     */
+    shopLoing ({username = '', password = ''}, resole, reject) {
+        let that = this, data = {username, password};
+        const api = `${that.shopApi}login/login`;
+        const http = $http.post(that.url + api, data, resole, reject);
+        return http;
+    }
+
+
 }
 class ApiService extends ShopApi {
     constructor (...args) {

@@ -74,15 +74,15 @@
   </view>
   <view class="caption-title"> 详细信息</view>    
   <view class="border-b plist">            
-    <view class="flex">  
+    <view class="flex state2">  
       <view class="label">产品ID</view>
       <view class="flex-con text-right">{{info.group_info.item_id}}</view>
     </view>
-    <view class="flex"> 
+    <view class="flex state "> 
       <view class="label">拼团规格</view>
       <view class="flex-con text-right">{{info.group_info.num}}人团</view>
     </view>
-    <view class="flex">
+    <view class="flex state ">
       <view class="label">商品原价</view>
       <view class="flex-con text-right line-through">￥{{info.group_info.origin_price}}</view>
     </view>
@@ -94,12 +94,12 @@
     </view>
   </view>
   <view class="border-b plist">
-    <view>团单ID：{{info.group_info.open_id}}</view>
-    <view>开团时间：{{info.group_info.open_time}}</view>
+    <view class="state2">团单ID：{{info.group_info.open_id}}</view>
+    <view class="state">开团时间：{{info.group_info.open_time}}</view>
     <view wx:if="{{info.group_info.status==1}}">成团时间：{{info.group_info.done_time}}</view>
-    <view wx:else>{{info.group_info.status==0?'预计到期':'失效时间'}}：{{info.group_info.expire_time}}</view>
-    <view wx:if="{{info.group_info.status==2}}">失败原因：过期未成团或产品下架</view>
-    <view>交易状态：
+    <view class="state" wx:else>{{info.group_info.status==0?'预计到期':'失效时间'}}：{{info.group_info.expire_time}}</view>
+    <view  class="state" wx:if="{{info.group_info.status==2}}">失败原因：过期未成团或产品下架</view>
+    <view  class="state">交易状态：
       <view class="order-status" wx:if="{{info.group_info.status==1}}"> 拼团成功  </view>
       <view class="order-status" wx:else>{{info.group_info.status==0?'进行中':'团单失效'}}</view>
     </view>
@@ -323,6 +323,15 @@ button.send-letter {
 }
 .member:first-child {
   margin-top: 0;
+}
+
+.state {
+  margin-bottom: 20rpx;
+}
+
+.state2 {
+  margin-top: 10rpx;
+  margin-bottom: 20rpx;
 }
 </style>
 

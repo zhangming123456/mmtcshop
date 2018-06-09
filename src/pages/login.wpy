@@ -31,7 +31,8 @@
             text: "Page loginAmend",
             username: "",
             password: "",
-            isShowPassword: true
+            isShowPassword: true,
+            isSubmit: false
         },
         onLoad(options) {
             this.loadCb();
@@ -77,37 +78,42 @@
                 this[field] = e.detail.value;
             },
             doLogin() {
-                if (this.isEmpty(this.username)) {
+                if (this.data.isSubmit)return;
+                let that = this,
+                    common = that.$azmUtil.common,
+                    reg = that.$azmUtil.regExpUtil,
+                    username = that.data.username,
+                    password = that.data.password;
+                if (that.isEmpty(username)) {
                     this.$alert("请输入商户帐号");
-                } else if (this.isEmpty(this.password)) {
+                } else if (that.isEmpty(password)) {
                     this.$alert("请输入商户密码");
                 } else {
-                    this.showLoading();
-                    this.$post(
-                        "/shopapi/login/login",
-                        {
-                            username: this.username,
-                            password: this.password
-                        },
-                        info => {
-                            let emptyPwd = info.emptyPwd;
-                            this.setUserInfo(info.data);
-                            if (info.hasbindedphone == 1 && emptyPwd == 1) {
-                                this.$goto("alterpwd?mode=1");
+                    this.$azmUtil.showLoading();
+                    this.isSubmit = true;
+                    this.ApiService.shopLoing({username, password}).then(res => {
+                        if (res.status === 1 && common.isEmptyObject(res.info)) {
+                            let info = res.info,
+                                emptypwd = info.emptyPwd;
+                            that.setUserInfo(info.data);
+                            if (info.hasbindedphone == 1 && emptypwd == 1) {
+                                that.$azmUtil.go('/pages/alterpwd', {data: {mode: 1}});
                             } else if (!info.hasbindedphone) {
                                 wx.setStorageSync("hasbindedphone", info.hasbindedphone);
-                                wx.setStorageSync("emptyPwd", info.emptyPwd);
-                                this.$goto("bindphone?emptypwd=" + emptyPwd);
+                                wx.setStorageSync("emptyPwd", emptypwd);
+                                that.$azmUtil.go('/pages/bindphone', {data: {emptypwd: emptypwd}});
                             } else {
-                                wx.reLaunch({
-                                    url: "/pages/home/index"
-                                });
+                                that.$azmUtil.go('/pages/home/index', {type: 'blankAll'})
                             }
-                        },
-                        () => {
-                            this.hideLoading();
+                        } else {
+                            that.$azmUtil.showToast(res.message || '用户名与密码不正确~')
                         }
-                    );
+                    }).finally(res => {
+                        that.password = '';
+                        this.isSubmit = false;
+                        that.$azmUtil.hideLoading();
+                        that.$apply();
+                    });
                 }
             },
             LookPassword() {

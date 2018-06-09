@@ -517,7 +517,10 @@ module.exports.hideLoading = function () {
     }, 1500)
 };
 
-
+/**
+ * Loading
+ * @param option
+ */
 function showLoading (option) {
     clearTimeout(timer_toast);
     let data = {
@@ -760,7 +763,7 @@ function go (a, options = {}) {
             })
         } else {
             isGoRouter = true;
-            if (getCurrentPages().length === 5) {
+            if (getCurrentPages().length === 10) {
                 wx.redirectTo({
                     url: url,
                     success() {
