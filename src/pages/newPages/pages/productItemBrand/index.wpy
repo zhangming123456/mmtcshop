@@ -79,7 +79,7 @@
             </view>
         </form>
         <view class="azm-footer">
-            <button class="azm-btn azm-btn_submit" plain="true" @tap="binSubmit">
+            <button class="t-issue"  @tap="binSubmit">
                 <text>提交</text>
             </button>
         </view>
@@ -88,293 +88,299 @@
 </template>
 
 <script>
-    import wepy from "wepy";
-    import utilPage from "../../../../mixins/utilPage";
-    import baseMixin from "../../../../mixins/base";
-    import toast from "../../../../components/toast";
-    import popup from "../../../../components/popup";
-    import c from "../../../../wxs/common.wxs";
+import wepy from "wepy";
+import utilPage from "../../../../mixins/utilPage";
+import baseMixin from "../../../../mixins/base";
+import toast from "../../../../components/toast";
+import popup from "../../../../components/popup";
+import c from "../../../../wxs/common.wxs";
 
-    const appPage = new utilPage({
-        data: {
-            text: "Page productItemBrand",
-            hasMoreData: false,//是否有更多
-            title: '',// 名称
-            brand: '',// 品牌
-            cover: '',// 图片
-            item_brand: []
-        },
-        onLoad (options) {
-            this.loadCb();
-        },
-        onShow () {
-            if (this.data.isShow && this.data.isRefresh) {
-                this.loadCb()
-            }
-        },
-        onPullDownRefresh () {
-            let that = this
-        },
-
-        onReachBottom () {
-            let that = this
-        },
-
-        onPageScroll (options) {
-        },
-    });
-    export default class extends wepy.page {
-        constructor (...args) {
-            super(...args);
-            for (let k in appPage) {
-                if (k === 'methods') {
-                    for (let j in appPage[k]) {
-                        this[k][j] = appPage[k][j]
-                    }
-                } else
-                    this[k] = appPage[k]
-            }
-        }
-
-        components = {
-            toast,
-            popup
-        };
-        config = {
-            navigationBarTitleText: "使用商品",
-            navigationBarBackgroundColor: "#fff",
-            backgroundColor: "#fff",
-            navigationBarTextStyle: "black",
-            backgroundTextStyle: "dark"
-        };
-        wxs = {
-            c
-        };
-        mixins = [baseMixin];
-
-        loadCb () {
-            let that = this,
-                options = that.data.options,
-                _this2 = that.__getPrevPage(),
-                item_brand = _this2.data.item_brand || [];
-            that.item_brand = that.$azmUtil.extend(true, [], item_brand) || [];
-        }
-
-        methods = {
-            bindItemDelete (index) {
-                this.item_brand.splice(index, 1);
-            },
-            bindImageUpload () {
-                let that = this;
-                this.ImageUpload(1).then(res => {
-
-                });
-            },
-            bindInputChang (key, e) {
-                this[key] = e.detail.value;
-            },
-            bindAddTo (e) {
-                let value = e.detail.value,
-                    title = value.title,
-                    brand = value.brand,
-                    cover = this.data.cover;
-                if (title === '') {
-                    this.azmShowToast('商品名称为空');
-                    return;
-                } else if (brand === '') {
-                    this.azmShowToast('商品品牌为空');
-                    return;
-                } else if (cover === '') {
-                    this.azmShowToast('商品图片未完善');
-                    return;
-                }
-                this.item_brand.push({title, brand, cover});
-                this.title = '';
-                this.brand = '';
-                this.cover = '';
-
-            },
-            binSubmit () {
-                let that = this,
-                    item_brand = this.data.item_brand,
-                    _this2 = that.__getPrevPage();
-                if (item_brand && item_brand.length > 0) {
-                    _this2.item_brand = item_brand;
-                    _this2.$apply();
-                    that.$azmUtil.go(-1);
-                } else {
-                    that.azmShowToast('未添加物料');
-                }
-            },
-            bindCancelBtn () {
-                this.$azmUtil.go(-1)
-            }
-        }
+const appPage = new utilPage({
+  data: {
+    text: "Page productItemBrand",
+    hasMoreData: false, //是否有更多
+    title: "", // 名称
+    brand: "", // 品牌
+    cover: "", // 图片
+    item_brand: []
+  },
+  onLoad(options) {
+    this.loadCb();
+  },
+  onShow() {
+    if (this.data.isShow && this.data.isRefresh) {
+      this.loadCb();
     }
+  },
+  onPullDownRefresh() {
+    let that = this;
+  },
+
+  onReachBottom() {
+    let that = this;
+  },
+
+  onPageScroll(options) {}
+});
+export default class extends wepy.page {
+  constructor(...args) {
+    super(...args);
+    for (let k in appPage) {
+      if (k === "methods") {
+        for (let j in appPage[k]) {
+          this[k][j] = appPage[k][j];
+        }
+      } else this[k] = appPage[k];
+    }
+  }
+
+  components = {
+    toast,
+    popup
+  };
+  config = {
+    navigationBarTitleText: "使用商品",
+    navigationBarBackgroundColor: "#fff",
+    backgroundColor: "#fff",
+    navigationBarTextStyle: "black",
+    backgroundTextStyle: "dark"
+  };
+  wxs = {
+    c
+  };
+  mixins = [baseMixin];
+
+  loadCb() {
+    let that = this,
+      options = that.data.options,
+      _this2 = that.__getPrevPage(),
+      item_brand = _this2.data.item_brand || [];
+    that.item_brand = that.$azmUtil.extend(true, [], item_brand) || [];
+  }
+
+  methods = {
+    bindItemDelete(index) {
+      this.item_brand.splice(index, 1);
+    },
+    bindImageUpload() {
+      let that = this;
+      this.ImageUpload(1).then(res => {});
+    },
+    bindInputChang(key, e) {
+      this[key] = e.detail.value;
+    },
+    bindAddTo(e) {
+      let value = e.detail.value,
+        title = value.title,
+        brand = value.brand,
+        cover = this.data.cover;
+      if (title === "") {
+        this.azmShowToast("商品名称为空");
+        return;
+      } else if (brand === "") {
+        this.azmShowToast("商品品牌为空");
+        return;
+      } else if (cover === "") {
+        this.azmShowToast("商品图片未完善");
+        return;
+      }
+      this.item_brand.push({ title, brand, cover });
+      this.title = "";
+      this.brand = "";
+      this.cover = "";
+    },
+    binSubmit() {
+      let that = this,
+        item_brand = this.data.item_brand,
+        _this2 = that.__getPrevPage();
+      if (item_brand && item_brand.length > 0) {
+        _this2.item_brand = item_brand;
+        _this2.$apply();
+        that.$azmUtil.go(-1);
+      } else {
+        that.azmShowToast("未添加物料");
+      }
+    },
+    bindCancelBtn() {
+      this.$azmUtil.go(-1);
+    }
+  };
+}
 </script>
 
 <style lang="less">
-    page {
-        box-sizing: border-box;
+page {
+  box-sizing: border-box;
+}
+
+.productItemBrand {
+  background-color: #f4f4f4;
+  box-sizing: border-box;
+  margin-bottom: 100 * 1 * 1rpx;
+  .azm-from__image {
+    .azm-image {
     }
-
-    .productItemBrand {
-        background-color: #f4f4f4;
-        box-sizing: border-box;
-        margin-bottom: 100*1*1rpx;
-        .azm-from__image {
-            .azm-image {
-
-            }
-        }
-        .azm-cells:after {
-            border-bottom: none;
-        }
-        .t-tabBar {
-            height: 62*1rpx;
-            line-height: 62*1rpx;
-            background-color: #fff2e5;
-            padding: 0 30*1rpx;
-            box-sizing: border-box;
-            .right {
-                flex-basis: 150*1rpx;
-            }
-            .azm-btn {
-                font-size: 28*1rpx;
-                padding: 8*1rpx 16*1rpx;
-                background-color: transparent;
-                color: #ff8000;
-                border: 2*1rpx solid #ff8000;
-            }
-        }
-
-        .t-tabBar .t-tabFill {
-            color: #ff8000;
-            font-size: 28*1rpx;
-        }
-
-        .t-itme {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-        }
-
-        .t-itme .t-itmeName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-itme .t-itmeText {
-            width: 74%;
-            height: 100%;
-            font-size: 30*1rpx;
-        }
-
-        .t-itmeText input {
-            height: 100%;
-            line-height: 91*1rpx;
-        }
-
-        .t-itmeCategory {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-        }
-
-        .t-itmeCategory .t-categoryName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-itmeCategory .t-categoryText {
-            width: 74%;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .t-categoryText .t-emptyicon {
-            height: 36*1rpx;
-            width: 36*1rpx;
-            margin-right: 16*1rpx;
-        }
-
-        .t-categoryText .t-arrows {
-            width: 15*1rpx;
-            height: 25*1rpx;
-            margin-right: 26*1rpx;
-        }
-
-        .t-categoryText .t-not {
-            color: #ff8000;
-            font-size: 28*1rpx;
-            margin-right: 19*1rpx;
-        }
-
-        .t-mt24 {
-            height: 24*1rpx;
-            background-color: #f4f4f4;
-        }
-        .azm-item__brand {
-            padding: 15*1rpx 22.5*1rpx;
-            .flexBox-item {
-                box-sizing: border-box;
-                padding: 15*1rpx 15*1rpx;
-            }
-        }
-        .t-shopdetail {
-            position: relative;
-            box-sizing: border-box;
-            font-size: 28*1rpx;
-        }
-
-        .t-shopdetail .t-skii {
-            box-sizing: inherit;
-            width: 100%;
-            height: 220*1rpx;
-            border: 1px solid #b7b7b7;
-            border-radius: 10*1rpx;
-            overflow: hidden;
-            .azm-image {
-                width: inherit;
-                height: inherit;
-            }
-        }
-
-        .t-shopdetail .t-title {
-            margin-top: 28*1rpx;
-            text-align: center;
-            color: #282828;
-        }
-
-        .t-shopdetail .t-shopName {
-            margin-top: 16*1rpx;
-            text-align: center;
-            color: #000;
-            font-size: 22*1rpx;
-        }
-
-        .t-shopdetail .t-delete {
-            position: absolute;
-            right: 0;
-            top: 0;
-            transform: translate(50%, -50%);
-        }
+  }
+  .azm-cells:after {
+    border-bottom: none;
+  }
+  .t-tabBar {
+    height: 62 * 1rpx;
+    line-height: 62 * 1rpx;
+    background-color: #fff2e5;
+    padding: 0 30 * 1rpx;
+    box-sizing: border-box;
+    .right {
+      flex-basis: 150 * 1rpx;
     }
+    .azm-btn {
+      font-size: 28 * 1rpx;
+      padding: 8 * 1rpx 16 * 1rpx;
+      background-color: transparent;
+      color: #ff4919;
+      border: 2 * 1rpx solid #ff4919;
+    }
+  }
+
+  .t-tabBar .t-tabFill {
+    color: #ff4919;
+    font-size: 28 * 1rpx;
+  }
+
+  .t-itme {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+  }
+
+  .t-itme .t-itmeName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-itme .t-itmeText {
+    width: 74%;
+    height: 100%;
+    font-size: 30 * 1rpx;
+  }
+
+  .t-itmeText input {
+    height: 100%;
+    line-height: 91 * 1rpx;
+  }
+
+  .t-itmeCategory {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+  }
+
+  .t-itmeCategory .t-categoryName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-itmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .t-categoryText .t-emptyicon {
+    height: 36 * 1rpx;
+    width: 36 * 1rpx;
+    margin-right: 16 * 1rpx;
+  }
+
+  .t-categoryText .t-arrows {
+    width: 15 * 1rpx;
+    height: 25 * 1rpx;
+    margin-right: 26 * 1rpx;
+  }
+
+  .t-categoryText .t-not {
+    color: #ff4919;
+    font-size: 28 * 1rpx;
+    margin-right: 19 * 1rpx;
+  }
+
+  .t-mt24 {
+    height: 24 * 1rpx;
+    background-color: #f4f4f4;
+  }
+  .azm-item__brand {
+    padding: 15 * 1rpx 22.5 * 1rpx;
+    .flexBox-item {
+      box-sizing: border-box;
+      padding: 15 * 1rpx 15 * 1rpx;
+    }
+  }
+  .t-shopdetail {
+    position: relative;
+    box-sizing: border-box;
+    font-size: 28 * 1rpx;
+  }
+
+  .t-shopdetail .t-skii {
+    box-sizing: inherit;
+    width: 100%;
+    height: 220 * 1rpx;
+    border: 1px solid #b7b7b7;
+    border-radius: 10 * 1rpx;
+    overflow: hidden;
+    .azm-image {
+      width: inherit;
+      height: inherit;
+    }
+  }
+
+  .t-shopdetail .t-title {
+    margin-top: 28 * 1rpx;
+    text-align: center;
+    color: #282828;
+  }
+
+  .t-shopdetail .t-shopName {
+    margin-top: 16 * 1rpx;
+    text-align: center;
+    color: #000;
+    font-size: 22 * 1rpx;
+  }
+
+  .t-shopdetail .t-delete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(50%, -50%);
+  }
+  .t-issue {
+    height: 98 * 1rpx;
+    background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98 * 1rpx;
+    text-align: center;
+    z-index: 100;
+  }
+}
 </style>
  

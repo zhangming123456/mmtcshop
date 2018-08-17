@@ -83,11 +83,11 @@ button.disabled {
 .btn2 {
   margin-left: 30rpx;
   color: #ffffff;
-  background-color: #ff8000;
+  background-color: #ff4919;
 }
 .btn1 {
-  color: #ff8000;
-  border: solid 1px #ff8000;
+  color: #ff4919;
+  border: solid 1px #ff4919;
   background-color: transparent;
 }
 .btn1,
@@ -121,7 +121,7 @@ button.disabled {
   padding-left: 30rpx;
   box-sizing: border-box;
   border-radius: 0px 26px 26px 0px;
-  background-color: #ff8000;
+  background-color: #ff4919;
   width: 99rpx;
 }
 .txt-num {

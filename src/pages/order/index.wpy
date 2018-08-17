@@ -206,7 +206,7 @@
         config = {
             navigationBarTitleText: "订单管理",
             enablePullDownRefresh: true,
-            navigationBarBackgroundColor: "#2c2e3e",
+            navigationBarBackgroundColor: "#3d70f7",
             navigationBarTextStyle: "white"
         };
 
@@ -259,7 +259,7 @@
         text-align: center;
         font-size: 30*1rpx;
         justify-content: center;
-        background-color: #2c2e3e;
+        background-color: #3d70f7;
         position: relative;
         color: white;
     }
@@ -312,7 +312,7 @@
         left: 0;
         width: 61*1rpx;
         height: 3*1rpx;
-        background-color: #ff8000;
+        background-color: #3d70f7;
     }
 
     .active-line-0-0 {
@@ -400,7 +400,7 @@
     }
 
     .toolbar1 .active {
-        color: #ff8000;
+        color: #3d70f7;
         /* background-color: #fff; */
     }
 
@@ -412,7 +412,7 @@
     }
 
     .toolbar2 .active {
-        color: #ff8000;
+        color: #3d70f7;
     }
 
     .toolbar2 .flex-con {
@@ -425,12 +425,12 @@
     }
 
     .item-status {
-        color: #ff8000;
+        color: #ff4919;
         font-size: 22*1rpx;
         display: block;
         border-radius: 10*1rpx;
         line-height: 1;
-        border: solid 1px #ff8000;
+        border: solid 1px #ff4919;
         padding: 4*1rpx 7*1rpx;
     }
 
@@ -440,7 +440,7 @@
     }
 
     .price-unit {
-        color: #ff8000;
+        color: #ff4919;
         font-size: 26*1rpx;
     }
 
@@ -457,7 +457,7 @@
 
     .price-num {
         font-size: 40*1rpx;
-        color: #ff8000;
+        color: #ff4919;
         margin-right: 20*1rpx;
     }
 
@@ -467,13 +467,13 @@
 
     .total-sum {
         font-size: 30*1rpx;
-        color: #ff8000;
+        color: #ff4919;
         padding: 30*1rpx;
     }
 
     .item-price-area {
         align-items: flex-end;
-        color: #ff8000;
+        color: #ff4919;
         font-size: 24*1rpx;
     }
 
@@ -502,7 +502,7 @@
 
     .left-num,
     .left-item {
-        color: #ff8000;
+        color: #ff4919;
     }
 
     .price-txt {
@@ -518,7 +518,7 @@
         position: absolute;
         left: 0;
         top: 0;
-        background-color: #fd0f5d;
+        background-color: #ff4919;
         font-size: 20*1rpx;
         color: #ffffff;
     }

@@ -86,7 +86,7 @@ page {
 .not-authed {
   padding: 14rpx 0;
   font-size: 30rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 .add-img {
   width: 30rpx;

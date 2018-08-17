@@ -1,67 +1,8 @@
-<style lang="less">
-    .azm-mask {
-        position: fixed;
-        margin: auto;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, .5);
-        z-index: 400;
-    }
 
-    .azm-popup {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        background: #fff;
-        font-size: 28*1rpx;
-        box-sizing: border-box;
-        padding: 0;
-        margin: 0;
-        min-height: 100*1rpx;
-        width: 100%;
-        z-index: 500;
-        transform: translateY(100%);
-        &.azm-popup__up {
-            transform: translateY(0);
-        }
-        .azm-popup__section {
-            padding: 30*1rpx;
-            .azm-popup__section_title {
-                margin-bottom: 40*1rpx;
-            }
-            .azm-popup__section_input {
-                .azm-input {
-                    width: 100%;
-                    font-size: 32*1rpx;
-                    margin-bottom: 50*1rpx;
-                }
-            }
-        }
-        .azm-popup__footer {
-            position: relative;
-            bottom: 0;
-            width: 100%;
-            height: 100*1rpx;
-            padding-top: 10*1rpx;
-            box-sizing: border-box;
-        }
-        .azm-btn {
-            border: none;
-            border-radius: 0;
-            background-color: #ff8000;
-            height: 98*1rpx;
-            line-height: 98*1rpx;
-            color: #fff;
-        }
-    }
-</style>
 <template>
-    <form report-submit="true" @submit="bindSubmit" wx:if="{{close}}">
+    <form report-submit="true" @submit="bindSubmit" wx:if="{{close}}" class='azm-components--popup'>
         <view class="azm-mask" @tap="bindClosePopup"></view>
-        <view id="azm-popup"
-              class="azm-popup {{show?'fadeInUp animated_0_3':'azm-popup__up fadeOutDown animated_0_3'}}">
+        <view id="azm-popup" class="azm-popup {{show?'fadeInUp animated_0_3':'azm-popup__up fadeOutDown animated_0_3'}}">
             <view class="azm-popup__header"></view>
             <view class="azm-popup__section">
                 <view class="azm-popup__section_title">{{message}}</view>
@@ -78,92 +19,94 @@
                 <block wx:else>
                     <button class="azm-btn" plain="true" formType="submit">确定</button>
                 </block>
-            </view>
+            </view>                                                                         
         </view>
     </form>
 </template>
 <script>
-    import wepy from 'wepy'
-    import baseMixin from '../mixins/base'
-    import toast from './toast'
-    export default class popup extends wepy.component {
-        props = {};
-        data = {
-            close: false,
-            show: false,
-            label: '',
-            interval: null,
-            message: ''
-        };
-        mixins = [baseMixin];
-        components = {};
+import wepy from "wepy";
+import baseMixin from "../mixins/base";
+import toast from "./toast";
+export default class popup extends wepy.component {
+  props = {};
+  data = {
+    close: false,
+    show: false,
+    label: "",
+    interval: null,
+    message: ""
+  };
+  mixins = [baseMixin];
+  components = {};
 
-        onLoad () {
-            let that = this;
-            that.$parent.azmShowPopup = function (options) {
-                let data = {};
-                if (typeof options === 'string') {
-                    that.message = options;
-                } else {
-                    that.message = options.message;
-                }
-                that.close = true;
-                that.show = true;
-                that.label = '';
-                clearTimeout(that.data.timeout);
-                clearInterval(that.data.interval);
-                that.$apply();
-            };
-            that.$parent.azmHidePopup = function (options) {
-                that.closePopup();
-            };
-        };
+  onLoad() {
+    let that = this;
+    that.$parent.azmShowPopup = function(options) {
+      let data = {};
+      if (typeof options === "string") {
+        that.message = options;
+      } else {
+        that.message = options.message;
+      }
+      that.close = true;
+      that.show = true;
+      that.label = "";
+      clearTimeout(that.data.timeout);
+      clearInterval(that.data.interval);
+      that.$apply();
+    };
+    that.$parent.azmHidePopup = function(options) {
+      that.closePopup();
+    };
+  }
 
-        closePopup () {
-            let that = this;
-            that.show = false;
-            that.label = null;
-            that.message = null;
-            clearInterval(that.data.interval);
-            clearTimeout(that.data.timeout);
-            that.interval = setInterval(res => {
-                that.$azmUtil.getEleScrollOffset('#azm-popup', that).then(
-                    res => {
-//                        336
-                        console.log(res);
-                        if (res.top >= 603) {
-                            that.close = false;
-                            clearInterval(that.data.interval);
-                            clearTimeout(that.data.timeout);
-                            that.$apply();
-                        }
-                    }
-                )
-            }, 100);
-            that.timeout = setTimeout(res => {
-                that.close = false;
-                clearInterval(that.data.interval);
-                that.$apply();
-            }, 300);
-            that.$apply();
-        };
+  closePopup() {
+    let that = this;
+    that.show = false;
+    that.label = null;
+    that.message = null;
+    clearInterval(that.data.interval);
+    clearTimeout(that.data.timeout);
+    that.interval = setInterval(res => {
+      that.$azmUtil.getEleScrollOffset("#azm-popup", that).then(res => {
+        //                        336
+        console.log(res);
+        if (res.top >= 603) {
+          that.close = false;
+          clearInterval(that.data.interval);
+          clearTimeout(that.data.timeout);
+          that.$apply();
+        }
+      });
+    }, 100);
+    that.timeout = setTimeout(res => {
+      that.close = false;
+      clearInterval(that.data.interval);
+      that.$apply();
+    }, 300);
+    that.$apply();
+  }
 
-        watch = {};
-        methods = {
-            bindSubmit(e){
-                let that = this,
-                    value = e.detail.value,
-                    formId = e.detail.formId;
-                if (formId === "the formId is a mock one") {
-                    formId = null;
-                }
-                value.label = this.$azmUtil.trim(value.label);
-                this.$emit('popupSubmit', value, formId, e);
-            },
-            bindClosePopup(){
-                let that = this;
-                that.closePopup();
-            }
-        };
+  watch = {};
+  methods = {
+    bindSubmit(e) {
+      let that = this,
+        value = e.detail.value,
+        formId = e.detail.formId;
+      if (formId === "the formId is a mock one") {
+        formId = null;
+      }
+      value.label = this.$azmUtil.trim(value.label);
+      this.$emit("popupSubmit", value, formId, e);
+    },
+    bindClosePopup() {
+      let that = this;
+      that.closePopup();
     }
+  };
+}
 </script>
+
+<style lang="less">
+
+</style>

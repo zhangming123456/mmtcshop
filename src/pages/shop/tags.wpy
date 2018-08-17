@@ -34,7 +34,7 @@ export default class extends wepy.page {
   };
   data = {
     tags: [],
-    tagTitle:'',
+    tagTitle: "",
     selectedTags: []
   };
   onLoad() {
@@ -62,24 +62,28 @@ export default class extends wepy.page {
         if (this.selectedTags.indexOf(tag) === -1) {
           //
           this.selectedTags.push(tag);
-          this.tagTitle = '';
+          this.tagTitle = "";
         }
       }
     },
-    doSure(){
-      if(this.selectedTags.length<=0){
-        this.$alert('请选择至少一个标签')
+    doSure() {
+      if (this.selectedTags.length <= 0) {
+        this.$alert("请选择至少一个标签");
         return;
       }
-        this.$post('/shopapi/shop/setShopTags',{
-            tags:JSON.stringify(this.selectedTags)
-        },()=>{
-            this.$noticePage('setShopTags',{tags:this.selectedTags})
-            this.$back()
-        })
+      this.$post(
+        "/shopapi/shop/setShopTags",
+        {
+          tags: JSON.stringify(this.selectedTags)
+        },
+        () => {
+          this.$noticePage("setShopTags", { tags: this.selectedTags });
+          this.$back();
+        }
+      );
     },
-    cancelSure(){
-        this.$back();
+    cancelSure() {
+      this.$back();
     },
     toggleTag(tag) {
       if (this.selectedTags.indexOf(tag) === -1) {
@@ -107,12 +111,12 @@ export default class extends wepy.page {
   height: 76rpx;
   font-size: 30rpx;
   padding: 0 25rpx;
-  line-height: 76rpx;  
+  line-height: 76rpx;
 }
 .title-line {
   width: 6rpx;
   height: 23rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   border-radius: 2rpx;
   display: inline-block;
   margin-right: 14rpx;
@@ -148,7 +152,7 @@ export default class extends wepy.page {
 .tags .tag {
   height: 56rpx;
   line-height: 56rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   border-radius: 5rpx;
   padding: 0 15rpx;
   font-size: 30rpx;
@@ -173,9 +177,9 @@ export default class extends wepy.page {
   background-color: transparent;
   padding: 0;
   font-size: 30rpx;
-  color: #ff8000;
+  color: #ff4919;
   border-radius: 5rpx;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
 }
 .main-container {
   width: 750rpx;
@@ -202,13 +206,13 @@ export default class extends wepy.page {
 }
 .btn2 {
   color: #ffffff;
-  background-color: #ff8000;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
 }
 .btn1 {
-  color: #ff8000;
-  border-top: solid 1px #ff8000;
+  border-top: solid 1px #e5e5e5;
   // background-color: transparent;
   background-color: #ffffff;
+  color: #666666;
 }
 .btn1,
 .btn2 {
@@ -258,13 +262,13 @@ export default class extends wepy.page {
   padding-bottom: 20rpx;
 }
 .active {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 31rpx;
 }
 .footer-hr {
   width: 129rpx;
   height: 3px;
-  background-color: #ff8000;
+  background-color: #ff4919;
   position: absolute;
   bottom: 0;
   left: 124rpx;

@@ -30,7 +30,7 @@
 }
 .container-main {
   .header {
-    background-color: #2c2e3e;
+    background-color: #3d70f7;
     color: white;
     padding: 62rpx 0 0 0;
     .left-money-tip {
@@ -43,14 +43,14 @@
       text-align: center;
       .left-money-price {
         font-size: 75rpx;
-        color: #ff8000;
+        color: #ffffff;
         display: inline;
         padding-right: 17rpx;
       }
       .left-money-yuan {
         display: inline;
         font-size: 32rpx;
-        color: #ff8000;
+        color: #ffffff;
       }
     }
     .tool-btns {
@@ -60,8 +60,7 @@
       text-align: center;
       font-size: 30rpx;
       color: #ffffff;
-
-      background-color: #3e4050;
+      background-color: #3d70f7;
       .cross-line {
         width: 1rpx;
         height: 55rpx;
@@ -92,7 +91,7 @@
         top: 4rpx;
       }
       .field-value {
-        color: #ff8000;
+        color: #ff4919;
         padding-right: 29rpx;
       }
       .list-title {
@@ -173,7 +172,7 @@ import mywxs from "../../wxs/common.wxs";
 export default class extends wepy.page {
   config = {
     navigationBarTitleText: "提现管理",
-    navigationBarBackgroundColor: "#2c2e3e",
+    navigationBarBackgroundColor: "#3d70f7",
     backgroundColor: "#f4f4f4",
     navigationBarTextStyle: "white"
   };

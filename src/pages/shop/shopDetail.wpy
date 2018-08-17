@@ -137,14 +137,14 @@ image.gt {
 .title-line {
   width: 6rpx;
   height: 23rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   border-radius: 2rpx;
   display: inline-block;
   margin-right: 14rpx;
 }
 .tip-msg {
   font-size: 30rpx;
-  color: #ff8000;
+  color: #ff4919;
   padding: 27rpx 30rpx;
 }
 button.contact-btn{
@@ -154,7 +154,7 @@ button.contact-btn{
   line-height:30rpx;
   height:30rpx;
   font-size: 30rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 
 </style>

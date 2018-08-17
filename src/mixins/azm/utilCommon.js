@@ -59,6 +59,9 @@ module.exports.isNumber = isNumber;
 
 function isNumberOfNaN (arg) {
     if (!!arg || +arg === 0) {
+        if (Array.isArray(arg)) {
+            return false;
+        }
         arg = Number(arg);
         return typeof arg === 'number' && !isNaN(arg);
     } else {

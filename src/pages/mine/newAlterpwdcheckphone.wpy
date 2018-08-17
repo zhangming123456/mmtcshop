@@ -1,0 +1,187 @@
+<template lang="pug">
+view.container1
+    view.form-area.fz28        
+        view.form-item
+            view.flex
+                view.flex-con
+                    input(placeholder="请输入绑定手机号" @input="setField('telephone')" type="number")
+                button.ib.validbtn(hover-class="tapmode" @tap="getCheckcode"  class="{{timestr?'disabled-btn':''}}") {{timestr||'获取验证码'}}
+        input(placeholder="请输入验证码" @input="setField('checkcode')" type="number")
+        view.button-area
+            view.btn-color(type="default" @tap="gotoNext" ) 下一步
+</template>
+
+<style lang="less">
+button.validbtn {
+  width: 184rpx;
+  height: 60rpx;
+  line-height: 58rpx;
+  color: #ff4919;
+  text-align: center;
+  font-size: 28rpx;
+  padding: 0;
+  margin-right: 20rpx;
+  border: solid 1px #ff4919;
+  background-color: transparent;
+}
+button.disabled-btn {
+  border: solid 1px #999999;
+  color: #999999;
+  font-size: 24rpx;
+}
+
+.btn-color {
+  width: 670rpx;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
+}
+</style>
+
+
+<script>
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
+  };
+  mixins = [baseMixin];
+  data = {
+    timestr: ""
+  };
+  onLoad(options) {
+    let mode = options.mode || 0;
+    this.mode = mode;
+    if (mode == 1) {
+      wx.setNavigationBarTitle({
+        title: "绑定手机号码"
+      });
+    } else if (mode == 3) {
+      this.path = decodeURIComponent(options.path);
+      let title = decodeURIComponent(options.title);
+      wx.setNavigationBarTitle({
+        title
+      });
+    } else {
+      wx.setNavigationBarTitle({
+        title: "修改密码"
+      });
+    }
+  }
+  methods = {
+    getCheckcode() {
+      if (!this.telephone) {
+        this.$alert("请输入手机号码");
+        return;
+      }
+      if (!this.isPhone(this.telephone)) {
+        this.$alert("请输入正确的手机号码");
+        return;
+      }
+      if (this.timestr) {
+        return;
+      }
+      this.$post(
+        "/api/index/getCheckCode?docheck=1",
+        {
+          telephone: this.telephone
+        },
+        info => {},
+        () => {},
+        info => {
+          this.$alert(info);
+          if (this.timeFlag) {
+            clearTimeout(this.timeFlag);
+            this.timestr = "";
+            this.$apply();
+          }
+        }
+      );
+      this.start_time = new Date().getTime();
+      startcount.call(this);
+      function w(v) {
+        return v < 10 ? "0" + v : v;
+      }
+      function startcount() {
+        let left_seconds =
+          60 - parseInt((new Date().getTime() - this.start_time) / 1000);
+        if (left_seconds <= 0) {
+          this.timestr = "";
+          this.$apply();
+          return;
+        }
+        this.timestr = w(left_seconds) + "秒后可重发";
+        this.$apply();
+        this.timeFlag = setTimeout(() => {
+          startcount.call(this);
+        }, 1000);
+      }
+    },
+    gotoNext() {
+      if (!this.telephone) {
+        this.$alert("请输入手机号码");
+        return;
+      }
+      if (!this.isPhone(this.telephone)) {
+        this.$alert("请输入正确的手机号码");
+        return;
+      }
+      if (!this.checkcode) {
+        this.$alert("请输入验证码");
+        return;
+      }
+      this.showLoading();
+      if (this.mode == 1) {
+        this.$post(
+          "/shopapi/shop/changeBindedPhone",
+          {
+            code: this.checkcode,
+            telephone: this.telephone
+          },
+          info => {
+            this.$alert("绑定手机号码成功!", () => {
+              wx.switchTab({
+                url: "/pages/mine/index"
+              });
+            });
+          },
+          () => {
+            this.hideLoading();
+          }
+        );
+      } else {
+        this.$post(
+          "/shopapi/shop/checkCode",
+          {
+            code: this.checkcode
+          },
+          info => {
+            if (this.mode == 3) {
+              wx.navigateTo({
+                url: this.path
+              });
+            } else {
+              wx.navigateTo({
+                url: "/pages/alterpwd?mode=1"
+              });
+            }
+          },
+          () => {
+            this.hideLoading();
+          }
+        );
+      }
+    },
+    setField(field, e) {
+      this[field] = e.detail.value.trim();
+    }
+  };
+}
+</script>

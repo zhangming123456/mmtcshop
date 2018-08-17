@@ -12,12 +12,12 @@
           <view class="text-center">
             <view class="suc-line"/>
           </view>
-          <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'shenlue'}}.png"/>
+          <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'shenlue_red'}}.png"/>
           <block  wx:if="{{info.status==3}}">
             <view class="text-center">
               <view class="suc-line"/>
             </view>
-            <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'shenlue'}}.png"/>
+            <image class="redclose-icon" src="/imgs/{{info.status==1||info.status==3?'follow':'shenlue_red'}}.png"/>
           </block>
           <block wx:else>
             <view class="text-center">
@@ -49,7 +49,7 @@
     <view class="container1">
       <view class="form-area"> 
         <view class="button-area">
-          <button class="btn-primary" type="default" hover-class="tapmode" bindtap="cashAgain">重新提现</button>
+          <view class="btn-color" type="default" hover-class="tapmode" bindtap="cashAgain">重新提现</view>
         </view>
       </view>
     </view>
@@ -81,7 +81,7 @@
     display: inline-block;
     vertical-align: middle;
     margin-top: -7rpx;
-    background-color: #fed501;
+    background-color: #ff4919;
   }
   .gray-line {
     width: 0;
@@ -117,7 +117,7 @@
   }
   .nopassed {
     font-size: 32rpx;
-    color: #f37c3d;
+    color: #ff4919;
   }
   .tip-item-desc {
     padding-top: 18rpx;
@@ -137,15 +137,25 @@ page {
   text-align: center;
   .left-money-price {
     font-size: 75rpx;
-    color: #ff8000;
+    color: #ff4919;
     display: inline;
     padding-right: 17rpx;
   }
   .left-money-yuan {
     display: inline;
     font-size: 32rpx;
-    color: #ff8000;
+    color: #ff4919;
   }
+}
+
+.btn-color {
+  width: 670rpx;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
 }
 </style>
 
@@ -155,7 +165,10 @@ import baseMixin from "../../mixins/base";
 import wepy from "wepy";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "进度详情"
+    navigationBarTitleText: "进度详情",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   mixins = [baseMixin];
   data = {

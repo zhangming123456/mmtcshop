@@ -9,7 +9,7 @@ page {
   .footer-area {
     background-color: #fff;
     position: fixed;
-    color: #ff8000;
+    color: #ff4919;
     z-index: 1000;
     left: 0;
     font-size: 28rpx;
@@ -31,8 +31,8 @@ page {
     .preview-btn {
       background-color: transparent;
       border-radius: 5rpx;
-      border: solid 1px #ff8000;
-      color: #ff8000;
+      border: solid 1px #ff4919;
+      color: #ff4919;
       height: 56rpx;
       padding: 0;
       line-height: 54rpx;
@@ -41,9 +41,9 @@ page {
     }
     .sure-btn {
       padding: 0;
-      background-color: #ff8000;
+      background-color: #ff4919;
       border-radius: 5rpx;
-      border: solid 1px #ff8000;
+      border: solid 1px #ff4919;
       height: 56rpx;
       color: white;
       line-height: 54rpx;

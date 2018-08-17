@@ -26,7 +26,7 @@
         <label>  
           <radio color="{{color}}" class="man" value="1" checked="{{info.sex==1}}" />男</label>
         <label>
-          <radio color="{{color}}" class="girl" value="0" checked="{{info.sex==0}}" />女</label>
+          <radio color="{{color}}" class="girl" value="0" checked="{{info.sex==0}}"  checked="true"/>女</label>
       </radio-group>
     </view>
   </view>
@@ -38,7 +38,6 @@
       <image class="picture"  src="{{m1.absUrl(info.avatar)||'/imgs/default.png'}}"></image>
       <image class="arrows" src="/imgs/arrows.png"></image>
     </view>
-    
   </view>
   <view bindtap="changeToTest" class="industry">
     <view class="industryText">
@@ -65,9 +64,9 @@
     </view>
     <view class="add" bindtap="addGoto">+</view>
         <view class='addContentCon'>
-          <view class="addContent" bindchange="btn_cbback_tab" wx:for="{{addName}}" wx:key="{{index}}">
-            <text>{{item}}</text>
-            <image class="cancel" src="/imgs/delete.png" bindtap='cancel' data-item="{{index}}"></image>
+          <view class="addContent" bindchange="btn_cbback_tab" wx:for="{{info.tags}}"   wx:for-item='v' wx:for-index='i'  wx:key="{{index}}">
+            <text>{{v.title}}</text>
+            <image class="cancel" src="/imgs/delete.png" bindtap='cancel' data-index="{{i}}"></image>
           </view>
         </view>
   </view>

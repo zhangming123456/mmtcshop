@@ -7,8 +7,7 @@
 .button {
     height: 100rpx;
     width: 100%;
-    background-color: rgb(255, 128, 0);
-    line-height: 100rpx;
+    background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
     text-align: center;
     color: rgb(255, 255, 255);
     position: fixed;

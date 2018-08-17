@@ -35,7 +35,7 @@
             </view>
         </block>
         <view class="t-add">
-            <icon type="cancel" class="azm-icon" size="50" color="#ff8000" @tap="bindAddProcess"></icon>
+            <icon type="cancel" class="azm-icon" size="50" color="#ff4919" @tap="bindAddProcess"></icon>
         </view>
         <view class="t-issue" @tap="changeToTest">确定</view>
     </view>
@@ -43,298 +43,306 @@
 </template>
 
 <script>
-    import wepy from "wepy";
-    import utilPage from "../../../../mixins/utilPage";
-    import baseMixin from "../../../../mixins/base";
-    import toast from "../../../../components/toast";
-    import c from "../../../../wxs/common.wxs";
+import wepy from "wepy";
+import utilPage from "../../../../mixins/utilPage";
+import baseMixin from "../../../../mixins/base";
+import toast from "../../../../components/toast";
+import c from "../../../../wxs/common.wxs";
 
-    const appPage = new utilPage({
-        data: {
-            text: "Page productServiceProcess",
-            hasMoreData: false,//是否有更多
-            oneProcess: {
-                name: '',
-                times: 1,
-                time: 30
-            },
-            service_flow: []
-        },
-        onLoad (options) {
-            this.loadCb()
-        },
-        onPullDownRefresh () {
-            let that = this
-        },
+const appPage = new utilPage({
+  data: {
+    text: "Page productServiceProcess",
+    hasMoreData: false, //是否有更多
+    oneProcess: {
+      name: "",
+      times: 1,
+      time: 30
+    },
+    service_flow: []
+  },
+  onLoad(options) {
+    this.loadCb();
+  },
+  onPullDownRefresh() {
+    let that = this;
+  },
 
-        onReachBottom () {
-            let that = this
-        },
+  onReachBottom() {
+    let that = this;
+  },
 
-        onPageScroll (options) {
-        },
-    });
-    export default class extends wepy.page {
-        constructor (...args) {
-            super(...args);
-            for (let k in appPage) {
-                if (k === 'methods') {
-                    for (let j in appPage[k]) {
-                        this[k][j] = appPage[k][j]
-                    }
-                } else
-                    this[k] = appPage[k]
-            }
+  onPageScroll(options) {}
+});
+export default class extends wepy.page {
+  constructor(...args) {
+    super(...args);
+    for (let k in appPage) {
+      if (k === "methods") {
+        for (let j in appPage[k]) {
+          this[k][j] = appPage[k][j];
         }
-
-        components = {
-            toast
-        };
-        config = {
-            navigationBarTitleText: "产品主图",
-        };
-        wxs = {
-            c
-        };
-        mixins = [baseMixin];
-
-        loadCb () {
-            try {
-                let that = this,
-                    options = that.data.options,
-                    _this2 = that.__getPrevPage(),
-                    common = that.$azmUtil.common,
-                    service_flow = _this2.data.productData.service_flow;
-                if (service_flow && common.isArray(service_flow) && service_flow.length > 0) {
-                    that.service_flow = that.$azmUtil.extend(true, [], service_flow);
-                    that.$apply();
-                } else {
-                    that.methods.bindAddProcess.call(that);
-                }
-
-            } catch (e) {
-
-            }
-        }
-
-        getEleScrollOffset (el) {
-            if (!el) return;
-            let node = null;
-            let p = new Promise((resolve, reject) => {
-                wx.createSelectorQuery().select(el).boundingClientRect(function (res) {
-                    node = res;
-                    resolve(res);
-                }).exec();
-            });
-            p.catch(res => {
-
-            });
-            return p;
-        }
-
-        methods = {
-            changeToTest () {
-                let that = this,
-                    _this2 = that.__getPrevPage(),
-                    service_flow = that.data.service_flow,
-                    flag = service_flow.findIndex(res => {
-                        return res.name === '' || res.times === '' || res.time === ''
-                    });
-                if (flag === -1) {
-                    _this2.productData.service_flow = service_flow;
-                    that.$azmUtil.go(-1);
-                } else {
-                    that.azmShowToast(`流程${flag + 1}内容还未完成，请完成后再添加新的流程哦~~~`);
-                    that.getEleScrollOffset(`#process${flag}`).then(res => {
-                        that.$azmUtil.goToTop(res.height * flag);
-                    })
-                }
-            },
-            bindInputChang (index, key, e) {
-                let that = this,
-                    value = e.detail.value;
-                if (key !== 'name' && value !== '' && value < 1) {
-                    value = 1;
-                }
-                if (that.service_flow[index]) {
-                    that.service_flow[index][key] = value;
-                    return value;
-                }
-            },
-            bindInputBlur (index, key, e) {
-                let that = this,
-                    value = e.detail.value;
-                if (key !== 'name' && value === '') {
-                    value = 1;
-                }
-                if (that.service_flow[index]) {
-                    that.service_flow[index][key] = value;
-                }
-            },
-            bindDeleteProcess (index) {
-                this.service_flow.splice(index, 1);
-            },
-            bindAddProcess () {
-                let that = this,
-                    service_flow = that.data.service_flow,
-                    name;
-                if (service_flow && service_flow.length) {
-                    name = service_flow[service_flow.length - 1].name;
-                    name = that.$azmUtil.trim(name);
-                }
-                if (service_flow.length === 0 || name.length > 0) {
-                    that.service_flow.push(that.$azmUtil.extend(true, {}, that.data.oneProcess));
-                    that.getEleScrollOffset(`.productServiceProcess`).then(res => {
-                        that.$azmUtil.goToTop(res.height);
-                    })
-                } else {
-                    that.azmShowToast(`流程${service_flow.length}内容还未完成，请完成后再添加新的流程哦~~~`);
-                }
-            }
-        }
+      } else this[k] = appPage[k];
     }
+  }
+
+  components = {
+    toast
+  };
+  config = {
+    navigationBarTitleText: "服务流程"
+  };
+  wxs = {
+    c
+  };
+  mixins = [baseMixin];
+
+  loadCb() {
+    try {
+      let that = this,
+        options = that.data.options,
+        _this2 = that.__getPrevPage(),
+        common = that.$azmUtil.common,
+        service_flow = _this2.data.productData.service_flow;
+      if (
+        service_flow &&
+        common.isArray(service_flow) &&
+        service_flow.length > 0
+      ) {
+        that.service_flow = that.$azmUtil.extend(true, [], service_flow);
+        that.$apply();
+      } else {
+        that.methods.bindAddProcess.call(that);
+      }
+    } catch (e) {}
+  }
+
+  getEleScrollOffset(el) {
+    if (!el) return;
+    let node = null;
+    let p = new Promise((resolve, reject) => {
+      wx
+        .createSelectorQuery()
+        .select(el)
+        .boundingClientRect(function(res) {
+          node = res;
+          resolve(res);
+        })
+        .exec();
+    });
+    p.catch(res => {});
+    return p;
+  }
+
+  methods = {
+    changeToTest() {
+      let that = this,
+        _this2 = that.__getPrevPage(),
+        service_flow = that.data.service_flow,
+        flag = service_flow.findIndex(res => {
+          return res.name === "" || res.times === "" || res.time === "";
+        });
+      if (flag === -1) {
+        _this2.productData.service_flow = service_flow;
+        that.$azmUtil.go(-1);
+      } else {
+        that.azmShowToast(
+          `流程${flag + 1}内容还未完成，请完成后再添加新的流程哦~~~`
+        );
+        that.getEleScrollOffset(`#process${flag}`).then(res => {
+          that.$azmUtil.goToTop(res.height * flag);
+        });
+      }
+    },
+    bindInputChang(index, key, e) {
+      let that = this,
+        value = e.detail.value;
+      if (key !== "name" && value !== "" && value < 1) {
+        value = 1;
+      }
+      if (that.service_flow[index]) {
+        that.service_flow[index][key] = value;
+        return value;
+      }
+    },
+    bindInputBlur(index, key, e) {
+      let that = this,
+        value = e.detail.value;
+      if (key !== "name" && value === "") {
+        value = 1;
+      }
+      if (that.service_flow[index]) {
+        that.service_flow[index][key] = value;
+      }
+    },
+    bindDeleteProcess(index) {
+      this.service_flow.splice(index, 1);
+    },
+    bindAddProcess() {
+      let that = this,
+        service_flow = that.data.service_flow,
+        name;
+      if (service_flow && service_flow.length) {
+        name = service_flow[service_flow.length - 1].name;
+        name = that.$azmUtil.trim(name);
+      }
+      if (service_flow.length === 0 || name.length > 0) {
+        that.service_flow.push(
+          that.$azmUtil.extend(true, {}, that.data.oneProcess)
+        );
+        that.getEleScrollOffset(`.productServiceProcess`).then(res => {
+          that.$azmUtil.goToTop(res.height);
+        });
+      } else {
+        that.azmShowToast(
+          `流程${service_flow.length}内容还未完成，请完成后再添加新的流程哦~~~`
+        );
+      }
+    }
+  };
+}
 </script>
 
 <style lang="less">
-    page {
-        background: #fff;
+page {
+  background: #fff;
+}
+
+.productServiceProcess {
+  padding-bottom: 100 * 1rpx;
+  .azm-productServiceProcess_num,
+  .azm-productServiceProcess_name {
+    height: 80 * 1rpx;
+    line-height: 80 * 1rpx;
+    font-size: 28 * 1rpx;
+    color: #282828;
+    box-sizing: border-box;
+    padding-left: 22 * 1rpx;
+    padding-right: 22 * 1rpx;
+    input {
+      vertical-align: middle;
+      height: 100%;
+      line-height: 100%;
+      color: #999;
     }
-
-    .productServiceProcess {
-        padding-bottom: 100*1rpx;
-        .azm-productServiceProcess_num, .azm-productServiceProcess_name {
-            height: 80*1rpx;
-            line-height: 80*1rpx;
-            font-size: 28*1rpx;
-            color: #282828;
-            box-sizing: border-box;
-            padding-left: 22*1rpx;
-            padding-right: 22*1rpx;
-            input {
-                vertical-align: middle;
-                height: 100%;
-                line-height: 100%;
-                color: #999;
-            }
-        }
-        .azm-productServiceProcess_name {
-            .left {
-                flex-basis: 140*1rpx;
-            }
-        }
-        .azm-productServiceProcess_num {
-            .flexBox-item {
-                > view, input {
-                    display: inline-block;
-                    padding-right: 15*1rpx;
-                }
-            }
-            .t-serveProject {
-
-            }
-            .t-serveNum {
-                width: 65*1rpx;
-                text-align: center;
-                color: #999999;
-            }
-        }
-        .t-flow {
-            margin-left: 30*1rpx;
-            margin-top: 33*1rpx;
-            width: 691*1rpx;
-            height: 226*1rpx;
-            border-radius: 10*1rpx;
-            box-shadow: 0px 5*1rpx 20*1rpx #2c2e3e;
-            margin-bottom: 54*1rpx;
-        }
-
-        .t-flow .t-flowItme {
-            position: relative;
-            box-sizing: border-box;
-            height: 64*1rpx;
-            line-height: 64*1rpx;
-            background-color: #2c2e3e;
-            border-top-left-radius: 10*1rpx;
-            border-top-right-radius: 10*1rpx;
-            font-size: 34*1rpx;
-            color: #fff;
-            padding-left: 22*1rpx;
-            padding-right: 22*1rpx;
-            .azm-delete {
-                position: absolute;
-                right: 22*1rpx;
-                font-size: 24*1rpx;
-            }
-            .azm-icon {
-                font-size: 32*1rpx;
-                margin-right: 11*1rpx;
-            }
-        }
-
-        .t-servenum {
-            display: flex;
-        }
-
-        .t-servenum .t-serveProject {
-            font-size: 28*1rpx;
-        }
-
-        .t-servenum .t-serveNum {
-            font-size: 28*1rpx;
-            width: 20*1rpx;
-            margin-top: 19*1rpx;
-            margin-left: 33*1rpx;
-        }
-
-        .t-servenum .t-num {
-            font-size: 28*1rpx;
-            margin-left: 22*1rpx;
-            margin-top: 32*1rpx;
-        }
-
-        .t-serveTime {
-            display: flex;
-            margin-left: 107*1rpx;
-        }
-
-        .t-serveTime .t-serveProject {
-            font-size: 28*1rpx;
-        }
-
-        .t-serveTime .t-serveNum {
-            font-size: 28*1rpx;
-            margin-top: 19*1rpx;
-            margin-left: 33*1rpx;
-            width: 50*1rpx;
-        }
-
-        .t-serveTime .t-num {
-            font-size: 28*1rpx;
-            margin-left: 22*1rpx;
-            margin-top: 32*1rpx;
-        }
-
-        .t-add {
-            text-align: center;
-            margin-top: 20*1rpx;
-            margin-bottom: 20*1rpx;
-            .azm-icon {
-                transform: rotate(45deg);
-            }
-        }
-
-        .t-issue {
-            height: 98*1rpx;
-            background-color: #ff8000;
-            color: #ffffff;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            line-height: 98*1rpx;
-            text-align: center;
-            z-index: 100;
-        }
+  }
+  .azm-productServiceProcess_name {
+    .left {
+      flex-basis: 140 * 1rpx;
     }
+  }
+  .azm-productServiceProcess_num {
+    .flexBox-item {
+      > view,
+      input {
+        display: inline-block;
+        padding-right: 15 * 1rpx;
+      }
+    }
+    .t-serveProject {
+    }
+    .t-serveNum {
+      width: 65 * 1rpx;
+      text-align: center;
+      color: #999999;
+    }
+  }
+  .t-flow {
+    margin-left: 30 * 1rpx;
+    margin-top: 33 * 1rpx;
+    width: 691 * 1rpx;
+    height: 226 * 1rpx;
+    border-radius: 10 * 1rpx;
+    box-shadow: 0px 5 * 1rpx 20 * 1rpx #2c2e3e;
+    margin-bottom: 54 * 1rpx;
+  }
+
+  .t-flow .t-flowItme {
+    position: relative;
+    box-sizing: border-box;
+    height: 64 * 1rpx;
+    line-height: 64 * 1rpx;
+    background-color: #2c2e3e;
+    border-top-left-radius: 10 * 1rpx;
+    border-top-right-radius: 10 * 1rpx;
+    font-size: 34 * 1rpx;
+    color: #fff;
+    padding-left: 22 * 1rpx;
+    padding-right: 22 * 1rpx;
+    .azm-delete {
+      position: absolute;
+      right: 22 * 1rpx;
+      font-size: 24 * 1rpx;
+    }
+    .azm-icon {
+      font-size: 32 * 1rpx;
+      margin-right: 11 * 1rpx;
+    }
+  }
+
+  .t-servenum {
+    display: flex;
+  }
+
+  .t-servenum .t-serveProject {
+    font-size: 28 * 1rpx;
+  }
+
+  .t-servenum .t-serveNum {
+    font-size: 28 * 1rpx;
+    width: 20 * 1rpx;
+    margin-top: 19 * 1rpx;
+    margin-left: 33 * 1rpx;
+  }
+
+  .t-servenum .t-num {
+    font-size: 28 * 1rpx;
+    margin-left: 22 * 1rpx;
+    margin-top: 32 * 1rpx;
+  }
+
+  .t-serveTime {
+    display: flex;
+    margin-left: 107 * 1rpx;
+  }
+
+  .t-serveTime .t-serveProject {
+    font-size: 28 * 1rpx;
+  }
+
+  .t-serveTime .t-serveNum {
+    font-size: 28 * 1rpx;
+    margin-top: 19 * 1rpx;
+    margin-left: 33 * 1rpx;
+    width: 50 * 1rpx;
+  }
+
+  .t-serveTime .t-num {
+    font-size: 28 * 1rpx;
+    margin-left: 22 * 1rpx;
+    margin-top: 32 * 1rpx;
+  }
+
+  .t-add {
+    text-align: center;
+    margin-top: 20 * 1rpx;
+    margin-bottom: 20 * 1rpx;
+    .azm-icon {
+      transform: rotate(45deg);
+    }
+  }
+
+  .t-issue {
+    height: 98 * 1rpx;
+    background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98 * 1rpx;
+    text-align: center;
+    z-index: 100;
+  }
+}
 </style>
  

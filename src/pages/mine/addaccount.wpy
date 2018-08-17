@@ -22,7 +22,7 @@ view.container-main
             view.flex-con
                 input(type="text" value="{{car_no}}" placeholder='请填写真实信息' @input="setField('car_no')")
     view.btn-area
-        button.btn-primary.bg-primary(type="default" @tap="bindBank" hover-class="tapmode")  绑定账户
+        view.btn-color(type="default" @tap="bindBank")  绑定账户
 </template>
 
 <style lang="less">
@@ -37,6 +37,16 @@ view.container-main
 .btn-area {
   padding: 66rpx 30rpx;
 }
+
+.btn-color {
+  width: 670rpx;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
+}
 </style>
 
 
@@ -45,7 +55,10 @@ import wepy from "wepy";
 import baseMixin from "../../mixins/base";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "提现账户"
+    navigationBarTitleText: "提现账户",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   onLoad(options) {
     this.forSave = options.forSave || 0;
@@ -60,10 +73,10 @@ export default class extends wepy.page {
   }
   mixins = [baseMixin];
   data = {
-    username:'',
-    car_no:'',
-    bank_name:'',
-    identity_no:'',
+    username: "",
+    car_no: "",
+    bank_name: "",
+    identity_no: ""
   };
   methods = {
     setField(field, e) {

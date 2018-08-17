@@ -2,7 +2,7 @@
 view.form-area
     view.container1    
         textarea.textarea(placeholder="请在这里输入文字~" value="{{content}}" @input="setField('content')")
-        button.btn-primary(type="default" @tap="doSubmit" hover-class="tapmode") 提 交
+        view.btn-color(type="default" @tap="doSubmit" hover-class="tapmode") 提 交
 </template>
 <script>
 import wepy from "wepy";
@@ -43,6 +43,17 @@ export default class extends wepy.page {
 </script>
 
 <style lang="less">
+
+.btn-color {
+  width: 670rpx;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
+  border-radius: 5rpx;
+}
 .btn-primary {
   margin-top: 101rpx;
 }

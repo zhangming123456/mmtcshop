@@ -1,5 +1,5 @@
-<wxs src="../../wxs/common.wxs" module="m1"/>
-<view class="container">    
+<wxs src="../../wxs/common.wxs" module="m1" />
+<view class="container">
     <view class="touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart"
         bindtouchmove="touchmove" wx:for="{{items}}" wx:key="id">
         <view class='content' bindtap="changeToTest" data-id="{{item.id}}" data-shopId="{{item.shop_id}}">
@@ -13,18 +13,18 @@
                 <view class="starBox">
                     <block wx:for="{{m1.toScoreAttr(item.major_score)}}" wx:for-item="cc" wx:key="**this">
                         <image wx:if="{{cc==1}}" class="star" src="/imgs/star.png"></image>
-                        <image wx:else class="star" src="/imgs/star.png"></image>
+                        <image wx:else class="star" src="/imgs/star-ccc.png"></image>
                     </block>
                     <text class="grade">{{item.major_score}}分</text>
                 </view>
             </view>
-        </view>
+        </view> 
         <view class="del" catchtap="del" data-id="{{item.id}}" data-shopid="{{item.shop_id}}" data-index="{{index}}">删除</view>
     </view>
-            <view class="statementBox" wx:if='{{items.length == 0}}'>
-                <image class="statement" src="/imgs/wxmiao.png"></image>
-                <view class="statementText">您还没有添加技师~</view>
-            </view>
+    <view class="statementBox" wx:if='{{items.length == 0}}'>
+        <image class="statement" src="/imgs/wxmiao.png"></image>
+        <view class="statementText">您还没有添加技师~</view>
+    </view>
     <view class="button-holder"></view>
     <button bindtap="changeToTest" class="button" hover-class="none">+添加技师</button>
-</view>  
+</view>

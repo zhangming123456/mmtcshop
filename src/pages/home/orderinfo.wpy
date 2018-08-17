@@ -1,100 +1,104 @@
 <template lang='pug'>
-view.container1.text-center.form-area
-    image.avatar(src='{{m1.absUrl(order.cover)}}')
-    view.txt 订单号：{{order.order_no}}
-    view.txt 用户：{{order.nickname}}
-    view.title 【{{order.category}}】{{order.title}}
-    view.pay-info 付款金额：
-        view.ib.price-area ￥
-            view.ib.price-money {{order.total}}
-    view.button-area
-        button.btn-origin(type="default" @tap="checkValid" hover-class="tapmode") 确定验证
+    view.container1.text-center.form-area
+        image.avatar(src='{{m1.absUrl(order.cover)}}')
+        view.txt 订单号：{{order.order_no}}
+        view.txt 用户：{{order.nickname}}
+        view.title 【{{order.category}}】{{order.title}}
+        view.pay-info 付款金额：
+            view.ib.price-area ￥
+                view.ib.price-money {{order.total}}
+        view.button-area
+            button.btn-origin(type="default" @tap="checkValid" hover-class="tapmode") 确定验证
 </template>
 <script>
-import wepy from "wepy";
-import mywxs from '../../wxs/common.wxs';
-import baseMixin from '../../mixins/base';
-export default class Alterpwd extends wepy.page {
-    config = {
-      navigationBarTitleText: '订单信息'
-    }
-    data={
-        order:{
+    import wepy from "wepy";
+    import mywxs from '../../wxs/common.wxs';
+    import baseMixin from '../../mixins/base';
+    export default class Alterpwd extends wepy.page {
+        config = {
+            navigationBarTitleText: '订单信息'
+        }
+        data = {
+            order: {}
+        }
+        mixins = [baseMixin];
+        wxs = {
+            m1: mywxs
+        };
 
-        }
-    }
-    mixins=[baseMixin];
-    wxs = {
-      m1: mywxs
-    };
-    onLoad(options){
-        let info = options.info
-        if(info){
-            try{
-                info = decodeURIComponent(info)
-                let json = JSON.parse(info)
-                this.order = json
-            }catch(e){
-                console.log(info)
-            }           
-        }
-    };
-    methods = {
-        checkValid(){
-            if(this.order){
-                this.showLoading()
-                this.$get('/shopapi/verification/verification',{
-                    id:this.order.id
-                },(info)=>{
-                    this.$goto('checksuc?order_no='+this.order.order_no)
-                },()=>{
-                    this.hideLoading()
-                },(info)=>{
-                    if(info == '订单已验证'){
-                        this.$goto('haschecked?order_id='+this.order.id)
-                    }else{
-                        this.$alert(info)
-                    }
-                })
+        onLoad (options) {
+            let info = options.info
+            if (info) {
+                try {
+                    info = decodeURIComponent(info)
+                    let json = JSON.parse(info)
+                    this.order = json
+                } catch (e) {
+                    console.log(info)
+                }
+            }
+        };
+
+        methods = {
+            checkValid(){
+                if (this.order) {
+                    this.showLoading()
+                    this.$get('/shopapi/verification/verification', {id: this.order.id}, (info) => {
+                        this.$goto('checksuc?order_no=' + this.order.order_no)
+                    }, () => {
+                        this.hideLoading()
+                    }, (info) => {
+                        if (info == '订单已验证') {
+                            this.$goto('haschecked?order_id=' + this.order.id)
+                        } else {
+                            this.$alert(info)
+                        }
+                    })
+                }
             }
         }
     }
-}
 </script>
 
 <style lang="less">
 
-.avatar{ 
-    width: 230rpx;
-	height: 230rpx; 
-}
-.container1{
-    padding-top: 183rpx;
-    .txt{
-        font-size: 28rpx;
-        color: #999999;
-        padding-top: 28rpx;
+    .avatar {
+        width: 230 rpx;
+        height: 230 rpx;
     }
-}
-.button-area {
-    padding-top: 64rpx;
-} 
-.title{
-     	font-size: 36rpx;
-	color: #282828;
-    padding-top: 81rpx;
-}
-.pay-info{
-    padding-top: 29rpx;
-    font-size: 28rpx;
-	color: #282828;
-}
-.price-money{
-	font-size: 50rpx;
-	color: #ff8000;
-}
-.price-area{
-    	color: #ff8000;
-}
+
+    .container1 {
+        padding-top: 183 rpx;
+        .txt {
+            font-size: 28 rpx;
+            color: #999999;
+            padding-top: 28 rpx;
+        }
+    }
+
+    .button-area {
+        padding-top: 64 rpx;
+    }
+
+    .title {
+        font-size: 36 rpx;
+        color: #282828;
+        padding-top: 81 rpx;
+    }
+
+    .pay-info {
+        padding-top: 29 rpx;
+        font-size: 28 rpx;
+        color: #282828;
+    }
+
+    .price-money {
+        font-size: 50 rpx;
+        color: #ff4919;
+    }
+
+    .price-area {
+        color: #ff4919;
+    }
 </style>
  

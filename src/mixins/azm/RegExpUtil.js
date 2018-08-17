@@ -34,7 +34,7 @@ function isDateTime (str) {
 }
 function isPwd (str) {
     try {
-        if (str.length = 0) {
+        if (str.length === 0) {
             return false;
         }
         if (Reg.highPwd.test(str)) {

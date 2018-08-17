@@ -71,9 +71,9 @@ export default class Alterpwd extends wepy.page {
 button.btn-outed{   
     margin-top:40rpx;
     background-color: #fff;
-    	color: #ff8000;
+    	color: #ff4919;
 
-    border: solid 1px #ff8000;
+    border: solid 1px #ff4919;
 }
 .button-area {
   padding-top: 127rpx;
@@ -91,10 +91,10 @@ button.btn-outed{
 }
 .price-money {
   font-size: 50rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 .price-area {
-  color: #ff8000;
+  color: #ff4919;
 }
 </style>
  

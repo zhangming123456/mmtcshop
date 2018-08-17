@@ -21,7 +21,7 @@
 
     .container-main {
         .group_price {
-            color: #ff8000;
+            color: #ff4919;
             font-size: 32*1rpx;
             display: inline;
         }
@@ -51,7 +51,7 @@
             }
             .title2 {
                 font-size: 32*1rpx;
-                color: #ff8000;
+                color: #ff4919;
                 padding-top: 29*1rpx;
             }
             .p1-line {
@@ -109,14 +109,14 @@
             height: 56*1rpx;
             line-height: 56*1rpx;
             padding: 0 46*1rpx;
-            border: solid 1px #ff8000;
+            border: solid 1px #ff4919;
             border-radius: 5*1rpx;
             font-size: 30*1rpx;
             margin-left: 30*1rpx;
-            color: #ff8000;
+            color: #ff4919;
         }
         .box-btn-primary {
-            background-color: #ff8000;
+            background-color: #ff4919;
             color: #ffffff;
         }
     }
@@ -169,10 +169,10 @@
     }
 
     .tag {
-        color: #ff8000;
+        color: #ff4919;
         height: 41*1rpx;
         border-radius: 5*1rpx;
-        border: solid 1px #ff8000;
+        border: solid 1px #ff4919;
         line-height: 41*1rpx;
         font-size: 28*1rpx;
         display: inline-block;

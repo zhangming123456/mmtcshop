@@ -6,7 +6,7 @@
         .footer-area {
             background-color: #fff;
             position: fixed;
-            color: #ff8000;
+            color: #ff4919;
             left: 0;
             font-size: 28*1rpx;
             box-sizing: border-box;
@@ -27,8 +27,8 @@
             .preview-btn {
                 background-color: transparent;
                 border-radius: 5*1rpx;
-                border: solid 1px #ff8000;
-                color: #ff8000;
+                border: solid 1px #ff4919;
+                color: #ff4919;
                 height: 56*1rpx;
                 padding: 0;
                 line-height: 54*1rpx;
@@ -37,9 +37,9 @@
             }
             .sure-btn {
                 padding: 0;
-                background-color: #ff8000;
+                background-color: #ff4919;
                 border-radius: 5*1rpx;
-                border: solid 1px #ff8000;
+                border: solid 1px #ff4919;
                 height: 56*1rpx;
                 color: white;
                 line-height: 54*1rpx;

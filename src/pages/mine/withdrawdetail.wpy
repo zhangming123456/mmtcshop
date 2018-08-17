@@ -5,8 +5,8 @@
                 view.item-box(slot="item-template")
                     view.item-box-title.border-b 订单号：{{item.order_no}}
                     view.item-box-content
-                        view.item-box-content-title 【{{item.category_title}}】{{item.title}}
-                        view.item-box-row.flex
+                        view.item-box-content-title(wx:if="{{item.category_title}}") 【{{item.category_title}}】{{item.title}}
+                        view.item-box-row.flex(wx:if="{{item.used_date_time}}")
                             view.flex-con 验证时间
                             view {{item.used_date_time}}
                         view.item-box-row.flex
@@ -23,128 +23,131 @@
                         view.item-box-row-last.flex
                             view.flex-con 结算金额
                             view.price ￥
-                                view.ib {{item.total}}
+                                view.ib {{item.tixian_money}}
 </template>
 <script>
-    import wepy from "wepy";
-    import datalist from "../../components/datalist";
-    import datalistMixin from "../../mixins/datalist";
-    import baseMixin from "../../mixins/base";
-    export default class Alterpwd extends wepy.page {
-        config = {
-            navigationBarTitleText: "包含订单"
-        };
-        components = {
-            datalist
-        };
-        mixins = [baseMixin, datalistMixin];
-        data = {
-            date: ""
-        };
+import wepy from "wepy";
+import datalist from "../../components/datalist";
+import datalistMixin from "../../mixins/datalist";
+import baseMixin from "../../mixins/base";
+export default class Alterpwd extends wepy.page {
+  config = {
+    navigationBarTitleText: "包含订单",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
+  };
+  components = {
+    datalist
+  };
+  mixins = [baseMixin, datalistMixin];
+  data = {
+    date: ""
+  };
 
-        onLoad (opts) {
-            //incomeDetailOfDate
-            let date = opts.date;
-            this.$invoke("datalist", "addFilter", 'date', date).loadData();
-        }
+  onLoad(opts) {
+    //incomeDetailOfDate
+    let date = opts.date;
+    this.$invoke("datalist", "addFilter", "date", date).loadData();
+  }
 
-        methods = {};
-    }
+  methods = {};
+}
 </script>
 
 <style lang="less">
-    .empty-area {
-        text-align: center;
-        padding-top: 156*1rpx;
-        padding-bottom: 156*1rpx;
-        .empty-img {
-            text-align: center;
-            & > image {
-                width: 191*1rpx;
-                height: 190*1rpx;
-            }
-        }
-        .empty-txt {
-            font-size: 30*1rpx;
-            color: #050202;
-            padding-top: 40*1rpx;
-        }
+.empty-area {
+  text-align: center;
+  padding-top: 156 * 1rpx;
+  padding-bottom: 156 * 1rpx;
+  .empty-img {
+    text-align: center;
+    & > image {
+      width: 191 * 1rpx;
+      height: 190 * 1rpx;
     }
+  }
+  .empty-txt {
+    font-size: 30 * 1rpx;
+    color: #050202;
+    padding-top: 40 * 1rpx;
+  }
+}
 
-    .loading-more {
-        text-align: center;
-        padding: 30*1rpx 0;
-        color: #999;
-        font-size: 24*1rpx;
-        clear: both;
+.loading-more {
+  text-align: center;
+  padding: 30 * 1rpx 0;
+  color: #999;
+  font-size: 24 * 1rpx;
+  clear: both;
+}
+
+.nomore-img {
+  width: 127 * 1rpx;
+  height: 134 * 1rpx;
+}
+
+.container1 {
+  padding: 0;
+  .search-area {
+    padding: 40 * 1rpx 30 * 1rpx 30 * 1rpx;
+    background-color: #fff;
+  }
+
+  .histories {
+    padding-top: 51 * 1rpx;
+    font-size: 26 * 1rpx;
+    .title {
+      font-size: 26 * 1rpx;
+      color: #666666;
     }
+  }
+  .clear-btn {
+    color: #ff8000;
+    font-size: 28 * 1rpx;
+  }
+  .item-box {
+    background-color: #fff;
+    margin-top: 24 * 1rpx;
+  }
+  .item-box-content {
+    padding: 32 * 1rpx 29 * 1rpx 28 * 1rpx 29 * 1rpx;
+  }
+  .item-box-content-title {
+    color: #ff4919;
+    font-size: 34 * 1rpx;
+  }
+  .item-box-row {
+    padding-top: 24 * 1rpx;
+    color: #999999;
+    font-size: 28 * 1rpx;
+  }
+  .item-box-row-last {
+    font-size: 30 * 1rpx;
+    color: #282828;
+    padding-top: 24 * 1rpx;
+  }
+  .item-box-row-last .price {
+    color: #ff8000;
+    font-size: 24 * 1rpx;
+  }
+  .item-box-row-last .price .ib {
+    font-size: 45 * 1rpx;
+    display: inline;
+  }
+  .item-box-title {
+    color: #999999;
+    font-size: 28 * 1rpx;
 
-    .nomore-img {
-        width: 127*1rpx;
-        height: 134*1rpx;
-    }
+    padding: 24 * 1rpx 30 * 1rpx;
+  }
+  .pt0 {
+    padding-top: 6 * 1rpx;
+  }
+}
 
-    .container1 {
-        padding: 0;
-        .search-area {
-            padding: 40*1rpx 30*1rpx 30*1rpx;
-            background-color: #fff;
-        }
-
-        .histories {
-            padding-top: 51*1rpx;
-            font-size: 26*1rpx;
-            .title {
-                font-size: 26*1rpx;
-                color: #666666;
-            }
-        }
-        .clear-btn {
-            color: #ff8000;
-            font-size: 28*1rpx;
-        }
-        .item-box {
-            background-color: #fff;
-            margin-top: 24*1rpx;
-        }
-        .item-box-content {
-            padding: 32*1rpx 29*1rpx 28*1rpx 29*1rpx;
-        }
-        .item-box-content-title {
-            color: #ff8000;
-            font-size: 34*1rpx;
-        }
-        .item-box-row {
-            padding-top: 24*1rpx;
-            color: #999999;
-            font-size: 28*1rpx;
-        }
-        .item-box-row-last {
-            font-size: 30*1rpx;
-            color: #282828;
-            padding-top: 24*1rpx;
-        }
-        .item-box-row-last .price {
-            color: #ff8000;
-            font-size: 24*1rpx;
-        }
-        .item-box-row-last .price .ib {
-            font-size: 45*1rpx;
-            display: inline;
-        }
-        .item-box-title {
-            color: #999999;
-            font-size: 28*1rpx;
-
-            padding: 24*1rpx 30*1rpx;
-        }
-        .pt0 {
-            padding-top: 6*1rpx;
-        }
-    }
-
-    page {
-        background-color: #f4f4f4;
-    }
+page {
+  background-color: #f4f4f4;
+}
 </style>
  

@@ -20,7 +20,7 @@ view.container-main
                 button.ib.validbtn(hover-class="tapmode" @tap="getCheckcode"  class="{{timestr?'disabled-btn':''}}") {{timestr||'获取验证码'}}
         input(placeholder="请输入验证码" @input="setField('checkcode')" type="number")
         view.button-area
-            button.btn-disabled.btn-primary(type="default" @tap="modifyInfo" hover-class="tapmode") 修改绑定
+            view.btn-color(type="default" @tap="modifyInfo" ) 修改绑定
 </template>
 
 <style lang="less">
@@ -50,18 +50,28 @@ button.validbtn {
   width: 184rpx;
   height: 60rpx;
   line-height: 58rpx;
-  color: #ff8000;
+  color: #ff4919;
   text-align: center;
   font-size: 28rpx;
   padding: 0;
   margin-right: 20rpx;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
   background-color: transparent;
 }
 button.disabled-btn {
   border: solid 1px #999999;
   color: #999999;
   font-size: 24rpx;
+}
+
+.btn-color {
+  width: 670rpx;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
 }
 </style>
 
@@ -71,7 +81,10 @@ import wepy from "wepy";
 import baseMixin from "../../mixins/base";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "绑定手机号码"
+    navigationBarTitleText: "绑定手机号码",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   mixins = [baseMixin];
   data = {

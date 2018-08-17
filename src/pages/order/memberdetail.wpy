@@ -17,7 +17,7 @@
   <view class="hr24"/>
   <view class="border-b plist">       
     <view class="flex">
-      <view class="label">成员身份</view>
+      <view class="label mt20">成员身份</view>
       <view class="flex-con text-right">{{info.is_leader?'团长':'团员'}}</view>
     </view>
     <view class="flex">
@@ -26,10 +26,10 @@
     </view>
   </view>
   <view class="border-b plist">
-    <view>订单ID：{{info.order_no}}</view>
-    <view>付款时间：{{info.payed_time}}</view>
-    <view>拼团状态：{{info.group_status}}</view>
-    <view>交易状态：
+    <view class="mt20">订单ID：{{info.order_no}}</view>
+    <view class="mt20">付款时间：{{info.payed_time}}</view>
+    <view class="mt20">拼团状态：{{info.group_status}}</view>
+    <view class="mt20">交易状态：
       <view class="order-status">{{info.pay_status}}</view>
     </view>
   </view>
@@ -79,6 +79,11 @@ export default class extends wepy.page {
 page {
   background-color: #f4f4f4;
 }
+
+.mt20{
+  margin-bottom: 20rpx;
+}
+
 .empty-area {
   text-align: center;
   padding-top: 156rpx;
@@ -117,11 +122,11 @@ image.avatar {
   border-radius: 50%;
 }
 .money {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 30rpx;
 }
 .nickname {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 32rpx;
   margin-right: 20rpx;
 }
@@ -143,7 +148,7 @@ button.send-letter {
   margin: 0;
   height: 46rpx;
   line-height: 46rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   color: #fff;
   border-radius: 10rpx;
   font-size: 28rpx;
@@ -172,12 +177,12 @@ button.send-letter {
 .item-status {
   height: 34rpx;
   font-size: 22rpx;
-  color: #ff8000;
+  color: #ff4919;
   padding: 0 7rpx;
   line-height: 34rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   border-radius: 10px;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
 }
 .price-area {
   padding: 30rpx 0;
@@ -188,12 +193,12 @@ button.send-letter {
   color: #999999;
 }
 .price-unit {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 26rpx;
 }
 .price-num {
   font-size: 40rpx;
-  color: #ff8000;
+  color: #ff4919;
   margin-right: 20rpx;
 }
 .market-price {
@@ -220,7 +225,7 @@ button.send-letter {
 }
 .flex-price {
   font-size: 34rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 .order-status {
   display: inline;

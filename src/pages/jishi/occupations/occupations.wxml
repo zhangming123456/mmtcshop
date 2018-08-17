@@ -21,7 +21,7 @@
             </radio-group>
         </view>
     </view>
-    <button form-type="submit">
-        <view class="bottom">提交</view>
+    <button form-type="submit" class="button">
+        提交
     </button>
 </form>

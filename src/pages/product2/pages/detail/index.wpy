@@ -245,7 +245,7 @@
         }
 
         .t-itmeMoney {
-            color: #ff8000;
+            color: #ff4919;
             font-size: 32*1rpx;
             margin-top: 29*1rpx;
         }
@@ -396,9 +396,9 @@
 
         .t-productLabel .t-labelAdd {
             height: 41*1rpx;
-            border: 1*1rpx solid #ff8000;
+            border: 1*1rpx solid #ff4919;
             line-height: 41*1rpx;
-            color: #ff8000;
+            color: #ff4919;
             padding: 4*1rpx 22*1rpx;
             font-size: 28*1rpx;
             display: inline-block;
@@ -463,8 +463,8 @@
         .t-button .t-delete {
             width: 150*1rpx;
             height: 56*1rpx;
-            border: 1*1rpx solid #ff8000;
-            color: #ff8000;
+            border: 1*1rpx solid #ff4919;
+            color: #ff4919;
             line-height: 56*1rpx;
             text-align: center;
             margin-left: 30*1rpx;
@@ -473,8 +473,8 @@
         .t-button .t-sold {
             width: 150*1rpx;
             height: 56*1rpx;
-            border: 1*1rpx solid #ff8000;
-            color: #ff8000;
+            border: 1*1rpx solid #ff4919;
+            color: #ff4919;
             line-height: 56*1rpx;
             text-align: center;
             margin-left: 208*1rpx;
@@ -483,12 +483,12 @@
         .t-button .t-compile {
             width: 150*1rpx;
             height: 56*1rpx;
-            border: 1*1rpx solid #ff8000;
+            border: 1*1rpx solid #ff4919;
             color: #ffffff;
             line-height: 56*1rpx;
             text-align: center;
             margin-right: 30*1rpx;
-            background-color: #ff8000;
+            background-color: #ff4919;
         }
 
     }

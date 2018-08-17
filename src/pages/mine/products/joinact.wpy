@@ -19,11 +19,11 @@ page {
     margin-top: 24rpx;
     .yuan {
       font-size: 26rpx;
-      color: #ff8000;
+      color: #ff4919;
       margin-left: 9rpx;
     }
     .price {
-      color: #ff8000;
+      color: #ff4919;
       font-size: 40rpx;
       margin-left: 7rpx;
     }

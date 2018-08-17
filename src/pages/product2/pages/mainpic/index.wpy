@@ -6,7 +6,7 @@
         <block wx:if="{{covers && covers.length}}">
             <view class="pic-item" wx:for="{{covers}}" wx:key="{{index}}">
                 <image class="pic-item-img" src="{{imageUrl + item}}" mode="aspectFill"/>
-                <image class="pic-item-close" src="/imgs/closegray.png" bindtap="removePic(index)"/>
+                <image class="pic-item-close" src="/imgs/closegray.png" bindtap="removePic({{index}})"/>
             </view>
         </block>
     </view>
@@ -88,6 +88,8 @@
                 );
             },
             removePic (index) {
+                console.log(index,'+++++++');
+                
                 this.covers.splice(index, 1);
                 this.saveImg()
             }

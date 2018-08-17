@@ -55,8 +55,15 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    siteItemInfo ({nodes = 1, id = 0} = {}, resole, reject) {
-        let that = this, data = {nodes, id};
+    siteItemInfo ({
+                      nodes = 1,
+                      id = 0
+                  } = {}, resole, reject) {
+        let that = this,
+            data = {
+                nodes,
+                id
+            };
         const api = `${that.shopApi}iteminfo/site`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -69,8 +76,13 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    getShopManagerOrderDetail ({id = 0} = {}, resole, reject) {
-        let that = this, data = {id};
+    getShopManagerOrderDetail ({
+                                   id = 0
+                               } = {}, resole, reject) {
+        let that = this,
+            data = {
+                id
+            };
         const api = `${that.shopApi}shop_manager/orderDetail`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -83,7 +95,9 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    getShopManagerRefundDetail (data = {id: 0}, resole, reject) {
+    getShopManagerRefundDetail (data = {
+        id: 0
+    }, resole, reject) {
         let that = this;
         const api = `${that.shopApi}shop_manager/refundDetail`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -126,8 +140,15 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    getItemlistSite ({p = 1, t = 0} = {}, resole, reject) {
-        let that = this, data = {p, t};
+    getItemlistSite ({
+                         p = 1,
+                         t = 0
+                     } = {}, resole, reject) {
+        let that = this,
+            data = {
+                p,
+                t
+            };
         const api = `${that.shopApi}itemlist/site`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -140,7 +161,9 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoDownOn (data = {id=0} = {}, resole, reject) {
+    setIteminfoDownOn (data = {
+        id = 0
+    } = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/downOn`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -154,7 +177,9 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoUpOn (data = {id=0} = {}, resole, reject) {
+    setIteminfoUpOn (data = {
+        id = 0
+    } = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/upOn`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -168,7 +193,9 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    setIteminfoRevokeAuth (data = {id=0} = {}, resole, reject) {
+    setIteminfoRevokeAuth (data = {
+        id = 0
+    } = {}, resole, reject) {
         let that = this;
         const api = `${that.shopApi}iteminfo/revokeAuth`;
         const http = $http.get(that.url + api, data, resole, reject);
@@ -182,8 +209,13 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    deleteItem ({id = 0} = {}, resole, reject) {
-        let that = this, data = {id};
+    deleteItem ({
+                    id = 0
+                } = {}, resole, reject) {
+        let that = this,
+            data = {
+                id
+            };
         const api = `${that.shopApi}iteminfo/del`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -196,8 +228,13 @@ class ShopApi {
      * @param reject
      * @returns {*}
      */
-    examineItem ({id = 0} = {}, resole, reject) {
-        let that = this, data = {id};
+    examineItem ({
+                     id = 0
+                 } = {}, resole, reject) {
+        let that = this,
+            data = {
+                id
+            };
         const api = `${that.shopApi}iteminfo/to_examine`;
         const http = $http.get(that.url + api, data, resole, reject);
         return http;
@@ -226,13 +263,15 @@ class ShopApi {
      * @returns {*}
      */
     shopLoing ({username = '', password = ''}, resole, reject) {
-        let that = this, data = {username, password};
+        let that = this,
+            data = {
+                username,
+                password
+            };
         const api = `${that.shopApi}login/login`;
         const http = $http.post(that.url + api, data, resole, reject);
         return http;
     }
-
-
 }
 class ApiService extends ShopApi {
     constructor (...args) {
@@ -295,7 +334,7 @@ class ApiService extends ShopApi {
         docheck: 1
     }, resole, reject) {
         let that = this;
-        const api = `${that.shopApi}pwd/getCheckCode`;
+        const api = `${that.shopApi}pwd/getCheckCode_f`;
         const http = $http.post(that.url + api, data, resole, reject);
         return http;
     }
@@ -321,11 +360,22 @@ class ApiService extends ShopApi {
      * @param reject
      * @returns {*}
      */
-    getEdit ({pwd = "", code = "", phone = ""} = {}, resole, reject) {
-        let that = this, data = {pwd, code, phone};
+    getEdit ({
+                 pwd = "",
+                 code = "",
+                 phone = ""
+             } = {}, resole, reject) {
+        let that = this,
+            data = {
+                pwd,
+                code,
+                phone
+            };
         const api = `${that.shopApi}pwd/edit`;
         const http = $http.post(that.url + api, data, resole, reject);
         return http;
     }
+
+
 }
 module.exports = new ApiService();

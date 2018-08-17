@@ -70,7 +70,7 @@ export default class Alterpwd extends wepy.page {
     }
   }
   .clear-btn {
-    color: #ff8000;
+    color: #ff4919;
     font-size: 28rpx;
   }
 }

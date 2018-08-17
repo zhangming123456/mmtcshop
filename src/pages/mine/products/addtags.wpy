@@ -22,7 +22,7 @@
       padding-bottom: 22rpx;
     }
     .selected {
-      color: #ff8000;
+      color: #ff4919;
     }
     image {
       width: 35rpx;

@@ -1,24 +1,24 @@
 <template lang="pug">
 view.toolbar.border-b
       view.flex
-        view.flex-con(class="{{curIndex==0?'active':''}}" @tap="toggleIndex(0)")  店铺主图          
+        view.flex-con(class="{{curIndex==0?'active':''}}" @tap="toggleIndex(0)")  店铺主图
         view.flex-con(class="{{curIndex==1?'active':''}}" @tap="toggleIndex(1)") 相册管理
       view.footer-hr(style="left:{{124+curIndex*375}}rpx")
 view.main-container.flex.flex-stretch
-  view.main-item(wx:if="{{curIndex==0}}")     
+  view.main-item(wx:if="{{curIndex==0}}")
     view.p30.flex.img-area
       image.pic-item(src="/imgs/addicon.png" @tap="addImg")
       view.pic-item(wx:for="{{img_srcs}}" wx:for-item="item" wx:for-index="index")
         image.pic-item-img(src="{{m1.absUrl(item)}}")
         image.pic-item-remove(src="/imgs/closebtn@2x.png" @tap="removeImg({{index}})")
-      
-  view.main-item(wx:if="{{curIndex==1}}") 
+
+  view.main-item(wx:if="{{curIndex==1}}")
     view.p30
       view.flex.photos
         view.photo-item(@tap="editAlbum(0,{{pic_counts['门店环境'].id}},'{{pic_counts['门店环境'].cover}}')")
           image.photo-item-img(src="{{pic_counts['门店环境'].cover?m1.absUrl(pic_counts['门店环境'].cover):'/imgs/shop@2x.png'}}" mode="aspectFill")
           view.photo-item-txt 门店环境({{pic_counts['门店环境'].pic_count}}）
-        
+
         view.photo-item(@tap="editAlbum(1,{{pic_counts['作品案例'].id}},'{{pic_counts['作品案例'].cover}}')")
           image.photo-item-img(src="{{pic_counts['作品案例'].cover?m1.absUrl(pic_counts['作品案例'].cover):'/imgs/cases@2x.png'}}" mode="aspectFill")
           view.photo-item-txt 作品案例({{pic_counts['作品案例'].pic_count}}）
@@ -31,7 +31,7 @@ view.main-container.flex.flex-stretch
           image.photo-item-img(src="{{pic_counts['品牌展示'].cover?m1.absUrl(pic_counts['品牌展示'].cover):'/imgs/brand@2x.png'}}" mode="aspectFill")
           view.photo-item-txt 品牌展示({{pic_counts['品牌展示'].pic_count}})
 
-button.btn-account.bg-primary.btn-block(wx:if="{{curIndex==0}}" type="default" hover-class="tapmode" @tap="addAccount")  保存
+view.btn-account.btn-color(wx:if="{{curIndex==0}}" type="default" hover-class="tapmode" @tap="addAccount")  保存
 </template>
 <script>
 import wepy from "wepy";
@@ -44,44 +44,56 @@ export default class extends wepy.page {
   };
   data = {
     curIndex: 0,
-    img_srcs:[],
-    pic_counts:{}
+    img_srcs: [],
+    pic_counts: {}
   };
-  onLoad(opts){
+  onLoad(opts) {
     let img_srcs = opts.img_srcs;
-    if(img_srcs){
-      this.img_srcs = img_srcs.split(',')
+    if (img_srcs) {
+      this.img_srcs = img_srcs.split(",");
     }
-    this.$get('/shopapi/shop_manager/picFigure',res=>{
-       this.pic_counts = res
-    })
-  };
+    this.$get("/shopapi/shop_manager/picFigure", res => {
+      this.pic_counts = res;
+    });
+  }
   methods = {
-    setPicCount({title,count}){
+    setPicCount({ title, count }) {
       this.pic_counts[title].pic_count = count;
     },
-    setPicCover({title,cover}){
+    setPicCover({ title, cover }) {
       this.pic_counts[title].cover = cover;
     },
-    editAlbum(index,type,cover){
-      this.$goto('album?type_id='+type+'&index='+index+'&cover='+encodeURIComponent(cover))
+    editAlbum(index, type, cover) {
+      this.$goto(
+        "album?type_id=" +
+          type +
+          "&index=" +
+          index +
+          "&cover=" +
+          encodeURIComponent(cover)
+      );
     },
-    addAccount(){
+    addAccount() {
       this.showLoading();
-      this.$post('/shopapi/shop_manager/saveImgSrcs',{
-        img_srcs:this.img_srcs.join(',')
-      },()=>{
-        this.$noticePage('setImgSrcs',{value:this.img_srcs.join(',')})
-        this.$back();
-      },()=>{
-        this.hideLoading()
-      })
+      this.$post(
+        "/shopapi/shop_manager/saveImgSrcs",
+        {
+          img_srcs: this.img_srcs.join(",")
+        },
+        () => {
+          this.$noticePage("setImgSrcs", { value: this.img_srcs.join(",") });
+          this.$back();
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
     },
     toggleIndex(idx) {
       this.curIndex = idx;
     },
-    removeImg(idx){
-      this.img_srcs.splice(idx,1)
+    removeImg(idx) {
+      this.img_srcs.splice(idx, 1);
     },
     addImg() {
       wx.chooseImage({
@@ -108,15 +120,15 @@ export default class extends wepy.page {
                 } catch (e) {}
               }
               if (data.status == 1) {
-                this.img_srcs.push(data.info)
+                this.img_srcs.push(data.info);
                 this.$apply();
               } else {
                 this.$alert(data.info);
               }
             }
           });
-      }
-    });
+        }
+      });
     }
   };
   config = {
@@ -125,6 +137,15 @@ export default class extends wepy.page {
 }
 </script>
 <style lang="less">
+.btn-color {
+  width: 100%;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
+}
 .main-container {
   width: 750rpx;
 }
@@ -186,13 +207,13 @@ export default class extends wepy.page {
   padding-bottom: 20rpx;
 }
 .active {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 31rpx;
 }
 .footer-hr {
   width: 129rpx;
   height: 3px;
-  background-color: #ff8000;
+  background-color: #ff4919;
   position: absolute;
   bottom: 0;
   left: 124rpx;

@@ -25,7 +25,7 @@
     }
     .title2 {
       font-size: 32rpx;
-      color: #ff8000;
+      color: #ff4919;
       padding-top: 29rpx;
     }
     .p1-line {
@@ -72,9 +72,9 @@
 .tags {
   padding-top: 29rpx;
   .tag {
-    color: #ff8000;
+    color: #ff4919;
     border-radius: 5rpx;
-    border: solid 1px #ff8000;
+    border: solid 1px #ff4919;
     font-size: 28rpx;
     display: inline-block;
     margin-right: 30rpx;
@@ -113,15 +113,15 @@ page {
     height: 56rpx;
     line-height: 56rpx;
     padding: 0 46rpx;
-    border: solid 1px #ff8000;
+    border: solid 1px #ff4919;
     border-radius: 5rpx;
     font-size: 30rpx;
 
     margin-left: 30rpx;
-    color: #ff8000;
+    color: #ff4919;
   }
   .box-btn-primary {
-    background-color: #ff8000;
+    background-color: #ff4919;
     color: #ffffff;
   }
 }
@@ -151,7 +151,7 @@ textarea {
   margin-right:10rpx;
 }
 .empty-state{
-  color: #ff8000;
+  color: #ff4919;
   font-size: 28rpx;
 }
 .empty-state-price{
@@ -214,7 +214,7 @@ textarea {
     margin-bottom: 30rpx;
   }
   .add-tag-btn {
-    background-color: #ff8000;
+    background-color: #ff4919;
     color: #fff;
     border: none;
     border-radius: 0;

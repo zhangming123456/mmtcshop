@@ -8,7 +8,7 @@ view.container1
                 button.ib.validbtn(hover-class="tapmode" @tap="getCheckcode"  class="{{timestr?'disabled-btn':''}}") {{timestr||'获取验证码'}}
         input(placeholder="请输入验证码" @input="setField('checkcode')" type="number")
         view.button-area
-            button.btn-disabled.btn-primary(type="default" @tap="gotoNext" hover-class="tapmode") 下一步
+            view.btn-color(type="default" @tap="gotoNext" hover-class="tapmode") 下一步
 </template>
 
 <style lang="less">
@@ -16,18 +16,27 @@ button.validbtn {
   width: 184rpx;
   height: 60rpx;
   line-height: 58rpx;
-  color: #ff8000;
+  color: #ff4919;
   text-align: center;
   font-size: 28rpx;
   padding: 0;
   margin-right: 20rpx;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
   background-color: transparent;
 }
 button.disabled-btn {
   border: solid 1px #999999;
   color: #999999;
   font-size: 24rpx;
+}
+.btn-color {
+  width: 670rpx;
+  height: 90rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  text-align: center;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  color: #f4f4f4;
 }
 </style>
 
@@ -37,12 +46,15 @@ import wepy from "wepy";
 import baseMixin from "../../mixins/base";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: ""
+    navigationBarTitleText: "",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   mixins = [baseMixin];
   data = {
     timestr: ""
-  };
+  };m
   onLoad(options) {
     let mode = options.mode || 0;
     this.mode = mode;
@@ -50,11 +62,11 @@ export default class extends wepy.page {
       wx.setNavigationBarTitle({
         title: "绑定手机号码"
       });
-    } else if(mode == 3) {
-      this.path = decodeURIComponent(options.path)
-      let title = decodeURIComponent(options.title)
+    } else if (mode == 3) {
+      this.path = decodeURIComponent(options.path);
+      let title = decodeURIComponent(options.title);
       wx.setNavigationBarTitle({
-        title,
+        title
       });
     } else {
       wx.setNavigationBarTitle({
@@ -75,18 +87,22 @@ export default class extends wepy.page {
       if (this.timestr) {
         return;
       }
-      this.$post("/api/index/getCheckCode?docheck=1", {
-        telephone: this.telephone
-      },info=>{
-
-      },()=>{},(info)=>{
-         this.$alert(info)
-         if(this.timeFlag){
-           clearTimeout(this.timeFlag);
-           this.timestr = "";
-           this.$apply()
-         }
-      });
+      this.$post(
+        "/api/index/getCheckCode?docheck=0",
+        {
+          telephone: this.telephone
+        },
+        info => {},
+        () => {},
+        info => {
+          this.$alert(info);
+          if (this.timeFlag) {
+            clearTimeout(this.timeFlag);
+            this.timestr = "";
+            this.$apply();
+          }
+        }
+      );
       this.start_time = new Date().getTime();
       startcount.call(this);
       function w(v) {
@@ -146,15 +162,15 @@ export default class extends wepy.page {
             code: this.checkcode
           },
           info => {
-            if(this.mode == 3){
+            if (this.mode == 3) {
               wx.navigateTo({
                 url: this.path
               });
-            }else{
+            } else {
               wx.navigateTo({
                 url: "/pages/alterpwd?mode=1"
               });
-            }            
+            }
           },
           () => {
             this.hideLoading();

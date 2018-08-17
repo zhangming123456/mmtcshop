@@ -195,654 +195,672 @@
     <toast></toast>
 </template>
 <script>
-    import wepy from "wepy";
-    import utilPage from "../../../../mixins/utilPage";
-    import baseMixin from "../../../../mixins/base";
-    import toast from "../../../../components/toast";
-    import c from "../../../../wxs/common.wxs";
+import wepy from "wepy";
+import utilPage from "../../../../mixins/utilPage";
+import baseMixin from "../../../../mixins/base";
+import toast from "../../../../components/toast";
+import c from "../../../../wxs/common.wxs";
 
-    const appPage = new utilPage({
-        data: {
-            text: "Page productAddAndEdit",
-            hasMoreData: false,//是否有更多
-            isAdd: true,
-            isProductDetails: 0,
-            productData: {
-                title: '',//标题
-                profile: '',//副标题
-                market_price: null,//市场价格（门市价）
-                price: null,//价格（折扣）
-                category_ids: [],//产品分类ID
-                covers: [],//产品封面
-                service: '',//服务内容
-                service_char: '',//服务特色
-                service_flow: [],//服务流程
-                nodes: '',//产品详情介绍 (图文详情)
-                label: [], //产品标签 ["a","b"]
-                period_of_use: {
-                    isTheTerm: 0,// 是否设置使用限制日期
-                    start_date: '',// 限制起始日期
-                    end_date: '',// 限制结束日期
-                    note: '',// 期限说明
-                    start_time: '',// 开始时间
-                    end_time: ''// 结束时间
-                },
-                item_brand: [],//使用物料（商品）
-                taboo_crowd: '',//禁忌人群
-                other_instructions: '',//其它说明
-                group_num: '',//成团要求数量
-                group_price: '',//成团价格
-                is_valid: false//是否有效
-            }
-        },
-        onLoad (options) {
-            this.$parent.globalData.productManage = {};
-            this.loadCb();
-        },
-        onShow () {
-            if (this.data.isShow && this.data.isRefresh) {
-                this.isProductDetailsFn();
-            }
-        },
-        onPullDownRefresh () {
-            let that = this
-        },
-
-        onReachBottom () {
-            let that = this
-        },
-
-        onPageScroll (options) {
-
-        }
-    });
-    export default class extends wepy.page {
-        constructor (...args) {
-            super(...args);
-            for (let k in appPage) {
-                if (k === 'methods') {
-                    for (let j in appPage[k]) {
-                        this[k][j] = appPage[k][j]
-                    }
-                } else
-                    this[k] = appPage[k]
-            }
-        }
-
-        components = {
-            toast
-        };
-        config = {
-            navigationBarTitleText: "产品管理",
-            navigationBarBackgroundColor: "#fff",
-            backgroundColor: "#fff",
-            navigationBarTextStyle: "black",
-            backgroundTextStyle: "dark",
-//            enablePullDownRefresh: true,
-            onReachBottomDistance: 200
-        };
-        wxs = {
-            c
-        };
-        mixins = [baseMixin];
-
-        watch = {
-            isShow (newValue, oldValue) {
-                console.log(`num value: ${oldValue} -> ${newValue}`)
-            }
-        };
-
-        loadCb () {
-            let that = this,
-                options = that.data.options;
-            that.$parent.productManage = {};
-            if (options.id) {
-                that.isAdd = false;
-                this.getProductData(options.id)
-            }
-        }
-
-        /**
-         * 查看产品详情
-         * @param id
-         */
-        getProductData (id = 0) {
-            let that = this,
-                common = that.$azmUtil.common;
-            that.showLoading();
-            that.ApiService.siteItemInfo({id, nodes: 1}).then(
-                res => {
-                    if (res.status === 1 && common.isEmptyObject(res.info)) {
-                        let info = res.info,
-                            productData = that.data.productData;
-                        if (info.category_ids && common.isArray(info.category_ids) && info.category_ids.length > 0) {
-                            info.category_ids = info.category_ids || [];
-                        } else if (+info.category_id) {
-                            info.category_ids = [{id: info.category_id, title: info.category || ''}]
-                        }
-                        if (info.covers && common.isArray(info.covers) && info.covers.length > 0) {
-                            info.covers = info.covers;
-                        } else if (info.cover && common.isString(info.cover)) {
-                            info.covers = [info.cover];
-                        }
-                        if (!info.period_of_use || !common.isEmptyObject(info.period_of_use)) {
-                            info.period_of_use = {
-                                isTheTerm: 0,
-                                start_date: '',
-                                end_date: '',
-                                start_time: '',
-                                end_time: '',
-                                note: ''
-                            }
-                        }
-                        if (info.istheterm !== undefined) {
-                            info.period_of_use.isTheTerm = info.istheterm
-                        }
-                        if (info.start_date !== undefined) {
-                            info.period_of_use.start_date = info.start_date
-                        }
-                        if (info.end_date !== undefined) {
-                            info.period_of_use.end_date = info.end_date
-                        }
-                        if (info.start_time !== undefined) {
-                            info.period_of_use.start_time = info.start_time
-                        }
-                        if (info.end_time !== undefined) {
-                            info.period_of_use.end_time = info.end_time
-                        }
-                        if (info.note !== undefined) {
-                            info.period_of_use.note = info.note
-                        }
-                        info.is_valid = +info.is_valid === 0 ? false : true;
-                        that.productData = Object.assign(productData, info);
-                        that.$apply();
-                    } else {
-                        that.azmShowToast({
-                            message: '产品查询错误',
-                            success () {
-                                that.$azmUtil.go(-1);
-                            }
-                        })
-                    }
-                }
-            ).finally(res => {
-                that.hideLoading();
-                that.isProductDetailsFn();
-            })
-        }
-
-        /**
-         * 过滤保存信息
-         * @param obj
-         * @returns {{covers: Array, service_flow: Array, nodes: string, label: Array, category_ids: Array, item_brand: Array, taboo_crowd: string, other_instructions: string, group_num: string, group_price: string, is_valid: boolean}}
-         */
-        getSaveData (obj = {}) {
-            let that = this,
-                common = that.$azmUtil.common,
-                data = that.data.productData,
-                saveData = {
-                    cover: data.covers,
-                    service_flow: data.service_flow,
-                    nodes: data.nodes,
-                    label: data.label,
-                    category_ids: data.category_ids,
-                    item_brand: data.item_brand,
-                    taboo_crowd: data.taboo_crowd,
-                    other_instructions: data.other_instructions,
-                    group_num: data.group_num,
-                    group_price: data.group_price,
-                    is_valid: data.is_valid ? 1 : 0
-                },
-                period_of_use = data.period_of_use;
-            if (period_of_use && period_of_use.start_time) {
-                saveData.isTheTerm = period_of_use.isTheTerm;
-                if (period_of_use.isTheTerm) {
-                    saveData.start_date = period_of_use.start_date;
-                    saveData.end_date = period_of_use.end_date;
-                    saveData.note = period_of_use.note;
-                }
-                saveData.start_time = period_of_use.start_time;
-                saveData.end_time = period_of_use.end_time;
-            }
-            if (saveData.category_ids && saveData.category_ids.length > 0) {
-                let category_ids = [];
-                for (let v of saveData.category_ids) {
-                    category_ids.push(v.id);
-                }
-                saveData.category_id = category_ids;
-                delete saveData.category_ids;
-            }
-            saveData = {...obj, ...saveData};
-            for (let k in saveData) {
-                if (common.isString(saveData[k])) {
-                    saveData[k] = that.$azmUtil.trim(saveData[k])
-                }
-                if (common.isNumberOfNaN(saveData[k])) {
-                    saveData[k] = parseFloat(saveData[k])
-                }
-            }
-            return saveData;
-        }
-
-        /**
-         * 提交表单
-         **/
-        saveFromData (data) {
-            if (this.data.isSubmit) return;
-            this.data.isSubmit = true;
-            this.$azmUtil.showToast('提交中...');
-            let that = this,
-                p = that.ApiService.saveItemInfo(data),
-                title = '保存',
-                common = this.$azmUtil.common;
-            if (data.isReview === 1) {
-                title = '提交';
-            }
-            p.then(
-                res => {
-                    if (res.status === 1) {
-                        that.$azmUtil.showToast({
-                            title: `${title}成功`,
-                            success () {
-                                that.$azmUtil.go(-1);
-                            }
-                        });
-                    } else {
-                        that.azmShowToast(res.message || `${title}失败`);
-                        this.data.isSubmit = false;
-                    }
-                });
-            p.catch(res => {
-                that.$azmUtil.showToast(`${title}失败`);
-                this.data.isSubmit = false;
-            });
-            p.finally(res => {
-            });
-            return p;
-        }
-
-        /**
-         * 判断产品细节是否完善
-         */
-        isProductDetailsFn () {
-            let that = this,
-                data = {
-                    nodes: '',//产品详情介绍 (图文详情)
-                    label: [], //产品标签 ["a","b"]
-                    period_of_use: {
-                        isTheTerm: 0,// 是否设置使用限制日期
-                        start_date: '',// 限制起始日期
-                        end_date: '',// 限制结束日期
-                        note: '',// 期限说明
-                        start_time: '',// 开始时间
-                        end_time: ''// 结束时间
-                    },
-                    item_brand: [],//使用物料（商品）
-                    taboo_crowd: '',//禁忌人群
-                    other_instructions: '',//其它说明}
-                },
-                productData = that.data.productData,
-                common = that.$azmUtil.common,
-                num = 0, len = 0;
-            for (let k in data) {
-                let val = productData[k];
-                len++;
-                if (!!val && common.isString(val)) {
-                    num++;
-                } else if (!!val && common.isEmptyObject(val) && !!val.start_time) {
-                    num++;
-                } else if (!!val && common.isArray(val) && val.length > 0) {
-                    num++;
-                }
-            }
-            if (len === num) {
-                that.isProductDetails = 2;
-            } else if (num > 0) {
-                that.isProductDetails = 1;
-            } else {
-                that.isProductDetails = 0;
-            }
-            that.$apply()
-        }
-
-        methods = {
-            bindInputChang (k, e) {
-                let that = this,
-                    value = this.$azmUtil.trim(e.detail.value);
-                if (k === 'market_price' || k === 'price') {
-                    value = that.__inputMoney(k, value)
-                }
-                this.productData[k] = value;
-                return value
-            },
-            route (url) {
-                this.$azmUtil.go(url);
-            },
-            bindSubmit (e) {
-                let that = this;
-                try {
-                    let value = e.detail.value,
-                        productData = that.data.productData,
-                        active = e.detail.target.dataset.active,
-                        saveData = that.getSaveData({
-                            title: value.title,
-                            profile: value.profile,
-                            market_price: value.market_price,
-                            price: value.price,
-                            service: value.service,
-                            service_char: value.service_char,
-                        });
-                    if (productData.id) {
-                        saveData.id = productData.id;
-                    }
-                    if (!saveData.title) {
-                        let text = '产品名称不能为空';
-                        if (active === 'save') {
-                            text = '请至少填写一项产品名称'
-                        }
-                        that.azmShowToast(text);
-                        return;
-                    }
-                    if (active === 'save') {//保存
-                        saveData.isReview = 0;
-                        that.saveFromData(saveData);
-                        return;
-                    }
-                    if (!saveData.profile) {
-                        that.azmShowToast('副标题不能为空')
-                    } else if (saveData.market_price <= 0 || saveData.price <= 0) {
-                        that.azmShowToast('价格不能少于0.01元')
-                    } else if (saveData.market_price <= saveData.price) {
-                        that.azmShowToast('折扣价不能大于门市价')
-                    } else if (saveData.group_price && saveData.price <= saveData.group_price) {
-                        that.azmShowToast('拼团价格不得大于折扣价格')
-                    } else if (!saveData.category_id || saveData.category_id.length === 0) {
-                        that.azmShowToast('产品类别未完善')
-                    } else if (!saveData.cover || saveData.cover.length === 0) {
-                        that.azmShowToast('产品主图未完善')
-                    } else if (!saveData.service) {
-                        that.azmShowToast('服务内容不能为空')
-                    } else if (!saveData.service_char) {
-                        that.azmShowToast('服务特色不能为空')
-                    } else if (!saveData.service_flow || saveData.service_flow.length === 0) {
-                        that.azmShowToast('服务流程未完善')
-                    } else if (active === 'submit') {//提交
-                        saveData.isReview = 1;
-                        that.saveFromData(saveData);
-                    }
-                } catch (e) {
-                    that.azmShowToast('操作失败');
-                }
-            }
-        }
+const appPage = new utilPage({
+  data: {
+    text: "Page productAddAndEdit",
+    hasMoreData: false, //是否有更多
+    isAdd: true,
+    isProductDetails: 0,
+    productData: {
+      title: "", //标题
+      profile: "", //副标题
+      market_price: null, //市场价格（门市价）
+      price: null, //价格（折扣）
+      category_ids: [], //产品分类ID
+      covers: [], //产品封面
+      service: "", //服务内容
+      service_char: "", //服务特色
+      service_flow: [], //服务流程
+      nodes: "", //产品详情介绍 (图文详情)
+      label: [], //产品标签 ["a","b"]
+      period_of_use: {
+        isTheTerm: 0, // 是否设置使用限制日期
+        start_date: "", // 限制起始日期
+        end_date: "", // 限制结束日期
+        note: "", // 期限说明
+        start_time: "", // 开始时间
+        end_time: "" // 结束时间
+      },
+      item_brand: [], //使用物料（商品）
+      taboo_crowd: "", //禁忌人群
+      other_instructions: "", //其它说明
+      group_num: "", //成团要求数量
+      group_price: "", //成团价格
+      is_valid: false //是否有效
     }
+  },
+  onLoad(options) {
+    this.$parent.globalData.productManage = {};
+    this.loadCb();
+  },
+  onShow() {
+    if (this.data.isShow && this.data.isRefresh) {
+      this.isProductDetailsFn();
+    }
+  },
+  onPullDownRefresh() {
+    let that = this;
+  },
+
+  onReachBottom() {
+    let that = this;
+  },
+
+  onPageScroll(options) {}
+});
+export default class extends wepy.page {
+  constructor(...args) {
+    super(...args);
+    for (let k in appPage) {
+      if (k === "methods") {
+        for (let j in appPage[k]) {
+          this[k][j] = appPage[k][j];
+        }
+      } else this[k] = appPage[k];
+    }
+  }
+
+  components = {
+    toast
+  };
+  config = {
+    navigationBarTitleText: "产品管理",
+    navigationBarBackgroundColor: "#fff",
+    backgroundColor: "#fff",
+    navigationBarTextStyle: "black",
+    backgroundTextStyle: "dark",
+    //            enablePullDownRefresh: true,
+    onReachBottomDistance: 200
+  };
+  wxs = {
+    c
+  };
+  mixins = [baseMixin];
+
+  watch = {
+    isShow(newValue, oldValue) {
+      console.log(`num value: ${oldValue} -> ${newValue}`);
+    }
+  };
+
+  loadCb() {
+    let that = this,
+      options = that.data.options;
+    that.$parent.productManage = {};
+    if (options.id) {
+      that.isAdd = false;
+      this.getProductData(options.id);
+    }
+  }
+
+  /**
+   * 查看产品详情
+   * @param id
+   */
+  getProductData(id = 0) {
+    let that = this,
+      common = that.$azmUtil.common;
+    that.showLoading();
+    that.ApiService.siteItemInfo({ id, nodes: 1 })
+      .then(res => {
+        if (res.status === 1 && common.isEmptyObject(res.info)) {
+          let info = res.info,
+            productData = that.data.productData;
+          if (
+            info.category_ids &&
+            common.isArray(info.category_ids) &&
+            info.category_ids.length > 0
+          ) {
+            info.category_ids = info.category_ids || [];
+          } else if (+info.category_id) {
+            info.category_ids = [
+              { id: info.category_id, title: info.category || "" }
+            ];
+          }
+          if (
+            info.covers &&
+            common.isArray(info.covers) &&
+            info.covers.length > 0
+          ) {
+            info.covers = info.covers;
+          } else if (info.cover && common.isString(info.cover)) {
+            info.covers = [info.cover];
+          }
+          if (
+            !info.period_of_use ||
+            !common.isEmptyObject(info.period_of_use)
+          ) {
+            info.period_of_use = {
+              isTheTerm: 0,
+              start_date: "",
+              end_date: "",
+              start_time: "",
+              end_time: "",
+              note: ""
+            };
+          }
+          if (info.istheterm !== undefined) {
+            info.period_of_use.isTheTerm = info.istheterm;
+          }
+          if (info.start_date !== undefined) {
+            info.period_of_use.start_date = info.start_date;
+          }
+          if (info.end_date !== undefined) {
+            info.period_of_use.end_date = info.end_date;
+          }
+          if (info.start_time !== undefined) {
+            info.period_of_use.start_time = info.start_time;
+          }
+          if (info.end_time !== undefined) {
+            info.period_of_use.end_time = info.end_time;
+          }
+          if (info.note !== undefined) {
+            info.period_of_use.note = info.note;
+          }
+          info.is_valid = +info.is_valid === 0 ? false : true;
+          that.productData = Object.assign(productData, info);
+          that.$apply();
+        } else {
+          that.azmShowToast({
+            message: "产品查询错误",
+            success() {
+              that.$azmUtil.go(-1);
+            }
+          });
+        }
+      })
+      .finally(res => {
+        that.hideLoading();
+        that.isProductDetailsFn();
+      });
+  }
+
+  /**
+   * 过滤保存信息
+   * @param obj
+   * @returns {{covers: Array, service_flow: Array, nodes: string, label: Array, category_ids: Array, item_brand: Array, taboo_crowd: string, other_instructions: string, group_num: string, group_price: string, is_valid: boolean}}
+   */
+  getSaveData(obj = {}) {
+    let that = this,
+      common = that.$azmUtil.common,
+      data = that.data.productData,
+      saveData = {
+        cover: data.covers,
+        service_flow: data.service_flow,
+        nodes: data.nodes,
+        label: data.label,
+        category_ids: data.category_ids,
+        item_brand: data.item_brand,
+        taboo_crowd: data.taboo_crowd,
+        other_instructions: data.other_instructions,
+        group_num: data.group_num,
+        group_price: data.group_price,
+        is_valid: data.is_valid ? 1 : 0
+      },
+      period_of_use = data.period_of_use;
+    if (period_of_use && period_of_use.start_time) {
+      saveData.isTheTerm = period_of_use.isTheTerm;
+      if (period_of_use.isTheTerm) {
+        saveData.start_date = period_of_use.start_date;
+        saveData.end_date = period_of_use.end_date;
+        saveData.note = period_of_use.note;
+      }
+      saveData.start_time = period_of_use.start_time;
+      saveData.end_time = period_of_use.end_time;
+    }
+    if (saveData.category_ids && saveData.category_ids.length > 0) {
+      let category_ids = [];
+      for (let v of saveData.category_ids) {
+        category_ids.push(v.id);
+      }
+      saveData.category_id = category_ids;
+      delete saveData.category_ids;
+    }
+    saveData = { ...obj, ...saveData };
+    for (let k in saveData) {
+      if (common.isString(saveData[k])) {
+        saveData[k] = that.$azmUtil.trim(saveData[k]);
+      }
+      if (common.isNumberOfNaN(saveData[k])) {
+        saveData[k] = parseFloat(saveData[k]);
+      }
+    }
+    return saveData;
+  }
+
+  /**
+   * 提交表单
+   **/
+  saveFromData(data) {
+    if (this.data.isSubmit) return;
+    this.data.isSubmit = true;
+    this.$azmUtil.showToast("提交中...");
+    let that = this,
+      p = that.ApiService.saveItemInfo(data),
+      title = "保存",
+      common = this.$azmUtil.common;
+    if (data.isReview === 1) {
+      title = "提交";
+    }
+    p.then(res => {
+      if (res.status === 1) {
+        that.$azmUtil.showToast({
+          title: `${title}成功`,
+          success() {
+            that.$azmUtil.go(-1);
+          }
+        });
+      } else {
+        that.azmShowToast(res.message || `${title}失败`);
+        this.data.isSubmit = false;
+      }
+    });
+    p.catch(res => {
+      that.$azmUtil.showToast(`${title}失败`);
+      this.data.isSubmit = false;
+    });
+    p.finally(res => {});
+    return p;
+  }
+
+  /**
+   * 判断产品细节是否完善
+   */
+  isProductDetailsFn() {
+    let that = this,
+      data = {
+        nodes: "", //产品详情介绍 (图文详情)
+        label: [], //产品标签 ["a","b"]
+        period_of_use: {
+          isTheTerm: 0, // 是否设置使用限制日期
+          start_date: "", // 限制起始日期
+          end_date: "", // 限制结束日期
+          note: "", // 期限说明
+          start_time: "", // 开始时间
+          end_time: "" // 结束时间
+        },
+        item_brand: [], //使用物料（商品）
+        taboo_crowd: "", //禁忌人群
+        other_instructions: "" //其它说明}
+      },
+      productData = that.data.productData,
+      common = that.$azmUtil.common,
+      num = 0,
+      len = 0;
+    for (let k in data) {
+      let val = productData[k];
+      len++;
+      if (!!val && common.isString(val)) {
+        num++;
+      } else if (!!val && common.isEmptyObject(val) && !!val.start_time) {
+        num++;
+      } else if (!!val && common.isArray(val) && val.length > 0) {
+        num++;
+      }
+    }
+    if (len === num) {
+      that.isProductDetails = 2;
+    } else if (num > 0) {
+      that.isProductDetails = 1;
+    } else {
+      that.isProductDetails = 0;
+    }
+    that.$apply();
+  }
+
+  methods = {
+    bindInputChang(k, e) {
+      let that = this,
+        value = this.$azmUtil.trim(e.detail.value);
+      if (k === "market_price" || k === "price") {
+        value = that.__inputMoney(k, value);
+      }
+      this.productData[k] = value;
+      return value;
+    },
+    route(url) {
+      this.$azmUtil.go(url);
+    },
+    bindSubmit(e) {
+      let that = this;
+      try {
+        let value = e.detail.value,
+          productData = that.data.productData,
+          active = e.detail.target.dataset.active,
+          saveData = that.getSaveData({
+            title: value.title,
+            profile: value.profile,
+            market_price: value.market_price,
+            price: value.price,
+            service: value.service,
+            service_char: value.service_char
+          });
+        if (productData.id) {
+          saveData.id = productData.id;
+        }
+        if (!saveData.title) {
+          let text = "产品名称不能为空";
+          if (active === "save") {
+            text = "请至少填写一项产品名称";
+          }
+          that.azmShowToast(text);
+          return;
+        }
+        if (active === "save") {
+          //保存
+          saveData.isReview = 0;
+          that.saveFromData(saveData);
+          return;
+        }
+        if (!saveData.profile) {
+          that.azmShowToast("副标题不能为空");
+        } else if (saveData.market_price <= 0 || saveData.price <= 0) {
+          that.azmShowToast("价格不能少于0.01元");
+        } else if (saveData.market_price <= saveData.price) {
+          that.azmShowToast("折扣价不能大于门市价");
+        } else if (
+          saveData.group_price &&
+          saveData.price <= saveData.group_price
+        ) {
+          that.azmShowToast("拼团价格不得大于折扣价格");
+        } else if (!saveData.category_id || saveData.category_id.length === 0) {
+          that.azmShowToast("产品类别未完善");
+        } else if (!saveData.cover || saveData.cover.length === 0) {
+          that.azmShowToast("产品主图未完善");
+        } else if (!saveData.service) {
+          that.azmShowToast("服务内容不能为空");
+        } else if (!saveData.service_char) {
+          that.azmShowToast("服务特色不能为空");
+        } else if (
+          !saveData.service_flow ||
+          saveData.service_flow.length === 0
+        ) {
+          that.azmShowToast("服务流程未完善");
+        } else if (active === "submit") {
+          //提交
+          saveData.isReview = 1;
+          that.saveFromData(saveData);
+        }
+      } catch (e) {
+        that.azmShowToast("操作失败");
+      }
+    }
+  };
+}
 </script>
 
 <style lang="less">
-    page {
-        background-color: #f4f4f4;
-        box-sizing: border-box;
+page {
+  background-color: #f4f4f4;
+  box-sizing: border-box;
+}
+
+.productAddAndEdit {
+  box-sizing: border-box;
+  padding-bottom: 110 * 1rpx;
+  view {
+    box-sizing: border-box;
+  }
+  .azm-from__image {
+    .azm-image {
+      width: 63 * 1rpx;
+      height: 63 * 1rpx;
+      vertical-align: middle;
     }
+  }
+  .t-itme {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+  }
 
-    .productAddAndEdit {
-        box-sizing: border-box;
-        padding-bottom: 110*1rpx;
-        view {
-            box-sizing: border-box;
-        }
-        .azm-from__image {
-            .azm-image {
-                width: 63*1rpx;
-                height: 63*1rpx;
-                vertical-align: middle;
-            }
-        }
-        .t-itme {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-        }
+  .t-itme:nth-child(2) {
+    border-top: none;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+  }
 
-        .t-itme:nth-child(2) {
-            border-top: none;
-            border-bottom: 1*1rpx solid #eeeeee;
-        }
+  .t-itme .t-itmeName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
 
-        .t-itme .t-itmeName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
+  .t-itme .t-itmeText {
+    width: 74%;
+    height: 100%;
+    font-size: 30 * 1rpx;
+  }
 
-        .t-itme .t-itmeText {
-            width: 74%;
-            height: 100%;
-            font-size: 30*1rpx;
-        }
+  .t-itmeText input {
+    height: 100%;
+    line-height: 91 * 1rpx;
+  }
 
-        .t-itmeText input {
-            height: 100%;
-            line-height: 91*1rpx;
+  .t-itmeBox {
+    width: 100%;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    display: flex;
+    justify-content: space-around;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    padding-top: 23 * 1rpx;
+    padding-bottom: 23 * 1rpx;
+    .t-itmePrice,
+    .t-itmeDiscount {
+      font-size: 30 * 1rpx;
+      color: #999;
+      width: 50%;
+      padding-left: 30 * 1rpx;
+      > view {
+        height: 29 * 1rpx;
+        line-height: 29 * 1rpx;
+      }
+      .azm-price_title {
+        font-size: 30 * 1rpx;
+        margin-bottom: 29 * 1rpx;
+      }
+      .t-itmeMoney {
+        font-size: 32 * 1rpx;
+        color: #ff4919;
+        .azm-money_icon {
+          padding-right: 10 * 1rpx;
         }
-
-        .t-itmeBox {
-            width: 100%;
-            border-bottom: 1*1rpx solid #eeeeee;
-            display: flex;
-            justify-content: space-around;
-            background-color: #ffffff;
-            box-sizing: border-box;
-            padding-top: 23*1rpx;
-            padding-bottom: 23*1rpx;
-            .t-itmePrice, .t-itmeDiscount {
-                font-size: 30*1rpx;
-                color: #999;
-                width: 50%;
-                padding-left: 30*1rpx;
-                > view {
-                    height: 29*1rpx;
-                    line-height: 29*1rpx;
-                }
-                .azm-price_title {
-                    font-size: 30*1rpx;
-                    margin-bottom: 29*1rpx;
-                }
-                .t-itmeMoney {
-                    font-size: 32*1rpx;
-                    color: #ff8000;
-                    .azm-money_icon {
-                        padding-right: 10*1rpx;
-                    }
-                    input {
-                        font-size: 32*1rpx;
-                        height: 100%;
-                        min-height: 100%;
-                    }
-                }
-            }
-            .border-r {
-                position: relative;
-                &::after {
-                    content: ' ';
-                    position: absolute;
-                    left: auto;
-                    background: #ddd;
-                    right: 0;
-                    top: 50%;
-                    width: 1px;
-                    height: 90*1rpx;
-                    transform: translateY(-50%);
-                    transform-origin: 0 0;
-                }
-            }
+        input {
+          font-size: 32 * 1rpx;
+          height: 100%;
+          min-height: 100%;
         }
-
-        .t-itmeCategory {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-            margin-top: 24*1rpx;
-        }
-
-        .t-itmecategory {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-            .t-categoryName {
-                position: relative;
-                padding-right: 40*1rpx;
-            }
-        }
-
-        .t-itmeCategory .t-categoryName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-itmeCategory .t-categoryText {
-            width: 74%;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .t-itmecategory .t-categoryName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-itmecategory .t-categoryText {
-            width: 74%;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .t-categoryText .t-emptyicon {
-            height: 36*1rpx;
-            width: 36*1rpx;
-            margin-right: 16*1rpx;
-        }
-
-        .t-categoryText .t-arrows {
-            width: 15*1rpx;
-            height: 25*1rpx;
-            margin-right: 26*1rpx;
-        }
-
-        .t-categoryText .t-not {
-            color: #ff8000;
-            font-size: 28*1rpx;
-            margin-right: 19*1rpx;
-        }
-
-        .t-timeDetails {
-            margin-top: 24*1rpx;
-        }
-
-        .t-categoryText text {
-            font-size: 29*1rpx;
-            color: #999999;
-            margin-right: 182*1rpx;
-        }
-
-        .t-categoryText .t-now {
-            margin-right: 164*1rpx;
-        }
-
-        .t-ItmeCategory {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-            margin-top: 24*1rpx;
-        }
-
-        .t-ItmeCategory .t-categoryName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-ItmeCategory .t-categoryText {
-            width: 74%;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            height: 98*1rpx;
-            line-height: 98*1rpx;
-            width: 100%;
-            background-color: #fff;
-            text-align: right;
-            box-sizing: border-box;
-            border-top: 1*1rpx solid #f4f4f4;
-            z-index: 100;
-            .azm-btn {
-                height: 72*1rpx;
-                line-height: 72*1rpx;
-                border: none;
-                text-align: center;
-                padding-left: 56*1rpx;
-                padding-right: 56*1rpx;
-                border-radius: 5*1px;
-                vertical-align: middle;
-                margin-right: 30*1rpx;
-            }
-            .azm-btn_submit {
-                background-color: #ff8000;
-                color: #fff;
-                border: 2*1rpx solid #ff8000;
-            }
-            .azm-btn_save {
-                background-color: transparent;
-                color: #ff8000;
-                border: 2*1rpx solid #ff8000;
-            }
-            .t-button {
-                height: 98*1rpx;
-                background-color: #ff8000;
-                color: #ffffff;
-                width: 100%;
-                line-height: 98*1rpx;
-                text-align: center;
-                border: none;
-                border-radius: 0;
-            }
-        }
+      }
     }
+    .border-r {
+      position: relative;
+      &::after {
+        content: " ";
+        position: absolute;
+        left: auto;
+        background: #ddd;
+        right: 0;
+        top: 50%;
+        width: 1px;
+        height: 90 * 1rpx;
+        transform: translateY(-50%);
+        transform-origin: 0 0;
+      }
+    }
+  }
+
+  .t-itmeCategory {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 24 * 1rpx;
+  }
+
+  .t-itmecategory {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    .t-categoryName {
+      position: relative;
+      padding-right: 40 * 1rpx;
+    }
+  }
+
+  .t-itmeCategory .t-categoryName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-itmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .t-itmecategory .t-categoryName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-itmecategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .t-categoryText .t-emptyicon {
+    height: 36 * 1rpx;
+    width: 36 * 1rpx;
+    margin-right: 16 * 1rpx;
+  }
+
+  .t-categoryText .t-arrows {
+    width: 15 * 1rpx;
+    height: 25 * 1rpx;
+    margin-right: 26 * 1rpx;
+  }
+
+  .t-categoryText .t-not {
+    color: #ff4919;
+    font-size: 28 * 1rpx;
+    margin-right: 19 * 1rpx;
+  }
+
+  .t-timeDetails {
+    margin-top: 24 * 1rpx;
+  }
+
+  .t-categoryText text {
+    font-size: 29 * 1rpx;
+    color: #999999;
+    margin-right: 182 * 1rpx;
+  }
+
+  .t-categoryText .t-now {
+    margin-right: 164 * 1rpx;
+  }
+
+  .t-ItmeCategory {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 24 * 1rpx;
+  }
+
+  .t-ItmeCategory .t-categoryName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-ItmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 98 * 1rpx;
+    line-height: 98 * 1rpx;
+    width: 100%;
+    background-color: #fff;
+    text-align: right;
+    box-sizing: border-box;
+    border-top: 1 * 1rpx solid #f4f4f4;
+    z-index: 100;
+    .azm-btn {
+      height: 72 * 1rpx;
+      line-height: 72 * 1rpx;
+      border: none;
+      text-align: center;
+      padding-left: 56 * 1rpx;
+      padding-right: 56 * 1rpx;
+      border-radius: 5 * 1px;
+      vertical-align: middle;
+      margin-right: 30 * 1rpx;
+    }
+    .azm-btn_submit {
+      background-color: #ff4919;
+      color: #fff;
+      border: 2 * 1rpx solid #ff4919;
+    }
+    .azm-btn_save {
+      background-color: transparent;
+      color: #ff4919;
+      border: 2 * 1rpx solid #ff4919;
+    }
+    .t-button {
+      height: 98 * 1rpx;
+      background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+      color: #ffffff;
+      width: 100%;
+      line-height: 98 * 1rpx;
+      text-align: center;
+      border: none;
+      border-radius: 0;
+    }
+  }
+}
 </style>
  

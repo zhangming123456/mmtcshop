@@ -30,7 +30,6 @@
 }
 .container-main {
   .list-box {
-    
     font-size: 30rpx;
     color: #282828;
 
@@ -45,7 +44,7 @@
         // top: -4rpx;
       }
       .field-value {
-        color: #ff8000;
+        color: #ff4919;
         padding-right: 29rpx;
       }
       .list-title {
@@ -83,7 +82,7 @@
 page {
   background-color: #f4f4f4;
 }
-.loading-more{
+.loading-more {
   background-color: #f4f4f4;
 }
 </style>
@@ -109,15 +108,18 @@ import datalistMixin from "../../mixins/datalist";
 import baseMixin from "../../mixins/base";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "余额明细"
+    navigationBarTitleText: "余额明细",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   components = {
     datalist
   };
   mixins = [baseMixin, datalistMixin];
   methods = {
-    showDetail(date){
-       this.$goto('withdrawdetail?date='+date)
+    showDetail(date) {
+      this.$goto("withdrawdetail?date=" + date);
     }
   };
 }

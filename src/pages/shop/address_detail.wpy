@@ -2,7 +2,7 @@
 view.form-area
     view.container1    
         textarea.textarea(placeholder="请在这里输入文字~" value="{{content}}" @input="setField('content')")
-        button.btn-primary(type="default" @tap="doSubmit" hover-class="tapmode") 提 交
+        button.butoon(type="" @tap="doSubmit" hover-class="none") 提 交
 </template>
 <script>
 import wepy from "wepy";
@@ -19,7 +19,8 @@ export default class extends wepy.page {
     let idx = parseInt(options.idx);
     this.idx = idx;
     if (idx != -1) {
-      this.content = this.strContent =  this.$noticePage("getAddress", { idx }) || "";
+      this.content = this.strContent =
+        this.$noticePage("getAddress", { idx }) || "";
       this.$apply();
     }
   }
@@ -33,17 +34,21 @@ export default class extends wepy.page {
         return this.$alert("请输入文字");
       }
       this.showLoading();
-      this.$post('/shopapi/shop_manager/saveDetailAddr',{
-          address:this.content
-      },()=>{
-        this.$back();
-      },()=>{
+      this.$post(
+        "/shopapi/shop_manager/saveDetailAddr",
+        {
+          address: this.content
+        },
+        () => {
+          this.$back();
+        },
+        () => {
           this.hideLoading();
-      });
+        }
+      );
       this.$noticePage("seAddress", {
         content: this.content
       });
-      
     }
   };
 }
@@ -73,6 +78,15 @@ button.fixed-btn {
 }
 .pic-list {
   padding-top: 35rpx;
+}
+
+.butoon {
+  width: 670rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  border-radius: 5rpx;
+  color: #ffffff;
+  background-image: linear-gradient(90deg, #35abfe 0, #3d70f7 100%);
 }
 </style>
 

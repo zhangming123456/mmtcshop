@@ -6,6 +6,10 @@
     @import "./lib/zanui/index.wxss";
     @import "./lib/weui/weui.wxss";
 
+    /*!
+     * app.wxss
+     */
+
     page {
         box-sizing: border-box;
     }
@@ -19,7 +23,7 @@
     }
 
     .azm-color_primary {
-        color: #ff8000 !important;
+        color: #ff4919 !important;
     }
 
     .azm-color_black {
@@ -51,13 +55,13 @@
         &.azm-btn__mini__save,
         &.azm-btn__mini__cancel {
             background-color: transparent;
-            color: #ff8000;
-            border: 2*1rpx solid #ff8000;
+            color: #ff4919;
+            border: 2*1rpx solid #ff4919;
         }
         &.azm-btn__mini__submit {
-            background-color: #ff8000;
+            background-color: #ff4919;
             color: #fff;
-            border: 2*1rpx solid #ff8000;
+            border: 2*1rpx solid #ff4919;
         }
     }
 
@@ -77,15 +81,15 @@
         &.azm-btn_submit {
             border: none;
             border-radius: 0;
-            background-color: #ff8000;
+            background-color: #ff4919;
             height: inherit;
             line-height: inherit;
             color: #fff;
         }
         &.azm-btn_save {
             background-color: transparent;
-            color: #ff8000;
-            border: 2*1rpx solid #ff8000;
+            color: #ff4919;
+            border: 2*1rpx solid #ff4919;
         }
     }
 
@@ -498,6 +502,7 @@
                 "pages/mine/products/pics",
                 "pages/mine/addaccount",
                 "pages/mine/alterpwdcheckphone",
+                "pages/mine/newAlterpwdcheckphone",
                 "pages/mine/products/mainpic",
                 "pages/mine/products/joinact",
                 "pages/mine/products/reback",
@@ -551,24 +556,24 @@
                 navigationBarTextStyle: "black"
             },
             tabBar: {
-                selectedColor: "#ff8000",
+                selectedColor: "#3d70f7",
                 backgroundColor: "#ffffff",
                 list: [
                     {
                         pagePath: "pages/home/index",
-                        iconPath: "/imgs/order11.png",
-                        selectedIconPath: "/imgs/order12.png",
+                        iconPath: "/imgs/tab_icon_verify_normal.png",
+                        selectedIconPath: "/imgs/tab_icon_verify_press.png",
                         text: "订单验证"
                     },
                     {
                         pagePath: "pages/order/index",
-                        iconPath: "/imgs/order21.png",
-                        selectedIconPath: "/imgs/order22.png",
+                        iconPath: "/imgs/tab_icon_order_normal.png",
+                        selectedIconPath: "/imgs/tab_icon_order_press.png",
                         text: "订单管理"
                     },
                     {
-                        iconPath: "/imgs/mine1.png",
-                        selectedIconPath: "/imgs/mine2.png",
+                        iconPath: "/imgs/tab_icon_my_normal.png",
+                        selectedIconPath: "/imgs/tab_icon_my_press.png",
                         pagePath: "pages/mine/index",
                         text: "我的"
                     }

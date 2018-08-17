@@ -7,13 +7,13 @@ module.exports.absUrl = function (url) {
 }
 
 module.exports.cashStatus = function (status, status2, is_display) {
-    if (is_display == 0) {
+    if (is_display == 0 && status == 2) {
         return '已下架';
     }
-    if (status > 1) {
-        return ['已下架', '已上架'][parseInt(status2)] 
+    if (status > 1 && status == 2) {
+        return ['已下架', '已上架'][parseInt(status2)]
     }
-    return ['审核中', '审核未通过', '审核通过', '已完成'][parseInt(status)]
+    return ['审核中', '审核未通过', '审核通过', '待提交'][parseInt(status)]
 }
 
 // 提现状态

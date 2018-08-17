@@ -140,7 +140,7 @@
     }
 
     .nickname {
-        color: #ff8000;
+        color: #ff4919;
         font-size: 32 *1rpx;
         margin-right: 20 *1rpx;
     }
@@ -165,7 +165,7 @@
         margin: 0;
         height: 46 *1rpx;
         line-height: 46 *1rpx;
-        background-color: #ff8000;
+        background-color: #ff4919;
         color: #fff;
         border-radius: 10 *1rpx;
         font-size: 28 *1rpx;
@@ -200,12 +200,12 @@
     .item-status {
         height: 34 *1rpx;
         font-size: 22 *1rpx;
-        color: #ff8000;
+        color: #ff4919;
         padding: 0 7 *1rpx;
         line-height: 34 *1rpx;
         background-color: transparent;
         border-radius: 10px;
-        border: solid 1px #ff8000;
+        border: solid 1px #ff4919;
     }
 
     .price-area {
@@ -219,13 +219,13 @@
     }
 
     .price-unit {
-        color: #ff8000;
+        color: #ff4919;
         font-size: 26 *1rpx;
     }
 
     .price-num {
         font-size: 40 *1rpx;
-        color: #ff8000;
+        color: #ff4919;
         margin-right: 20 *1rpx;
     }
 
@@ -258,7 +258,7 @@
 
     .flex-price {
         font-size: 34 *1rpx;
-        color: #ff8000;
+        color: #ff4919;
     }
 
     .order-status {

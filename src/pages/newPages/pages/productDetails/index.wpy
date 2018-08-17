@@ -105,7 +105,7 @@
             </view>
 
             <view class="azm-footer">
-                <button class="azm-btn azm-btn_submit" plain="true" formType="submit">提交</button>
+                <button class="t-issue"  formType="submit">提交</button>
             </view>
         </form>
     </view>
@@ -114,347 +114,345 @@
 </template>
 
 <script>
-    import wepy from "wepy";
-    import utilPage from "../../../../mixins/utilPage";
-    import baseMixin from "../../../../mixins/base";
-    import toast from "../../../../components/toast";
-    import popup from "../../../../components/popup";
-    import c from "../../../../wxs/common.wxs";
-    const appPage = new utilPage({
-        data: {
-            text: "Page productDetails",
-            hasMoreData: false,//是否有更多
-            nodes: [],
-            label: [],
-            period_of_use: {},
-            item_brand: [],
-            taboo_crowd: '',
-            other_instructions: '',
-        },
-        onLoad (options){
-            this.loadCb()
-        },
-        onShow(){
-            if (this.data.isShow && this.data.isRefresh) {
-            }
-        },
-        onPullDownRefresh(){
-            let that = this
-        },
-
-        onReachBottom(){
-            let that = this
-        },
-
-        onPageScroll (options) {
-        },
-    });
-    export default class extends wepy.page {
-        constructor (...args) {
-            super(...args);
-            for (let k in appPage) {
-                if (k === 'methods') {
-                    for (let j in appPage[k]) {
-                        this[k][j] = appPage[k][j]
-                    }
-                } else
-                    this[k] = appPage[k]
-            }
-        }
-
-        components = {
-            toast,
-            popup
-        };
-        config = {
-            navigationBarTitleText: "产品细节",
-            navigationBarBackgroundColor: "#fff",
-            backgroundColor: "#fff",
-            navigationBarTextStyle: "black",
-            backgroundTextStyle: "dark"
-        };
-        wxs = {
-            c
-        };
-        mixins = [baseMixin];
-
-        loadCb () {
-            let that = this,
-                options = that.data.options,
-                _this2 = that.__getPrevPage(),
-                productData = _this2.data.productData,
-                nodes = productData.nodes || [],
-                label = productData.label || [],
-                period_of_use = productData.period_of_use || {},
-                item_brand = productData.item_brand || [],
-                taboo_crowd = productData.taboo_crowd || '',
-                other_instructions = productData.other_instructions || '';
-            that.nodes = nodes;
-            that.label = this.$azmUtil.unique(label);
-            that.period_of_use = period_of_use;
-            that.item_brand = item_brand;
-            that.taboo_crowd = taboo_crowd;
-            that.other_instructions = other_instructions;
-        }
-
-        methods = {
-            route(url){
-                this.$azmUtil.go(url);
-            },
-            bindInputChang(key, e){
-                this[key] = e.detail.value;
-            },
-            bindLabelSubmit(value){
-                let label = value.label,
-                    findIndex = this.data.label.findIndex(res => label === res);
-                console.log(findIndex);
-                if (!label || label.length > 5) {
-                    this.azmShowToast('标签字符1-5个');
-                } else if (findIndex >= 0) {
-                    this.azmShowToast('标签重复');
-                } else {
-                    this.label.push(label);
-                    this.azmHidePopup();
-                }
-            },
-            bindOpenLabelPopup(){
-                let that = this;
-                that.azmShowPopup('填写领域标签或品牌属性，最多5个字哦~');
-            },
-            bindCloseLabel(index){
-                this.label.splice(index, 1);
-            },
-            bindSubmit(e){
-                let that = this,
-                    nodes = that.data.nodes,
-                    label = that.data.label,
-                    period_of_use = that.data.period_of_use,
-                    item_brand = that.data.item_brand,
-                    taboo_crowd = that.data.taboo_crowd,
-                    other_instructions = that.data.other_instructions,
-                    _this2 = that.__getPrevPage(),
-                    productData = _this2.data.productData,
-                    data = {
-                        nodes,
-                        label,
-                        period_of_use,
-                        item_brand,
-                        taboo_crowd,
-                        other_instructions
-                    };
-                _this2.productData = {
-                    ...productData,
-                    ...data
-                };
-                _this2.$apply();
-                that.$azmUtil.go(-1);
-            }
-        }
+import wepy from "wepy";
+import utilPage from "../../../../mixins/utilPage";
+import baseMixin from "../../../../mixins/base";
+import toast from "../../../../components/toast";
+import popup from "../../../../components/popup";
+import c from "../../../../wxs/common.wxs";
+const appPage = new utilPage({
+  data: {
+    text: "Page productDetails",
+    hasMoreData: false, //是否有更多
+    nodes: [],
+    label: [],
+    period_of_use: {},
+    item_brand: [],
+    taboo_crowd: "",
+    other_instructions: ""
+  },
+  onLoad(options) {
+    this.loadCb();
+  },
+  onShow() {
+    if (this.data.isShow && this.data.isRefresh) {
     }
+  },
+  onPullDownRefresh() {
+    let that = this;
+  },
+
+  onReachBottom() {
+    let that = this;
+  },
+
+  onPageScroll(options) {}
+});
+export default class extends wepy.page {
+  constructor(...args) {
+    super(...args);
+    for (let k in appPage) {
+      if (k === "methods") {
+        for (let j in appPage[k]) {
+          this[k][j] = appPage[k][j];
+        }
+      } else this[k] = appPage[k];
+    }
+  }
+
+  components = {
+    toast,
+    popup
+  };
+  config = {
+    navigationBarTitleText: "产品细节",
+    navigationBarBackgroundColor: "#fff",
+    backgroundColor: "#fff",
+    navigationBarTextStyle: "black",
+    backgroundTextStyle: "dark"
+  };
+  wxs = {
+    c
+  };
+  mixins = [baseMixin];
+
+  loadCb() {
+    let that = this,
+      options = that.data.options,
+      _this2 = that.__getPrevPage(),
+      productData = _this2.data.productData,
+      nodes = productData.nodes || [],
+      label = productData.label || [],
+      period_of_use = productData.period_of_use || {},
+      item_brand = productData.item_brand || [],
+      taboo_crowd = productData.taboo_crowd || "",
+      other_instructions = productData.other_instructions || "";
+    that.nodes = nodes;
+    that.label = this.$azmUtil.unique(label);
+    that.period_of_use = period_of_use;
+    that.item_brand = item_brand;
+    that.taboo_crowd = taboo_crowd;
+    that.other_instructions = other_instructions;
+  }
+
+  methods = {
+    route(url) {
+      this.$azmUtil.go(url);
+    },
+    bindInputChang(key, e) {
+      this[key] = e.detail.value;
+    },
+    bindLabelSubmit(value) {
+      let label = value.label,
+        findIndex = this.data.label.findIndex(res => label === res);
+      console.log(findIndex);
+      if (!label || label.length > 5) {
+        this.azmShowToast("标签字符1-5个");
+      } else if (findIndex >= 0) {
+        this.azmShowToast("标签重复");
+      } else {
+        this.label.push(label);
+        this.azmHidePopup();
+      }
+    },
+    bindOpenLabelPopup() {
+      let that = this;
+      that.azmShowPopup("填写领域标签或品牌属性，最多5个字哦~");
+    },
+    bindCloseLabel(index) {
+      this.label.splice(index, 1);
+    },
+    bindSubmit(e) {
+      let that = this,
+        nodes = that.data.nodes,
+        label = that.data.label,
+        period_of_use = that.data.period_of_use,
+        item_brand = that.data.item_brand,
+        taboo_crowd = that.data.taboo_crowd,
+        other_instructions = that.data.other_instructions,
+        _this2 = that.__getPrevPage(),
+        productData = _this2.data.productData,
+        data = {
+          nodes,
+          label,
+          period_of_use,
+          item_brand,
+          taboo_crowd,
+          other_instructions
+        };
+      _this2.productData = {
+        ...productData,
+        ...data
+      };
+      _this2.$apply();
+      that.$azmUtil.go(-1);
+    }
+  };
+}
 </script>
 
 <style lang="less">
-    page {
+page {
+  box-sizing: border-box;
+}
+
+.productDetails {
+  background-color: #f4f4f4;
+  .azm-head:before {
+    border-top: none;
+  }
+  .t-itmecategory {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-bottom: 24 * 1rpx;
+  }
+
+  .t-itmeCategory {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    margin-top: 24 * 1rpx;
+  }
+
+  .t-itmeCategory .t-categoryName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-categoryText text {
+    font-size: 29 * 1rpx;
+    color: #999999;
+    margin-right: 67 * 1rpx;
+  }
+
+  .t-itmeCategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .t-itmecategory .t-categoryName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
+
+  .t-itmecategory .t-categoryText {
+    width: 74%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .t-categoryText .t-emptyicon {
+    height: 36 * 1rpx;
+    width: 36 * 1rpx;
+    margin-right: 16 * 1rpx;
+  }
+
+  .t-categoryText .t-arrows {
+    width: 15 * 1rpx;
+    height: 25 * 1rpx;
+    margin-right: 26 * 1rpx;
+  }
+
+  .t-categoryText .t-not {
+    color: #ff4919;
+    font-size: 28 * 1rpx;
+    margin-right: 19 * 1rpx;
+  }
+
+  .t-categoryText .t-not2 {
+    color: #999999;
+    font-size: 28 * 1rpx;
+    margin-right: 19 * 1rpx;
+  }
+
+  .t-productLabel {
+    width: 100%;
+    background-color: #ffffff;
+    font-size: 32 * 1rpx;
+    padding: 30 * 1rpx;
+    box-sizing: border-box;
+    .azm-title {
+      margin-bottom: 30 * 1rpx;
+      .left {
+        flex-basis: 168 * 1rpx;
+      }
+      .right {
+        font-size: 30 * 1rpx;
+        color: #999;
+      }
+    }
+    .azm-label {
+      width: 100%;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      .azm-label__btn {
         box-sizing: border-box;
+        line-height: 1;
+        text-align: center;
+        padding-top: 7 * 1rpx;
+        padding-bottom: 7 * 1rpx;
+        padding-left: 22 * 1rpx;
+        padding-right: 22 * 1rpx;
+        margin-right: 30 * 1rpx;
+        margin-bottom: 20 * 1rpx;
+        border: 2 * 1rpx solid #ff4919;
+        color: #ff4919;
+        font-size: 28 * 1rpx;
+        border-radius: 5 * 1rpx;
+        &:nth-child(1) {
+          flex-basis: 86+25 * 1rpx;
+        }
+        .azm-icon {
+          position: absolute;
+          top: 0;
+          right: 0;
+          transform: translate(50%, -50%);
+          height: 22 * 1rpx;
+        }
+      }
     }
+  }
 
-    .productDetails {
-        background-color: #f4f4f4;
-        .azm-head:before {
-            border-top: none;
-        }
-        .t-itmecategory {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-            margin-bottom: 24*1rpx;
-        }
+  .t-labelText text {
+    font-size: 28 * 1rpx;
+    color: #ff4919;
+    padding: 7 * 1rpx 22 * 1rpx;
+    line-height: 41 * 1rpx;
+  }
 
-        .t-itmeCategory {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-            margin-top: 24*1rpx;
-        }
+  .t-labelText .t-delete {
+    position: absolute;
+    width: 22 * 1rpx;
+    height: 22 * 1rpx;
+    right: -8 * 1rpx;
+    top: -11 * 1rpx;
+  }
 
-        .t-itmeCategory .t-categoryName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
+  .t-itme {
+    height: 91 * 1rpx;
+    width: 100%;
+    display: flex;
+    justify-content: first baseline;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+  }
 
-        .t-categoryText text {
-            font-size: 29*1rpx;
-            color: #999999;
-            margin-right: 67*1rpx;
+  .t-itme:nth-child(2) {
+    border-top: none;
+    border-bottom: 1 * 1rpx solid #eeeeee;
+  }
 
-        }
+  .t-itme .t-itmeName {
+    font-size: 32 * 1rpx;
+    width: 26%;
+    height: 100%;
+    line-height: 91 * 1rpx;
+    padding-left: 30 * 1rpx;
+    box-sizing: border-box;
+  }
 
-        .t-itmeCategory .t-categoryText {
-            width: 74%;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
+  .t-itme .t-itmeText {
+    width: 74%;
+    height: 100%;
+    font-size: 30 * 1rpx;
+  }
 
-        .t-itmecategory .t-categoryName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-itmecategory .t-categoryText {
-            width: 74%;
-            height: 100%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .t-categoryText .t-emptyicon {
-            height: 36*1rpx;
-            width: 36*1rpx;
-            margin-right: 16*1rpx;
-        }
-
-        .t-categoryText .t-arrows {
-            width: 15*1rpx;
-            height: 25*1rpx;
-            margin-right: 26*1rpx;
-        }
-
-        .t-categoryText .t-not {
-            color: #ff8000;
-            font-size: 28*1rpx;
-            margin-right: 19*1rpx;
-        }
-
-        .t-categoryText .t-not2 {
-            color: #999999;
-            font-size: 28*1rpx;
-            margin-right: 19*1rpx;
-        }
-
-        .t-productLabel {
-            width: 100%;
-            background-color: #ffffff;
-            font-size: 32*1rpx;
-            padding: 30*1rpx;
-            box-sizing: border-box;
-            .azm-title {
-                margin-bottom: 30*1rpx;
-                .left {
-                    flex-basis: 168*1rpx;
-                }
-                .right {
-                    font-size: 30*1rpx;
-                    color: #999;
-                }
-            }
-            .azm-label {
-                width: 100%;
-                box-sizing: border-box;
-                flex-wrap: wrap;
-                .azm-label__btn {
-                    box-sizing: border-box;
-                    line-height: 1;
-                    text-align: center;
-                    padding-top: 7*1rpx;
-                    padding-bottom: 7*1rpx;
-                    padding-left: 22*1rpx;
-                    padding-right: 22*1rpx;
-                    margin-right: 30*1rpx;
-                    margin-bottom: 20*1rpx;
-                    border: 2*1rpx solid #ff8000;
-                    color: #ff8000;
-                    font-size: 28*1rpx;
-                    border-radius: 5*1rpx;
-                    &:nth-child(1) {
-                        flex-basis: 86+25*1rpx;
-                    }
-                    .azm-icon {
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        transform: translate(50%, -50%);
-                        height: 22*1rpx;
-                    }
-                }
-            }
-        }
-
-        .t-labelText text {
-            font-size: 28*1rpx;
-            color: #ff8000;
-            padding: 7*1rpx 22*1rpx;
-            line-height: 41*1rpx;
-        }
-
-        .t-labelText .t-delete {
-            position: absolute;
-            width: 22*1rpx;
-            height: 22*1rpx;
-            right: -8*1rpx;
-            top: -11*1rpx;
-        }
-
-        .t-itme {
-            height: 91*1rpx;
-            width: 100%;
-            display: flex;
-            justify-content: first baseline;
-            border-bottom: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-        }
-
-        .t-itme:nth-child(2) {
-            border-top: none;
-            border-bottom: 1*1rpx solid #eeeeee;
-        }
-
-        .t-itme .t-itmeName {
-            font-size: 32*1rpx;
-            width: 26%;
-            height: 100%;
-            line-height: 91*1rpx;
-            padding-left: 30*1rpx;
-            box-sizing: border-box;
-        }
-
-        .t-itme .t-itmeText {
-            width: 74%;
-            height: 100%;
-            font-size: 30*1rpx;
-        }
-
-        .t-itmeText input {
-            height: 100%;
-            line-height: 91*1rpx;
-        }
-        .t-button {
-            height: 98*1rpx;
-            background-color: #ff8000;
-            color: #ffffff;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            line-height: 98*1rpx;
-            text-align: center;
-        }
-    }
+  .t-itmeText input {
+    height: 100%;
+    line-height: 91 * 1rpx;
+  }
+  .t-issue {
+    height: 98 * 1rpx;
+    background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98 * 1rpx;
+    text-align: center;
+    z-index: 100;
+  }
+}
 </style>
  

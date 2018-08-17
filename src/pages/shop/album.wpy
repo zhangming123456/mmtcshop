@@ -158,11 +158,11 @@ export default class extends wepy.page {
 .btn2 {
   margin-left: 30rpx;
   color: #ffffff;
-  background-color: #ff8000;
+  background-color: #ff4919;
 }
 .btn1 {
-  color: #ff8000;
-  border: solid 1px #ff8000;
+  color: #ff4919;
+  border: solid 1px #ff4919;
   background-color: transparent;
 }
 .btn1,
@@ -214,13 +214,13 @@ export default class extends wepy.page {
   padding-bottom: 20rpx;
 }
 .active {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 31rpx;
 }
 .footer-hr {
   width: 129rpx;
   height: 3px;
-  background-color: #ff8000;
+  background-color: #ff4919;
   position: absolute;
   bottom: 0;
   left: 124rpx;

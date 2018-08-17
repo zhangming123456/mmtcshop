@@ -137,609 +137,611 @@
     </view>
 </template>
 <script>
-    import wepy from "wepy";
-    import utilPage from "../../../../mixins/utilPage";
-    import baseMixin from "../../../../mixins/base";
-    import toast from "../../../../components/toast";
-    import c from "../../../../wxs/common.wxs";
+import wepy from "wepy";
+import utilPage from "../../../../mixins/utilPage";
+import baseMixin from "../../../../mixins/base";
+import toast from "../../../../components/toast";
+import c from "../../../../wxs/common.wxs";
 
-    const appPage = new utilPage({
-        data: {
-            text: "Page productsIndex",
-            hasMoreData: false,//是否有更多
-            options: {},
-            isFixed: false,
-            tabList: {
-                list: [
-                    {
-                        id: 0,
-                        title: '已上架',
-                        num: 0
-                    },
-                    {
-                        id: 1,
-                        title: '已下架',
-                        num: 0
-                    },
-                    {
-                        id: 2,
-                        title: '待审核',
-                        num: 0
-                    }
-                ],
-                selectedId: 0,
-                height: 45
-            },//tab列表
-            pages: [1, 1, 1],
-            items: [],
-            startX: 0, //开始坐标
-            startY: 0,
-            images: []
+const appPage = new utilPage({
+  data: {
+    text: "Page productsIndex",
+    hasMoreData: false, //是否有更多
+    options: {},
+    isFixed: false,
+    tabList: {
+      list: [
+        {
+          id: 0,
+          title: "已上架",
+          num: 0
         },
-        onLoad (options) {
-            this.loadCb()
+        {
+          id: 1,
+          title: "已下架",
+          num: 0
         },
-        onShow () {
-            if (this.data.isShow && this.data.isRefresh) {
-                this.loadCb()
-            }
-        },
-        onPullDownRefresh () {
-            let that = this,
-                selectedId = that.tabList.selectedId;
-            that.getItemlistFigure();
-            that.getItemlistSite({p: 1, t: selectedId});
-        },
-
-        onReachBottom () {
-            let that = this,
-                selectedId = that.tabList.selectedId,
-                page = that.data.pages[selectedId];
-            page++;
-            that.showLoading();
-            that.getItemlistSite({p: page, t: selectedId});
-        },
-
-        onPageScroll (options) {
-            if (this.data.isFixed != (options.scrollTop > 5)) {
-                this.isFixed = options.scrollTop > 5;
-                this.$apply();
-            }
+        {
+          id: 2,
+          title: "待审核",
+          num: 0
         }
-    });
-    export default class extends wepy.page {
-        constructor (...args) {
-            super(...args);
-            for (let k in appPage) {
-                if (k === 'methods') {
-                    for (let j in appPage[k]) {
-                        this[k][j] = appPage[k][j]
-                    }
-                } else
-                    this[k] = appPage[k]
-            }
-        }
-
-        config = {
-            navigationBarTitleText: "产品管理",
-            navigationBarBackgroundColor: "#fff",
-            backgroundColor: "#fff",
-            navigationBarTextStyle: "black",
-            backgroundTextStyle: "dark",
-            enablePullDownRefresh: true,
-            onReachBottomDistance: 200
-        };
-        wxs = {
-            c
-        };
-        mixins = [baseMixin];
-
-        loadCb () {
-            let that = this,
-                selectedId = that.tabList.selectedId,
-                page = that.data.pages[selectedId];
-            that.$azmUtil.showLoading();
-            that.getItemlistFigure();
-            that.getItemlistSite({p: 1, t: selectedId});
-        }
-
-        /**
-         * 获取产品tap数量
-         * @returns {PromiseLike<TResult2|TResult1>|Promise<TResult2|TResult1>|Promise.<TResult>}
-         */
-        getItemlistFigure () {
-            let that = this, tabList = that.data.tabList;
-            return this.ApiService.getItemlistFigure().then(
-                res => {
-                    if (res.status === 1) {
-                        let i = 0;
-                        for (let k in res.info) {
-                            that.tabList.list[i].num = res.info[k];
-                            i++;
-                        }
-                    }
-                    that.$apply();
-                }
-            );
-        }
-
-        /**
-         * 获取产品列表
-         * @param p 页
-         * @param t 类型
-         * @returns {PromiseLike<TResult2|TResult1>|Promise<TResult2|TResult1>|Promise.<TResult>}
-         */
-        getItemlistSite ({p = 1, t = 0} = {}) {
-            let that = this,
-                selectedId = that.data.tabList.selectedId,
-                _p = this.ApiService.getItemlistSite({p, t}).then(
-                    res => {
-                        if (res.status === 1 && res.info.length > 0) {
-                            if (p == 1) {
-                                that.items[selectedId] = []
-                            }
-                            that.items[selectedId][p - 1] = res.info;
-                            that.pages[selectedId] = p;
-                        } else {
-                            if (p == 1) {
-                                that.items[selectedId] = []
-                            }
-                        }
-                        that.$apply();
-                    }
-                );
-            _p.finally(res => {
-                that.$azmUtil.hideLoading();
-                wx.stopPullDownRefresh();
-            });
-            return _p;
-        }
-
-        methods = {
-            route (path, item) {
-                console.log(path, item);
-                if (!item.id) return;
-                this.$azmUtil.go(path, {data: {id: item.id}});
-            },
-            itemRoute(item){
-                console.log(item);
-                if (item.auth_status == 1) {
-                    this.$azmUtil.go('/pages/mine/products/reback', {data: {id: item.id}})
-                } else {
-                    this.$azmUtil.go('/pages/mine/products/detail', {data: {id: item.id}})
-                }
-            },
-            bindTapChang (i) {
-                let that = this,
-                    page = that.data.pages[i];
-                if (that.tabList.selectedId == i) return;
-                that.tabList.selectedId = i;
-                that.getItemlistFigure();
-                that.getItemlistSite({p: 1, t: i});
-            },
-            /**
-             * 跳转到发布产品
-             * @param item
-             **/
-            addItem (e, id) {
-                let isEdit = 0
-                if (id) {
-                    isEdit = 1;
-                }
-                this.$azmUtil.go('/pages/newPages/pages/productAddAndEdit/index', {
-                    data: {id, isEdit}
-                });
-            },
-            /**
-             * 编辑产品
-             * @param item
-             **/
-            bindEditItem (item) {
-                this.methods.addItem.call(this, null, item.id);
-            },
-            /**
-             * 上架产品
-             * @param item
-             **/
-            shelfItem (item) {
-                let that = this,
-                    id = item.id, flag = false,
-                    selectedId = that.data.tabList.selectedId,
-                    page = that.data.tabList.list[selectedId];
-                this.confirm("确定上架该项目吗？", () => {
-                    this.$azmUtil.showLoading();
-                    this.ApiService.setIteminfoUpOn({id}).then(
-                        res => {
-                            if (res.status === 1) {
-                                flag = true;
-                            }
-                        }
-                    ).finally(res => {
-                        if (flag) {
-                            that.$azmUtil.showToast('上架成功', function () {
-                                that.loadCb();
-                            });
-                        } else {
-                            that.$azmUtil.failToast('上架失败');
-                        }
-                    });
-                });
-            },
-            /**
-             * 下架产品
-             * @param item
-             **/
-            downItem (item) {
-                let that = this,
-                    id = item.id, flag = false,
-                    selectedId = that.data.tabList.selectedId,
-                    page = that.data.tabList.list[selectedId];
-                this.confirm("确定下架该项目吗？", () => {
-                    this.$azmUtil.showLoading();
-                    this.ApiService.setIteminfoDownOn({id}).then(
-                        res => {
-                            if (res.status === 1) {
-                                flag = true;
-                            }
-                        }
-                    ).finally(res => {
-                        if (flag) {
-                            that.$azmUtil.showToast('下架成功', function () {
-                                that.loadCb();
-                            });
-                        } else {
-                            that.$azmUtil.failToast('下架失败');
-                        }
-                    });
-                });
-            },
-            /**
-             * 撤销审核
-             * @param item
-             **/
-            revokeAuthItem (item) {
-                let that = this,
-                    id = item.id,
-                    flag = false,
-                    selectedId = that.data.tabList.selectedId,
-                    page = that.data.tabList.list[selectedId];
-                this.confirm("是否撤销审核该项目吗？", () => {
-                    this.$azmUtil.showLoading();
-                    this.ApiService.setIteminfoRevokeAuth({id}).then(
-                        res => {
-                            if (res.status === 1) {
-                                flag = true;
-                            }
-                        }
-                    ).finally(res => {
-                        if (flag) {
-                            that.$azmUtil.showToast('撤销审核成功', function () {
-                                that.loadCb();
-                            });
-                        } else {
-                            that.$azmUtil.failToast('撤销审核失败');
-                        }
-                    });
-                });
-            },
-            /**
-             * 提交审核
-             * @param item
-             **/
-            submitReview (item) {
-                let that = this,
-                    id = item.id,
-                    flag = false,
-                    selectedId = that.data.tabList.selectedId,
-                    page = that.data.tabList.list[selectedId];
-                this.confirm("是否提交审核该项目吗？", () => {
-                    this.$azmUtil.showLoading();
-                    this.ApiService.examineItem({id}).then(
-                        res => {
-                            if (res.status === 1) {
-                                flag = true;
-                            }
-                        }
-                    ).finally(res => {
-                        if (flag) {
-                            that.$azmUtil.showToast('提交审核成功', function () {
-                                that.loadCb();
-                            });
-                        } else {
-                            that.$azmUtil.failToast('提交审核失败');
-                        }
-                    });
-                });
-            },
-            /**
-             * 删除产品
-             * @param item
-             */
-            deleteItem (item) {
-                let that = this,
-                    flag = false;
-                that.confirm("是否删除产品，删除后将不能恢复？", () => {
-                    this.$azmUtil.showLoading();
-                    this.ApiService.deleteItem({id: item.id}).then(
-                        res => {
-                            if (res.status === 1) {
-                                flag = true;
-                            }
-                        }
-                    ).finally(res => {
-                        if (flag) {
-                            that.$azmUtil.showToast('删除成功', function () {
-                                that.loadCb();
-                            });
-                        } else {
-                            that.$azmUtil.failToast('删除失败');
-                        }
-                    });
-                });
-            }
-        }
+      ],
+      selectedId: 0,
+      height: 45
+    }, //tab列表
+    pages: [1, 1, 1],
+    items: [],
+    startX: 0, //开始坐标
+    startY: 0,
+    images: []
+  },
+  onLoad(options) {
+    this.loadCb();
+  },
+  onShow() {
+    if (this.data.isShow && this.data.isRefresh) {
+      this.loadCb();
     }
+  },
+  onPullDownRefresh() {
+    let that = this,
+      selectedId = that.tabList.selectedId;
+    that.getItemlistFigure();
+    that.getItemlistSite({ p: 1, t: selectedId });
+  },
+
+  onReachBottom() {
+    let that = this,
+      selectedId = that.tabList.selectedId,
+      page = that.data.pages[selectedId];
+    page++;
+    that.showLoading();
+    that.getItemlistSite({ p: page, t: selectedId });
+  },
+
+  onPageScroll(options) {
+    if (this.data.isFixed != options.scrollTop > 5) {
+      this.isFixed = options.scrollTop > 5;
+      this.$apply();
+    }
+  }
+});
+export default class extends wepy.page {
+  constructor(...args) {
+    super(...args);
+    for (let k in appPage) {
+      if (k === "methods") {
+        for (let j in appPage[k]) {
+          this[k][j] = appPage[k][j];
+        }
+      } else this[k] = appPage[k];
+    }
+  }
+
+  config = {
+    navigationBarTitleText: "产品管理",
+    navigationBarBackgroundColor: "#fff",
+    backgroundColor: "#fff",
+    navigationBarTextStyle: "black",
+    backgroundTextStyle: "dark",
+    enablePullDownRefresh: true,
+    onReachBottomDistance: 200
+  };
+  wxs = {
+    c
+  };
+  mixins = [baseMixin];
+
+  loadCb() {
+    let that = this,
+      selectedId = that.tabList.selectedId,
+      page = that.data.pages[selectedId];
+    that.$azmUtil.showLoading();
+    that.getItemlistFigure();
+    that.getItemlistSite({ p: 1, t: selectedId });
+  }
+
+  /**
+   * 获取产品tap数量
+   * @returns {PromiseLike<TResult2|TResult1>|Promise<TResult2|TResult1>|Promise.<TResult>}
+   */
+  getItemlistFigure() {
+    let that = this,
+      tabList = that.data.tabList;
+    return this.ApiService.getItemlistFigure().then(res => {
+      if (res.status === 1) {
+        let i = 0;
+        for (let k in res.info) {
+          that.tabList.list[i].num = res.info[k];
+          i++;
+        }
+      }
+      that.$apply();
+    });
+  }
+
+  /**
+   * 获取产品列表
+   * @param p 页
+   * @param t 类型
+   * @returns {PromiseLike<TResult2|TResult1>|Promise<TResult2|TResult1>|Promise.<TResult>}
+   */
+  getItemlistSite({ p = 1, t = 0 } = {}) {
+    let that = this,
+      selectedId = that.data.tabList.selectedId,
+      _p = this.ApiService.getItemlistSite({ p, t }).then(res => {
+        if (res.status === 1 && res.info.length > 0) {
+          if (p == 1) {
+            that.items[selectedId] = [];
+          }
+          that.items[selectedId][p - 1] = res.info;
+          that.pages[selectedId] = p;
+        } else {
+          if (p == 1) {
+            that.items[selectedId] = [];
+          }
+        }
+        that.$apply();
+      });
+    _p.finally(res => {
+      that.$azmUtil.hideLoading();
+      wx.stopPullDownRefresh();
+    });
+    return _p;
+  }
+
+  methods = {
+    route(path, item) {
+      console.log(path, item);
+      if (!item.id) return;
+      this.$azmUtil.go(path, { data: { id: item.id } });
+    },
+    itemRoute(item) {
+      console.log(item);
+      if (item.auth_status == 1) {
+        this.$azmUtil.go("/pages/mine/products/reback", {
+          data: { id: item.id }
+        });
+      } else {
+        this.$azmUtil.go("/pages/mine/products/detail", {
+          data: { id: item.id }
+        });
+      }
+    },
+    bindTapChang(i) {
+      let that = this,
+        page = that.data.pages[i];
+      if (that.tabList.selectedId == i) return;
+      that.tabList.selectedId = i;
+      that.getItemlistFigure();
+      that.getItemlistSite({ p: 1, t: i });
+    },
+    /**
+     * 跳转到发布产品
+     * @param item
+     **/
+    addItem(e, id) {
+      let isEdit = 0;
+      if (id) {
+        isEdit = 1;
+      }
+      this.$azmUtil.go("/pages/newPages/pages/productAddAndEdit/index", {
+        data: { id, isEdit }
+      });
+    },
+    /**
+     * 编辑产品
+     * @param item
+     **/
+    bindEditItem(item) {
+      this.methods.addItem.call(this, null, item.id);
+    },
+    /**
+     * 上架产品
+     * @param item
+     **/
+    shelfItem(item) {
+      let that = this,
+        id = item.id,
+        flag = false,
+        selectedId = that.data.tabList.selectedId,
+        page = that.data.tabList.list[selectedId];
+      this.confirm("确定上架该项目吗？", () => {
+        this.$azmUtil.showLoading();
+        this.ApiService.setIteminfoUpOn({ id })
+          .then(res => {
+            if (res.status === 1) {
+              flag = true;
+            }
+          })
+          .finally(res => {
+            if (flag) {
+              that.$azmUtil.showToast("上架成功", function() {
+                that.loadCb();
+              });
+            } else {
+              that.$azmUtil.failToast("上架失败");
+            }
+          });
+      });
+    },
+    /**
+     * 下架产品
+     * @param item
+     **/
+    downItem(item) {
+      let that = this,
+        id = item.id,
+        flag = false,
+        selectedId = that.data.tabList.selectedId,
+        page = that.data.tabList.list[selectedId];
+      this.confirm("确定下架该项目吗？", () => {
+        this.$azmUtil.showLoading();
+        this.ApiService.setIteminfoDownOn({ id })
+          .then(res => {
+            if (res.status === 1) {
+              flag = true;
+            }
+          })
+          .finally(res => {
+            if (flag) {
+              that.$azmUtil.showToast("下架成功", function() {
+                that.loadCb();
+              });
+            } else {
+              that.$azmUtil.failToast("下架失败");
+            }
+          });
+      });
+    },
+    /**
+     * 撤销审核
+     * @param item
+     **/
+    revokeAuthItem(item) {
+      let that = this,
+        id = item.id,
+        flag = false,
+        selectedId = that.data.tabList.selectedId,
+        page = that.data.tabList.list[selectedId];
+      this.confirm("是否撤销审核该项目吗？", () => {
+        this.$azmUtil.showLoading();
+        this.ApiService.setIteminfoRevokeAuth({ id })
+          .then(res => {
+            if (res.status === 1) {
+              flag = true;
+            }
+          })
+          .finally(res => {
+            if (flag) {
+              that.$azmUtil.showToast("撤销审核成功", function() {
+                that.loadCb();
+              });
+            } else {
+              that.$azmUtil.failToast("撤销审核失败");
+            }
+          });
+      });
+    },
+    /**
+     * 提交审核
+     * @param item
+     **/
+    submitReview(item) {
+      let that = this,
+        id = item.id,
+        flag = false,
+        selectedId = that.data.tabList.selectedId,
+        page = that.data.tabList.list[selectedId];
+      this.confirm("是否提交审核该项目吗？", () => {
+        this.$azmUtil.showLoading();
+        this.ApiService.examineItem({ id })
+          .then(res => {
+            if (res.status === 1) {
+              flag = true;
+            }
+          })
+          .finally(res => {
+            if (flag) {
+              that.$azmUtil.showToast("提交审核成功", function() {
+                that.loadCb();
+              });
+            } else {
+              that.$azmUtil.failToast("提交审核失败");
+            }
+          });
+      });
+    },
+    /**
+     * 删除产品
+     * @param item
+     */
+    deleteItem(item) {
+      let that = this,
+        flag = false;
+      that.confirm("是否删除产品，删除后将不能恢复？", () => {
+        this.$azmUtil.showLoading();
+        this.ApiService.deleteItem({ id: item.id })
+          .then(res => {
+            if (res.status === 1) {
+              flag = true;
+            }
+          })
+          .finally(res => {
+            if (flag) {
+              that.$azmUtil.showToast("删除成功", function() {
+                that.loadCb();
+              });
+            } else {
+              that.$azmUtil.failToast("删除失败");
+            }
+          });
+      });
+    }
+  };
+}
 </script>
 
 <style lang="less">
-    page {
-        background-color: #f4f4f4;
+page {
+  background-color: #f4f4f4;
+}
+
+.productManage {
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+  padding-bottom: 103 * 1rpx;
+  .t-navbar {
+    box-sizing: border-box;
+    height: 90 * 1rpx;
+    width: 100%;
+    .t-flex {
+      width: 100%;
+      height: 90 * 1rpx;
+      color: #282828;
+      text-align: center;
+      background-color: #fff;
+      white-space: nowrap;
+      z-index: 999;
+      left: 0;
+      right: 0;
+      top: 0;
     }
-
-    .productManage {
-        box-sizing: border-box;
-        overflow: hidden;
-        width: 100%;
-        padding-bottom: 103*1rpx;
-        .t-navbar {
-            box-sizing: border-box;
-            height: 90*1rpx;
-            width: 100%;
-            .t-flex {
-                width: 100%;
-                height: 90*1rpx;
-                color: #282828;
-                text-align: center;
-                background-color: #fff;
-                white-space: nowrap;
-                z-index: 999;
-                left: 0;
-                right: 0;
-                top: 0;
-            }
-            &.azm-fixed {
-                .t-flex {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                }
-            }
-        }
-
-        .t-flex .t-nav-item {
-            line-height: 90*1rpx;
-            font-size: 32*1rpx;
-            &.active {
-                color: #ff8000;
-            }
-        }
-
-        .border-r {
-            position: relative;
-        }
-
-        .border-r:after {
-            content: ' ';
-            position: absolute;
-            left: auto;
-            background: #ddd;
-            right: 0;
-            top: 32*1rpx;
-            height: 100%;
-            bottom: 0;
-            width: 2px;
-            height: 27*1rpx;
-            -webkit-transform: scaleX(0.5);
-            transform: scaleX(0.5);
-            -webkit-transform-origin: 0 0;
-            transform-origin: 0 0;
-        }
-
-        .t-refund {
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 24*1rpx;
-        }
-
-        .t-topStatus {
-            height: 85*1rpx;
-            line-height: 85*1rpx;
-            width: 100%;
-            /* background-color: skyblue; */
-            border: 1*1rpx solid #eeeeee;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #ffffff;
-            padding-left: 30*1rpx;
-            padding-right: 30*1rpx;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .t-shopName {
-            font-size: 28*1rpx;
-            color: #999999;
-            line-height: 85*1rpx;
-        }
-
-        .t-statusBar {
-            display: inline-block;
-            font-size: 24*1rpx;
-            color: #ff8000;
-            margin-left: 17*1rpx;
-            min-width: 17*1rpx;
-            height: 38*1rpx;
-            padding: 0 12*1rpx;
-            border: 1px solid #ff8000;
-            line-height: 38*1rpx;
-            text-align: center;
-            border-radius: 10*1rpx;
-        }
-
-        .t-item-info {
-            position: relative;
-            box-sizing: border-box;
-            width: 100%;
-            padding: 30*1rpx;
-            background-color: #ffffff;
-            overflow: hidden;
-            .left {
-                flex-basis: 218*1rpx;
-                width: 218*1rpx;
-            }
-            .right {
-                > view {
-                    line-height: 1;
-                }
-                .t-shopTitle {
-                    margin-bottom: 30*1rpx;
-                    font-size: 36*1rpx;
-                }
-                .azm-money {
-                    margin-bottom: 24*1rpx;
-                    .t-ShopUnit {
-                        font-size: 24*1rpx;
-                        color: #ff8000;
-                    }
-                    .t-ShopPrice {
-                        font-size: 45*1rpx;
-                        color: #ff8000;
-                    }
-                    .azm-TeamworkMoner {
-                        font-family: PingFang-SC-Regular;
-                        font-size: 28*1rpx;
-                        font-weight: normal;
-                        font-stretch: normal;
-                        color: #ff8000;
-                    }
-                    .t-shop-price {
-                        padding-left: 19*1rpx;
-                        font-weight: normal;
-                        font-stretch: normal;
-                        text-decoration: line-through;
-                        font-size: 24*1rpx;
-                        color: #999999;
-                    }
-                }
-                .t-shopNum {
-                    font-size: 26*1rpx;
-                    color: #666666;
-                }
-                .azm-seview__status {
-                    margin-top: 29*1rpx;
-                    font-size: 30*1rpx;
-                    color: #ff8000;
-                }
-            }
-            .t-shopPhoto {
-                width: 188*1rpx;
-                height: 188*1rpx;
-            }
-            /* 删除 */
-            .azm-item-info_del {
-                position: absolute;
-                top: 50%;
-                margin-top: -100*1rpx;
-                right: 0;
-                background-color: orangered;
-                width: 140*1rpx;
-                height: 200*1rpx;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                font-size: 30*1rpx;
-                justify-content: center;
-                color: #fff;
-                -webkit-transform: translateX(90px);
-                transform: translateX(90px);
-                -webkit-transition: all 0.4s;
-                transition: all 0.4s;
-            }
-        }
-
-        .t-shopCompile {
-            height: 88*1rpx;
-            line-height: 88*1rpx;
-            width: 100%;
-            border: 1*1rpx solid #eeeeee;
-            background-color: #ffffff;
-            text-align: right;
-            overflow: hidden;
-            padding-left: 30*1rpx;
-            padding-right: 30*1rpx;
-            box-sizing: border-box;
-            .right {
-                height: inherit;
-                line-height: inherit;
-                button.azm-btn {
-                    margin-left: 20*1rpx;
-                }
-            }
-            .left {
-                height: inherit;
-                line-height: inherit;
-                button.azm-btn {
-                    border: none;
-                    color: #999;
-                    padding-left: 0;
-                    &.azm-del {
-                        text-align: left;
-                    }
-                }
-            }
-        }
-
-        button.azm-btn {
-            border-radius: 5px;
-            min-width: 150*1rpx;
-            padding-left: 30*1rpx;
-            padding-right: 30*1rpx;
-            height: 56*1rpx;
-            color: #ff8000;
-            border: 1*1rpx solid #ff8000;
-            font-size: 30*1rpx;
-            line-height: 56*1rpx;
-            text-align: center;
-            &.t-compile {
-                color: #fff;
-                background-color: #ff8000;
-            }
-        }
-
-        .t-issue {
-            box-sizing: border-box;
-            height: 98*1rpx;
-            background-color: #ff8000;
-            color: #ffffff;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            line-height: 98*1rpx;
-            text-align: center;
-            font-size: 35*1rpx;
-            .azm-icon {
-                margin-right: 11*1rpx;
-                font-size: 30*1rpx;
-                color: #fff;
-            }
-        }
-
-        .touch-move-active .content,
-        .touch-move-active .del {
-            -webkit-transform: translateX(0);
-            transform: translateX(0);
-        }
+    &.azm-fixed {
+      .t-flex {
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
     }
+  }
+
+  .t-flex .t-nav-item {
+    line-height: 90 * 1rpx;
+    font-size: 32 * 1rpx;
+    &.active {
+      color: #ff4919;
+    }
+  }
+
+  .border-r {
+    position: relative;
+  }
+
+  .border-r:after {
+    content: " ";
+    position: absolute;
+    left: auto;
+    background: #ddd;
+    right: 0;
+    top: 32 * 1rpx;
+    height: 100%;
+    bottom: 0;
+    width: 2px;
+    height: 27 * 1rpx;
+    -webkit-transform: scaleX(0.5);
+    transform: scaleX(0.5);
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+  }
+
+  .t-refund {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 24 * 1rpx;
+  }
+
+  .t-topStatus {
+    height: 85 * 1rpx;
+    line-height: 85 * 1rpx;
+    width: 100%;
+    /* background-color: skyblue; */
+    border: 1 * 1rpx solid #eeeeee;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding-left: 30 * 1rpx;
+    padding-right: 30 * 1rpx;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .t-shopName {
+    font-size: 28 * 1rpx;
+    color: #999999;
+    line-height: 85 * 1rpx;
+  }
+
+  .t-statusBar {
+    display: inline-block;
+    font-size: 24 * 1rpx;
+    color: #ff4919;
+    margin-left: 17 * 1rpx;
+    min-width: 17 * 1rpx;
+    height: 38 * 1rpx;
+    padding: 0 12 * 1rpx;
+    border: 1px solid #ff4919;
+    line-height: 38 * 1rpx;
+    text-align: center;
+    border-radius: 10 * 1rpx;
+  }
+
+  .t-item-info {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 30 * 1rpx;
+    background-color: #ffffff;
+    overflow: hidden;
+    .left {
+      flex-basis: 218 * 1rpx;
+      width: 218 * 1rpx;
+    }
+    .right {
+      > view {
+        line-height: 1;
+      }
+      .t-shopTitle {
+        margin-bottom: 30 * 1rpx;
+        font-size: 36 * 1rpx;
+        color: #282828;
+      }
+      .azm-money {
+        margin-bottom: 24 * 1rpx;
+        .t-ShopUnit {
+          font-size: 24 * 1rpx;
+          color: #ff4919;
+        }
+        .t-ShopPrice {
+          font-size: 45 * 1rpx;
+          color: #ff4919;
+        }
+        .azm-TeamworkMoner {
+          font-family: PingFang-SC-Regular;
+          font-size: 28 * 1rpx;
+          font-weight: normal;
+          font-stretch: normal;
+          color: #ff4919;
+        }
+        .t-shop-price {
+          padding-left: 19 * 1rpx;
+          font-weight: normal;
+          font-stretch: normal;
+          text-decoration: line-through;
+          font-size: 24 * 1rpx;
+          color: #999999;
+        }
+      }
+      .t-shopNum {
+        font-size: 26 * 1rpx;
+        color: #666666;
+      }
+      .azm-seview__status {
+        margin-top: 29 * 1rpx;
+        font-size: 30 * 1rpx;
+        color: #ff4919;
+      }
+    }
+    .t-shopPhoto {
+      width: 188 * 1rpx;
+      height: 188 * 1rpx;
+    }
+    /* 删除 */
+    .azm-item-info_del {
+      position: absolute;
+      top: 50%;
+      margin-top: -100 * 1rpx;
+      right: 0;
+      background-color: orangered;
+      width: 140 * 1rpx;
+      height: 200 * 1rpx;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 30 * 1rpx;
+      justify-content: center;
+      color: #fff;
+      -webkit-transform: translateX(90px);
+      transform: translateX(90px);
+      -webkit-transition: all 0.4s;
+      transition: all 0.4s;
+    }
+  }
+
+  .t-shopCompile {
+    height: 88 * 1rpx;
+    line-height: 88 * 1rpx;
+    width: 100%;
+    border: 1 * 1rpx solid #eeeeee;
+    background-color: #ffffff;
+    text-align: right;
+    overflow: hidden;
+    padding-left: 30 * 1rpx;
+    padding-right: 30 * 1rpx;
+    box-sizing: border-box;
+    .right {
+      height: inherit;
+      line-height: inherit;
+      button.azm-btn {
+        margin-left: 20 * 1rpx;
+      }
+    }
+    .left {
+      height: inherit;
+      line-height: inherit;
+      button.azm-btn {
+        border: none;
+        color: #999;
+        padding-left: 0;
+        &.azm-del {
+          text-align: left;
+        }
+      }
+    }
+  }
+
+  button.azm-btn {
+    border-radius: 5px;
+    min-width: 150 * 1rpx;
+    padding-left: 30 * 1rpx;
+    padding-right: 30 * 1rpx;
+    height: 56 * 1rpx;
+    color: #ff4919;
+    border: 1 * 1rpx solid #ff4919;
+    font-size: 30 * 1rpx;
+    line-height: 56 * 1rpx;
+    text-align: center;
+    &.t-compile {
+      color: #fff;
+      background-color: #ff4919;
+    }
+  }
+
+  .t-issue {
+    box-sizing: border-box;
+    height: 98 * 1rpx;
+    background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+    color: #ffffff;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 98 * 1rpx;
+    text-align: center;
+    font-size: 35 * 1rpx;
+    .azm-icon {
+      margin-right: 11 * 1rpx;
+      font-size: 30 * 1rpx;
+      color: #fff;
+    }
+  }
+  .touch-move-active .content,
+  .touch-move-active .del {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+}
 </style>
  

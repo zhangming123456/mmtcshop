@@ -1,4 +1,4 @@
-<template >
+<template>
 <view class="container-main">
   <view class="header">
     <view class="flex"  wx:if="{{info.group_info.status==2}}">
@@ -13,7 +13,7 @@
       </view>
     </view>
     <view class="flex" wx:elif="{{info.group_info.status==1}}">
-      <image class="close-icon" src="/imgs/clock.png"/>
+      <image class="close-icon" src="/imgs/ok.png"/>
       <view class="pl30">
         <view class="header-title flex"> 
           <view>拼团成功</view>
@@ -33,7 +33,7 @@
       </view>
     </view>
   </view>
-  <view class="hr24"/>
+  <view class="hr24"/>  
   <view class="items">
     <view class="flex flex-stretch" bindtap="showItemDetail" data-wpyshowitemdetail-a="{{info.group_info.item_id}}"> 
       <view class="cover-wrap">
@@ -49,7 +49,7 @@
       </view>
     </view>
   </view>
-  <view class="caption-title"> 成员订单</view>
+  <view class="caption-title">成员订单</view>
   <view class="members"> 
     <view class="member" wx:for="{{info.members}}">
       <view class="p30 border-b">
@@ -87,7 +87,7 @@
       <view class="flex-con text-right line-through">￥{{info.group_info.origin_price}}</view>
     </view>
   </view>
-  <view class="border-b flex-title">           
+  <view class="border-b flex-title">                                                
     <view class="flex">
       <view class="flex-label">拼团价格</view>
       <view class="flex-con text-right flex-price">￥{{info.group_info.price}}</view>
@@ -96,11 +96,11 @@
   <view class="border-b plist">
     <view class="state2">团单ID：{{info.group_info.open_id}}</view>
     <view class="state">开团时间：{{info.group_info.open_time}}</view>
-    <view wx:if="{{info.group_info.status==1}}">成团时间：{{info.group_info.done_time}}</view>
+    <view  class="state" wx:if="{{info.group_info.status==1}}">成团时间：{{info.group_info.done_time}}</view>
     <view class="state" wx:else>{{info.group_info.status==0?'预计到期':'失效时间'}}：{{info.group_info.expire_time}}</view>
     <view  class="state" wx:if="{{info.group_info.status==2}}">失败原因：过期未成团或产品下架</view>
     <view  class="state">交易状态：
-      <view class="order-status" wx:if="{{info.group_info.status==1}}"> 拼团成功  </view>
+      <view class="order-status" wx:if="{{info.group_info.status==1}}"> 拼团成功</view> 
       <view class="order-status" wx:else>{{info.group_info.status==0?'进行中':'团单失效'}}</view>
     </view>
   </view>
@@ -109,13 +109,13 @@
 </view>
 </template>
 <script>
-import wepy from "wepy";
+import wepy from "wepy"; 
 import baseMixin from "../../mixins/base";
 import m1 from "../../wxs/common.wxs";
 export default class extends wepy.page {
   config = {
     navigationBarTitleText: "订单详情",
-    navigationBarBackgroundColor: "#2c2e3e",
+    navigationBarBackgroundColor: "#3d70f7",
     backgroundColor: "#f4f4f4",
     navigationBarTextStyle: "white"
   };
@@ -180,9 +180,9 @@ image.level-img {
   font-size: 20rpx;
   height: 29rpx;
   line-height: 29rpx;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
   padding: 0 9rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 .pl20 {
   padding-left: 20rpx;
@@ -196,7 +196,7 @@ button.send-letter {
   margin: 0;
   height: 46rpx;
   line-height: 46rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   color: #fff;
   border-radius: 10rpx;
   font-size: 28rpx;
@@ -224,12 +224,12 @@ button.send-letter {
 .item-status {
   height: 34rpx;
   font-size: 22rpx;
-  color: #ff8000;
+  color: #ff4919;
   padding: 0 7rpx;
   line-height: 34rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   border-radius: 10px;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
 }
 .price-area {
   padding: 30rpx 0;
@@ -240,12 +240,12 @@ button.send-letter {
   color: #999999;
 }
 .price-unit {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 26rpx;
 }
 .price-num {
   font-size: 40rpx;
-  color: #ff8000;
+  color: #ff4919;
   margin-right: 20rpx;
 }
 .market-price {
@@ -272,7 +272,7 @@ button.send-letter {
 }
 .flex-price {
   font-size: 34rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 .order-status {
   display: inline;
@@ -288,14 +288,14 @@ button.send-letter {
 }
 .header {
   padding: 40rpx 30rpx;
-  background-color: #2c2e3e;
+  background-color: #3d70f7;
   color: #ffffff;
 }
 .header-title {
   font-size: 32rpx;
 }
 .left-count {
-  color: #ff8000;
+  color: #ff4919;
   padding: 0 6rpx;
 }
 .expire-time {
@@ -315,6 +315,7 @@ button.send-letter {
   width: 92rpx;
   border-radius: 50%;
   height: 92rpx;
+  border: 1px solid #ff4919;
 }
 .member {
   padding-left: 30rpx;

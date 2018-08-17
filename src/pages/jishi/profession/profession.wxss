@@ -31,7 +31,7 @@
     margin-right: 26rpx;
 }
 
-label {
+.label {
     display: block;
     width: 100%;
     height: 91rpx;
@@ -45,7 +45,7 @@ label {
 }
 
 .active {
-    color: #ff8000;
+    color: #ff4919;
 }
 
 /* 点击图片显示隐藏 */
@@ -60,7 +60,7 @@ label {
 
 /* 底部 */
 
-.bottom {
+.button {
     position: fixed;
     height: 100rpx;
     width: 100%;
@@ -70,20 +70,24 @@ label {
     justify-content: center;
 }
 
-.bottom .delete {
-    color: #ff8000;
+
+button{
+    border: none;
+}
+
+.button .delete {
+    color: #666666;
     text-align: center;
     line-height: 100rpx;
     width: 50%;
     height: 100%;
-    border: 1rpx solid #ff8000;
+    border-top: 1px solid #e5e5e5;
 }
 
-.bottom .true {
+.button .true {
     width: 50%;
     height: 100%;
-    background-color: #ff8000;
-    border: 1px solid #ff8000;
+    background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
     color: #ffffff;
     text-align: center;
     line-height: 100rpx;

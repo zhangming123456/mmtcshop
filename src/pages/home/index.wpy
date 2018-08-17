@@ -35,222 +35,223 @@
 
 </template>
 <script>
-    import wepy from "wepy";
-    import baseMixin from "../../mixins/base";
-    import queryString from "../../mixins/queryString";
-    import datalist from "../../components/datalist";
+import wepy from "wepy";
+import baseMixin from "../../mixins/base";
+import queryString from "../../mixins/queryString";
+import datalist from "../../components/datalist";
 
-    export default class extends wepy.page {
-        config = {
-            navigationBarTitleText: "商家后台",
-            navigationBarBackgroundColor: "#2c2e3e",
-            enablePullDownRefresh: true,
-            backgroundColor: "#fff",
-            navigationBarTextStyle: "white"
-        };
-        components = {
-            datalist
-        };
-        data = {
-            list: []
-        };
-        mixins = [baseMixin];
+export default class extends wepy.page {
+  config = {
+    navigationBarTitleText: "商家后台",
+    navigationBarBackgroundColor: "#3d70f7",
+    enablePullDownRefresh: true,
+    backgroundColor: "#fff",
+    navigationBarTextStyle: "white"
+  };
+  components = {
+    datalist
+  };
+  data = {
+    list: []
+  };
+  mixins = [baseMixin];
 
-        onLoad (options) {
-            this.getUserInfo();
-            console.log(options, "___index____onLoad__options____");
-            if (options.q) {
-                this.methods.getOrderId(options.q, this);
-            }
-        }
-
-        onPullDownRefresh () {
-            this.$broadcast("onPullDownRefresh");
-        }
-
-        onReachBottom () {
-            this.$broadcast("onReachBottom");
-        }
-
-        methods = {
-            getOrderId(q, that) {
-                console.log(q, "_________getOrderId__________");
-                if (!q) return;
-                var pwd = queryString.parse(q).pwd;
-                // console.log(pwd, "sdd");
-                that.showLoading();
-                that.$post(
-                    "/shopapi/verification/see",
-                    {
-                        pwd
-                    },
-                    info => {
-                        if (info.is_used == 1) {
-                            that.$goto("haschecked?order_id=" + info.id);
-                        } else {
-                            that.$goto(
-                                "orderinfo?info=" + encodeURIComponent(JSON.stringify(info))
-                            );
-                        }
-                    },
-                    () => {
-                        that.hideLoading();
-                    }
-                );
-            },
-            showOrderDetail(bill_id, group_open_id) {
-                if (!group_open_id) {
-                    this.$goto("/pages/order/detail?id=" + bill_id);
-                } else {
-                    this.$goto("/pages/order/groupdetail?id=" + group_open_id);
-                }
-            },
-            scanCode() {
-                wx.scanCode({
-                    success: res => {
-                        let result = res.result;
-                        console.log(result, "___index____scanCode__result____");
-                        if (result) {
-                            this.methods.getOrderId(result, this);
-                        } else {
-                            this.$goto("scanerr");
-                        }
-                    }
-                });
-            },
-            showSearchWin() {
-                this.$goto("/pages/home/search?order_type=0");
-            },
-
-            showCheckValidPage() {
-                this.$goto("/pages/home/checkpwd");
-            },
-            checkValid() {
-            }
-        };
+  onLoad(options) {
+    this.getUserInfo();
+    console.log(options, "___index____onLoad__options____");
+    if (options.q) {
+      this.methods.getOrderId(options.q, this);
     }
+  }
+
+  onPullDownRefresh() {
+    this.$broadcast("onPullDownRefresh");
+  }
+
+  onReachBottom() {
+    this.$broadcast("onReachBottom");
+  }
+
+  methods = {
+    getOrderId(q, that) {
+      console.log(q, "_________getOrderId__________");
+      if (!q) return;
+      var pwd = queryString.parse(q).pwd;
+      // console.log(pwd, "sdd");
+      that.showLoading();
+      that.$post(
+        "/shopapi/verification/see",
+        {
+          pwd
+        },
+        info => {
+          if (info.is_used == 1) {
+            that.$goto("haschecked?order_id=" + info.id);
+          } else {
+            that.$goto(
+              "orderinfo?info=" + encodeURIComponent(JSON.stringify(info))
+            );
+          }
+        },
+        () => {
+          that.hideLoading();
+        }
+      );
+    },
+    showOrderDetail(bill_id, group_open_id) {
+      if (!group_open_id) {
+        this.$goto("/pages/order/detail?id=" + bill_id);
+      } else {
+        this.$goto("/pages/order/groupdetail?id=" + group_open_id);
+      }
+    },
+    scanCode() {
+      wx.scanCode({
+        success: res => {
+          let result = res.result;
+          console.log(result, "___index____scanCode__result____");
+          if (result) {
+            this.methods.getOrderId(result, this);
+          } else {
+            this.$goto("scanerr");
+          }
+        }
+      });
+    },
+    showSearchWin() {
+      this.$goto("/pages/home/search?order_type=0");
+    },
+
+    showCheckValidPage() {
+      this.$goto("/pages/home/checkpwd");
+    },
+    checkValid() {}
+  };
+}
 </script>
 
 <style lang="less">
-    view {
-        line-height: 1;
+view {
+  line-height: 1;
+}
+
+.empty-area {
+  text-align: center;
+  padding-top: 156 * 1rpx;
+  padding-bottom: 156 * 1rpx;
+  .empty-img {
+    text-align: center;
+    & > image {
+      width: 191 * 1rpx;
+      height: 190 * 1rpx;
     }
+  }
+  .empty-txt {
+    font-size: 30 * 1rpx;
+    color: #999999;
+    padding-top: 40 * 1rpx;
+  }
+}
 
-    .empty-area {
-        text-align: center;
-        padding-top: 156*1rpx;
-        padding-bottom: 156*1rpx;
-        .empty-img {
-            text-align: center;
-            & > image {
-                width: 191*1rpx;
-                height: 190*1rpx;
-            }
-        }
-        .empty-txt {
-            font-size: 30*1rpx;
-            color: #999999;
-            padding-top: 40*1rpx;
-        }
+.loading-more {
+  text-align: center;
+  padding: 30 * 1rpx 0;
+  color: #999;
+  font-size: 24 * 1rpx;
+  clear: both;
+}
+
+.nomore-img {
+  width: 127 * 1rpx;
+  height: 134 * 1rpx;
+}
+
+.container-main {
+  .item-box {
+    background-color: #fff;
+    margin-bottom: 24 * 1rpx;
+  }
+  .item-box-content {
+    padding: 32 * 1rpx 29 * 1rpx 28 * 1rpx 29 * 1rpx;
+  }
+  .item-box-content-title {
+    color: #282828;
+    font-size: 34 * 1rpx;
+    line-height: 1.3em;
+  }
+
+  .item-box-row {
+    padding-top: 24 * 1rpx;
+    color: #999999;
+    font-size: 28 * 1rpx;
+  }
+  .item-box-row-last {
+    font-size: 30 * 1rpx;
+    color: #282828;
+    padding-top: 24 * 1rpx;
+  }
+  .item-box-row-last .price {
+    color: #ff4919;
+    font-size: 24 * 1rpx;
+  }
+  .item-box-row-last .price .ib {
+    font-size: 45 * 1rpx;
+    display: inline;
+  }
+  .item-box-title {
+    color: #999999;
+    font-size: 28 * 1rpx;
+
+    padding: 24 * 1rpx 30 * 1rpx;
+  }
+  .header {
+    background-color: #3d70f7;
+    color: white;
+    padding: 92 * 1rpx 0 44 * 1rpx 0;
+    font-size: 28 * 1rpx;
+    // background: -webkit-gradient(linear,0% 0%, 45% 100%, to(#ff4919), color-stop(0.5,#3d70f7));
+    .txt {
+      padding-top: 34 * 1rpx;
     }
+  }
+  .search-area {
+    font-size: 26 * 1rpx;
+    padding: 24 * 1rpx 30 * 1rpx;
+    background-color: #f4f4f4;
+    color: #999999;
+  }
+  .search-box {
+    background-color: #ffffff;
+    padding: 24 * 1rpx 0;
+    border: solid 1px #eeeeee;
+    border-radius: 5 * 1rpx;
+  }
+  .search-box image {
+    width: 30 * 1rpx;
+    height: 30 * 1rpx;
+    margin-right: 10 * 1rpx;
+  }
+  .validate-img {
+    width: 108 * 1rpx;
+    height: 100 * 1rpx;
+  }
+  .scan-img {
+    width: 122 * 1rpx;
+    height: 100 * 1rpx;
+  }
+  .right-border {
+    width: 4 * 1rpx;
+    height: 73 * 1rpx;
+    background-color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    right: 0;
+    top: 35 * 1rpx;
+    opacity: 0.5;
+  }
+}
 
-    .loading-more {
-        text-align: center;
-        padding: 30*1rpx 0;
-        color: #999;
-        font-size: 24*1rpx;
-        clear: both;
-    }
-
-    .nomore-img {
-        width: 127*1rpx;
-        height: 134*1rpx;
-    }
-
-    .container-main {
-        .item-box {
-            background-color: #fff;
-            margin-bottom: 24*1rpx;
-        }
-        .item-box-content {
-            padding: 32*1rpx 29*1rpx 28*1rpx 29*1rpx;
-        }
-        .item-box-content-title {
-            color: #ff8000;
-            font-size: 34*1rpx;
-            line-height: 1.3em;
-        }
-
-        .item-box-row {
-            padding-top: 24*1rpx;
-            color: #999999;
-            font-size: 28*1rpx;
-        }
-        .item-box-row-last {
-            font-size: 30*1rpx;
-            color: #282828;
-            padding-top: 24*1rpx;
-        }
-        .item-box-row-last .price {
-            color: #ff8000;
-            font-size: 24*1rpx;
-        }
-        .item-box-row-last .price .ib {
-            font-size: 45*1rpx;
-            display: inline;
-        }
-        .item-box-title {
-            color: #999999;
-            font-size: 28*1rpx;
-
-            padding: 24*1rpx 30*1rpx;
-        }
-        .header {
-            background-color: #2c2e3e;
-            color: white;
-            padding: 92*1rpx 0 44*1rpx 0;
-            font-size: 28*1rpx;
-            .txt {
-                padding-top: 34*1rpx;
-            }
-        }
-        .search-area {
-            font-size: 26*1rpx;
-            padding: 24*1rpx 30*1rpx;
-            background-color: #f4f4f4;
-            color: #999999;
-        }
-        .search-box {
-            background-color: #ffffff;
-            padding: 24*1rpx 0;
-            border: solid 1px #eeeeee;
-            border-radius: 5*1rpx;
-        }
-        .search-box image {
-            width: 30*1rpx;
-            height: 30*1rpx;
-            margin-right: 10*1rpx;
-        }
-        .validate-img {
-            width: 108*1rpx;
-            height: 100*1rpx;
-        }
-        .scan-img {
-            width: 122*1rpx;
-            height: 100*1rpx;
-        }
-        .right-border {
-            width: 4*1rpx;
-            height: 73*1rpx;
-            background-color: rgba(255, 255, 255, 0.5);
-            position: absolute;
-            right: 0;
-            top: 35*1rpx;
-        }
-    }
-
-    page {
-        background-color: #f4f4f4;
-    }
+page {
+  background-color: #f4f4f4;
+}
 </style>
  

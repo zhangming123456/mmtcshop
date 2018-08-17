@@ -155,7 +155,7 @@ export default class Alterpwd extends wepy.page {
     }
   }
   .clear-btn {
-    color: #ff8000;
+    color: #ff4919;
     font-size: 28rpx;
   }
   .item-box {
@@ -166,7 +166,7 @@ export default class Alterpwd extends wepy.page {
     padding: 32rpx 29rpx 28rpx 29rpx;
   }
   .item-box-content-title {
-    color: #ff8000;
+    color: #333333;
     font-size: 34rpx;
   }
   .item-box-row {
@@ -180,7 +180,7 @@ export default class Alterpwd extends wepy.page {
     padding-top: 24rpx;
   }
   .item-box-row-last .price {
-    color: #ff8000;
+    color: #ff4919;
     font-size: 24rpx;
   }
   .item-box-row-last .price .ib {

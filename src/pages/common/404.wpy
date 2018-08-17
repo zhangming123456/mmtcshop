@@ -86,9 +86,9 @@
     }
 
     button.btn-primary {
-        border: solid 1px #ff8000;
+        border: solid 1px #ff4919;
         font-size: 32*1rpx;
-        color: #ff8000;
+        color: #ff4919;
         background-color: transparent;
     }
 </style>

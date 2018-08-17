@@ -144,6 +144,8 @@ class HttpRequest {
             let _value = utilCommon.isFalse(params.data[k]);
             if ((util.trim(params.data[k]) === '' || !params.data[k]) && !utilCommon.isNumberOfNaN(params.data[k])) {
                 delete params.data[k]
+            } else if (utilCommon.isArray(params.data[k]) && params.data[k].length === 0) {
+                delete params.data[k]
             }
         }
         function failCallback (res) {

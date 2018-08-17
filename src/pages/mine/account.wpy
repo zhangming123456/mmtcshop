@@ -34,6 +34,7 @@ button.btn-account {
   bottom: 0;
   height: 100rpx;
   line-height: 100rpx;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
 }
 </style>
 
@@ -43,7 +44,10 @@ import wepy from "wepy";
 import baseMixin from "../../mixins/base";
 export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "提现账户"
+    navigationBarTitleText: "提现账户",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   mixins = [baseMixin];
   data = {
@@ -55,8 +59,7 @@ export default class extends wepy.page {
       info => {
         this.info = info;
       },
-      () => {
-      }
+      () => {}
     );
   }
   methods = {
@@ -67,7 +70,12 @@ export default class extends wepy.page {
     addAccount() {
       // this.$goto('addaccount?forSave=1');
       // return;
-      this.$goto('alterpwdcheckphone?mode=3&path='+encodeURIComponent('addaccount?forSave=1')+'&title='+encodeURIComponent('更换提现账户')) // for addcount
+      this.$goto(
+        "alterpwdcheckphone?mode=3&path=" +
+          encodeURIComponent("addaccount?forSave=1") +
+          "&title=" +
+          encodeURIComponent("更换提现账户")
+      ); // for addcount
     }
   };
 }

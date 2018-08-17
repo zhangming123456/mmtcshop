@@ -111,7 +111,7 @@ image.avatar {
 }
 
 .nickname {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 32rpx;
   margin-right: 20rpx;
 }
@@ -135,7 +135,7 @@ button.send-letter {
   margin: 0;
   height: 46rpx;
   line-height: 46rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
   color: #fff;
   border-radius: 10rpx;
   font-size: 28rpx;
@@ -170,12 +170,12 @@ button.send-letter {
 .item-status {
   height: 34rpx;
   font-size: 22rpx;
-  color: #ff8000;
+  color: #ff4919;
   padding: 0 7rpx;
   line-height: 34rpx;
   background-color: transparent;
   border-radius: 10px;
-  border: solid 1px #ff8000;
+  border: solid 1px #ff4919;
 }
 
 .price-area {
@@ -189,13 +189,13 @@ button.send-letter {
 }
 
 .price-unit {
-  color: #ff8000;
+  color: #ff4919;
   font-size: 26rpx;
 }
 
 .price-num {
   font-size: 40rpx;
-  color: #ff8000;
+  color: #ff4919;
   margin-right: 20rpx;
 }
 
@@ -228,7 +228,7 @@ button.send-letter {
 
 .flex-price {
   font-size: 34rpx;
-  color: #ff8000;
+  color: #ff4919;
 }
 
 .order-status {

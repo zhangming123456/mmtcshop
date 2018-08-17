@@ -278,7 +278,7 @@
             font-size: 32*1rpx;
             margin-left: 34*1rpx;
             margin-top: 41*1rpx;
-            color: #ff8000;
+            color: #ff4919;
             /* display: inline-block; */
         }
 
@@ -369,7 +369,7 @@
                         height: 26*1rpx;
                         width: 26*1rpx;
                         padding: 0;
-                        background-color: #ff8000;
+                        background-color: #ff4919;
                         color: #fff;
                     }
                 }
@@ -397,7 +397,7 @@
                         height: 100*1rpx;
                         line-height: 100*1rpx;
                         &.active {
-                            color: #ff8000;
+                            color: #ff4919;
                         }
                     }
                 }
@@ -408,7 +408,7 @@
                         border-bottom: 1px solid #dcdcdc;
                         .azm-title {
                             font-size: 32*1rpx;
-                            color: #ff8000;
+                            color: #ff4919;
                             margin-bottom: 40*1rpx;
                         }
                         &:nth-last-child(1) {
@@ -423,8 +423,8 @@
                             .azm-btn {
                                 &.azm-btn_active {
                                     color: #fff;
-                                    background-color: #ff8000;
-                                    border: 1px solid #ff8000;
+                                    background-color: #ff4919;
+                                    border: 1px solid #ff4919;
                                 }
                             }
                         }
@@ -444,8 +444,8 @@
             .t-false {
                 width: 179*1rpx;
                 height: 72*1rpx;
-                border: 2*1rpx solid #ff8000;
-                color: #ff8000;
+                border: 2*1rpx solid #ff4919;
+                color: #ff4919;
                 line-height: 72*1rpx;
                 text-align: center;
                 margin-left: 336*1rpx;
@@ -454,11 +454,11 @@
             .t-true {
                 width: 179*1rpx;
                 height: 72*1rpx;
-                border: 1*1rpx solid #ff8000;
+                border: 1*1rpx solid #ff4919;
                 color: #ffffff;
                 line-height: 72*1rpx;
                 text-align: center;
-                background-color: #ff8000;
+                background-color: #ff4919;
                 margin-right: 30*1rpx;
             }
         }

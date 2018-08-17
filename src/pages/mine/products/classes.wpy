@@ -34,13 +34,13 @@ view.flex.container-main.flex-stretch
     height: 100rpx;
     line-height: 100rpx;
     text-align: center;
-    border-top: solid 1px #ff8000;
+    border-top: solid 1px #ff4919;
   }
   .cancel-btn {
-    color: #ff8000;
+    color: #ff4919;
   }
   .ok-btn {
-    background-color: #ff8000;
+    background-color: #ff4919;
     color: #fff;
   }
   min-height: 680rpx;
@@ -58,7 +58,7 @@ view.flex.container-main.flex-stretch
       line-height: 104rpx;
     }
     .active {
-      background-color: #ff8000;
+      background-color: #ff4919;
       color: white;
     }
   }
@@ -66,7 +66,7 @@ view.flex.container-main.flex-stretch
     padding: 28rpx 26rpx 28rpx 54rpx;
     color: #282828;
     &.selected {
-      color: #ff8000;
+      color: #ff4919;
     }
   }
   .selected-icon {

@@ -125,7 +125,7 @@ page {
 
 .select .girl {
   font-size: 30rpx;
-  color: #ff8000;
+  color: #ff4919;
   line-height: 91rpx;
   margin-left: 78rpx;
 }
@@ -301,10 +301,10 @@ page {
   position: absolute;
   width: 86rpx;
   height: 41rpx;
-  border: 1px solid #ff8000;
+  border: 1px solid #ff4919;
   top: 90rpx;
   left: 31rpx;
-  color: #ff8000;
+  color: #ff4919;
   text-align: center;
   line-height: 41rpx;
 }
@@ -323,8 +323,8 @@ page {
   height: 41rpx;
   padding: 0 10rpx;
   font-size: 28rpx;
-  border: 1px solid #ff8000;
-  color: #ff8000;
+  border: 1px solid #ff4919;
+  color: #ff4919;
   text-align: center;
   line-height: 41rpx;
    /* top: 90rpx;
@@ -386,10 +386,10 @@ page {
 
 .bottom .delete {
   font-size: 30rpx;
-  color: #ff8000;
+  color: #ff4919;
   width: 150rpx;
   height: 56rpx;
-  border: 1px solid #ff8000;
+  border: 1px solid #ff4919;
   text-align: center;
   line-height: 54rpx;
   margin-left: 40rpx;
@@ -400,9 +400,9 @@ page {
   color: #fff;
   width: 150rpx;
   height: 56rpx;
-  border: 1px solid #ff8000;
+  border: 1px solid #ff4919;
   text-align: center;
   line-height: 54rpx;
   margin-right: 27rpx;
-  background-color: #ff8000;
+  background-color: #ff4919;
 }

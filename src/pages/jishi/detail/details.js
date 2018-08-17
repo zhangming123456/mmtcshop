@@ -5,7 +5,7 @@ Page({
     addName: [],
     info: {},
     introlength: 0,
-    color:'#ff8000'
+    color:'#ff4919'
   },
   changeToTest: function (e) {
     wx.navigateTo({
@@ -60,7 +60,26 @@ Page({
       $.$alert('头像不能为空');
       return;
     }
-    data.tags = this.data.addName;
+    if (!data.category_title) {
+      $.$alert('所属行业不能为空');
+      return;
+    }
+    if (!data.type_name) {
+      $.$alert('技师职称不能为空');
+      return;
+    }
+    if (!data.tags || data.tags.length === 0) {
+      $.$alert('擅长领域不能为空');
+      return;
+    }
+
+    let tags = []
+
+    for(let v of data.tags){
+      tags.push(v.title)
+    }
+
+    data.tags = tags;
     $.showLoading()
     $.$post('/shopapi/technician/save',data,res=>{
       if(res){
@@ -133,9 +152,9 @@ Page({
     $.registerService('getTypeName',this,this.getTypeName)
     $.addEventListener('selectTechnicianCategory',this,this.onSelectTechnicianCategory)      
     $.addEventListener('addTags',this,tag=>{
-        this.data.addName.push(tag)
+      let len = this.data.info.tags.length
         this.setData({
-          addName:this.data.addName
+          [`info.tags[${len}]`]:{title:tag}
         })
     })
     $.addEventListener('setTypeName',this,this.onSetTypeName)      
@@ -161,9 +180,9 @@ Page({
   },
   cancel: function cancel(e) {
     var that = this;
-    that.data.addName.splice(e.currentTarget.dataset.item, 1);
+    that.data.info.tags.splice(e.currentTarget.dataset.index, 1);
     that.setData({
-      addName: that.data.addName
+      [`info.tags`]: that.data.info.tags
     });
   }
 });

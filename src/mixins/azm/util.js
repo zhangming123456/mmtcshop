@@ -510,12 +510,18 @@ function failToast (option) {
 
 module.exports.failToast = failToast;
 module.exports.hideToast = wx.hideToast;
-module.exports.hideLoading = function () {
+
+function hideLoading (bol) {
     clearTimeout(timer_toast);
-    timer_toast = setTimeout(res => {
-        wx.hideLoading()
-    }, 1500)
+    if (bol) {
+        wx.hideLoading();
+    } else {
+        timer_toast = setTimeout(res => {
+            wx.hideLoading()
+        }, 100)
+    }
 };
+module.exports.hideLoading = hideLoading;
 
 /**
  * Loading

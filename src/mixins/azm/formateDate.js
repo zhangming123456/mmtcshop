@@ -16,7 +16,6 @@ var timeMark = ['a.m.', 'p.m.'];
 var bigTimeMark = ['AM', 'PM'];
 
 var matcher = [
-
     //YY
     {
         reg: regStrGenerator('Y', 2),
@@ -34,7 +33,6 @@ var matcher = [
             return '$1' + year;
         }
     },
-
     //MMMM
     {
         reg: regStrGenerator('M', 4),

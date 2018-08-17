@@ -5,16 +5,17 @@
                 <radio value="{{index}}" hidden checked="{{item.id == clickId?true:false}}"/>
                 <view class="data" data-id="{{item.id}}" bindtap="changeColor"  >
                     <text class="{{item.id == clickId?'active':''}}">{{item.title}}</text>
-                    <image  class="sign hide {{item.id == clickId?'show':''}}" src="/imgs/true.png"></image>
+                    <image  class="sign hide {{item.id == clickId?'show':''}}" src="/imgs/true_2.png"></image>
                 </view>
-            </label>
+            </label> 
+            
         </radio-group>
-        <view class="bottom">
-            <button class="delete" hover-class="none" form-type="reset" plain>
-                <view >取消</view>
-            </button>                                   
-            <button class="true" hover-class="none" form-type="submit" plain>
-                <view >确定</view>
+        <view class="button">
+            <button class="delete" hover-class="none" form-type="reset" >
+                取消
+            </button>                                             
+            <button class="true" hover-class="none" form-type="submit" >
+               确定
             </button>
         </view>
     </view>

@@ -6,33 +6,33 @@ view.container
                 image.cancel-img(src="/imgs/cancel.png")
     view.num-area
         view.flex
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(7)" hover-class="tapmode") 7
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(8)" hover-class="tapmode") 8
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(9)" hover-class="tapmode") 9
         view.flex
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(4)" hover-class="tapmode") 4
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(5)" hover-class="tapmode") 5
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(6)" hover-class="tapmode") 6
-        
+
         view.flex
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(1)" hover-class="tapmode") 1
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(2)" hover-class="tapmode") 2
-            view.flex-con  
+            view.flex-con
                 button.num(@tap="tapNum(3)" hover-class="tapmode") 3
-        
+
     view.flex.footer-area
-        view.flex-con  
+        view.flex-con
             button.num(@tap="tapNum(0)" hover-class="tapmode") 0
         view.check-area
-            button.check-btn(@tap="doCheck" class="{{isEnabled?'btn-enabled':''}}") 验证  
+            button.check-btn(@tap="doCheck" class="{{isEnabled?'btn-enabled':''}}") 验证
 </template>
 <style lang="less">
 .input-area {
@@ -49,7 +49,7 @@ view.container
     overflow: hidden;
   }
   .input-box-inputed {
-    color: #ff8000 !important;
+    color: #ff4919 !important;
     font-size: 50 * 1rpx;
   }
   .cancel-img-area {
@@ -117,7 +117,7 @@ button.tapmode {
     }
   }
   button.btn-enabled {
-    background-color: #ff8000;
+    background-color: #ff4919;
     color: #ffffff;
   }
 }

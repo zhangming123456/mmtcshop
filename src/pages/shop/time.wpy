@@ -30,7 +30,8 @@ view.hot-tags-wrap
         
 view.footer-area
     view.flex
-        button.btn1(hover-class="tapmode" @tap="cancelSure") 取消
+        
+        // .btn1(hover-class="tapmode" @tap="cancelSure") 取消
         button.btn2(hover-class="tapmode" @tap="doSure") 确认
 </template>
 <script>
@@ -41,7 +42,7 @@ export default class extends wepy.page {
   mixins = [baseMixin];
   data = {
     start_time: [8, 30],
-    end_time: [21, 30],    
+    end_time: [21, 30],
     selectedDays: [
       { title: "周一", selected: 0 },
       { title: "周二", selected: 0 },
@@ -52,23 +53,26 @@ export default class extends wepy.page {
       { title: "周日", selected: 0 }
     ]
   };
-  onLoad() {      
+  onLoad() {
     this.showLoading();
-    this.$get('/shopapi/shop/getScheduleTimes',res=>{
+    this.$get(
+      "/shopapi/shop/getScheduleTimes",
+      res => {
         let days = res.days;
-        if(days && days.length){
-            days.forEach(el => {
-                this.selectedDays[parseInt(el)].selected = true;
-            });
-        }        
-        if(res.time_info){
-            this.start_time = res.time_info.open_starttime.split(':').slice(0,2)
-            this.end_time = res.time_info.open_endtime.split(':').slice(0,2)
+        if (days && days.length) {
+          days.forEach(el => {
+            this.selectedDays[parseInt(el)].selected = true;
+          });
         }
-        
-    },()=>{
-        this.hideLoading()
-    })
+        if (res.time_info) {
+          this.start_time = res.time_info.open_starttime.split(":").slice(0, 2);
+          this.end_time = res.time_info.open_endtime.split(":").slice(0, 2);
+        }
+      },
+      () => {
+        this.hideLoading();
+      }
+    );
     //get all tags
     // this.$get(
     //   "/shopapi/shop/getAllTags",
@@ -80,52 +84,48 @@ export default class extends wepy.page {
     //     this.hideLoading();
     //   }
     // );
-  };
+  }
   methods = {
     changeStartTime(e) {
-      this.start_time =  e.detail.value
+      this.start_time = e.detail.value;
     },
     changeEndTime(e) {
-      this.end_time =  e.detail.value
+      this.end_time = e.detail.value;
     },
     doSure() {
-        let start_time = 0
-        this.start_time.forEach((i,idx) => {
-            start_time+=i*(1-idx)*100
-        });
+      let start_time = 0;
+      this.start_time.forEach((i, idx) => {
+        start_time += i * (1 - idx) * 100;
+      });
 
-        let end_time = 0
-        this.end_time.forEach((i,idx) => {
-            end_time+=i*(1-idx)*100
-        });
+      let end_time = 0;
+      this.end_time.forEach((i, idx) => {
+        end_time += i * (1 - idx) * 100;
+      });
 
-        if(start_time > end_time){
-            this.$alert('开始时间不能大于结束时间')
-            return
+      if (start_time > end_time) {
+        this.$alert("开始时间不能大于结束时间");
+        return;
+      }
+      let days = [];
+      this.selectedDays.forEach((el, idx) => {
+        if (el.selected) {
+          days.push(idx);
         }
-        let days =[];
-        this.selectedDays.forEach((el,idx)=>{
-            if(el.selected){
-                days.push(idx)
-            }
-        })
-        if(days.length == 0){
-            this.$alert('请选择至少一个营业日')
-            return;
-        }
-        let data = {
-          days:days.join(','),
-          start_time:this.start_time.join(':'),
-          end_time:this.end_time.join(':')
-        }
-      this.$post(        
-        "/shopapi/shop/setScheduleTimes",
-        data,
-        () => {
-          this.$noticePage('setOpenTime',data)
-          this.$back();
-        }
-      );
+      });
+      if (days.length == 0) {
+        this.$alert("请选择至少一个营业日");
+        return;
+      }
+      let data = {
+        days: days.join(","),
+        start_time: this.start_time.join(":"),
+        end_time: this.end_time.join(":")
+      };
+      this.$post("/shopapi/shop/setScheduleTimes", data, () => {
+        this.$noticePage("setOpenTime", data);
+        this.$back();
+      });
     },
     cancelSure() {
       this.$back();
@@ -144,128 +144,129 @@ export default class extends wepy.page {
   justify-content: space-between;
 }
 .picker-titles {
-  padding-top: 72*1rpx;
-  padding-bottom: 72*1rpx;
+  padding-top: 72 * 1rpx;
+  padding-bottom: 72 * 1rpx;
   text-align: center;
-  font-size: 30*1rpx;
+  font-size: 30 * 1rpx;
   color: #999999;
   justify-content: space-between;
 }
 .picker-titles view {
-  width: 300*1rpx;
+  width: 300 * 1rpx;
 }
 .timepicker,
 .picker-inner-view {
   text-align: center;
-  line-height: 80*1rpx;
-  font-size: 40*1rpx;
-  height: 80*1rpx;
+  line-height: 80 * 1rpx;
+  font-size: 40 * 1rpx;
+  height: 80 * 1rpx;
 }
 .timepicker-wrap {
-  width: 300*1rpx;
-  height: 400*1rpx;
+  width: 300 * 1rpx;
+  height: 400 * 1rpx;
   display: inline-block;
 }
 .p30 {
   padding-bottom: 0;
 }
 .title-line {
-  width: 6*1rpx;
-  height: 23*1rpx;
-  background-color: #ff8000;
-  border-radius: 2*1rpx;
+  width: 6 * 1rpx;
+  height: 23 * 1rpx;
+  background-color: #ff4919;
+  border-radius: 2 * 1rpx;
   display: inline-block;
-  margin-right: 14*1rpx;
+  margin-right: 14 * 1rpx;
 }
 .hot-title {
-  font-size: 32*1rpx;
-  padding-bottom: 30*1rpx;
+  font-size: 32 * 1rpx;
+  padding-bottom: 30 * 1rpx;
 }
 .hot-tags {
-  margin-right: -30*1rpx;
+  margin-right: -30 * 1rpx;
 }
 .hot-tags-wrap {
-  padding: 50*1rpx 30*1rpx;
+  padding: 50 * 1rpx 30 * 1rpx;
 }
 .hr24 {
   background-color: #f4f4f4;
-  height: 24*1rpx;
+  height: 24 * 1rpx;
 }
 .hot-tag {
-  height: 56*1rpx;
-  line-height: 56*1rpx;
-  font-size: 30*1rpx;
+  height: 56 * 1rpx;
+  line-height: 56 * 1rpx;
+  font-size: 30 * 1rpx;
   display: inline-block;
   color: #999999;
-  padding: 0 23*1rpx;
+  padding: 0 23 * 1rpx;
   border: solid 1px #999999;
-  margin-right: 30*1rpx;
-  margin-bottom: 30*1rpx;
+  margin-right: 30 * 1rpx;
+  margin-bottom: 30 * 1rpx;
 }
 .addbtn-area {
-  padding-left: 27*1rpx;
+  padding-left: 27 * 1rpx;
 }
 .tags {
-  margin-right: -30*1rpx;
+  margin-right: -30 * 1rpx;
 }
 .tags .tag {
-  height: 56*1rpx;
-  line-height: 56*1rpx;
+  height: 56 * 1rpx;
+  line-height: 56 * 1rpx;
   background-color: transparent;
-  border-radius: 5*1rpx;
+  border-radius: 5 * 1rpx;
   text-align: center;
-  font-size: 30*1rpx;
+  font-size: 30 * 1rpx;
   display: inline-block;
   color: #999999;
   border: solid 1px #999999;
   position: relative;
-  margin-right: 25*1rpx;
-  width: 150*1rpx;
+  margin-right: 25 * 1rpx;
+  width: 150 * 1rpx;
 
-  margin-bottom: 30*1rpx;
+  margin-bottom: 30 * 1rpx;
 }
 .tag.selected {
   color: #fefefe;
-  border: solid 1px #ff8000;
-  background-color: #ff8000;
+  border: solid 1px #ff4919;
+  background-color: #ff4919;
+  border-radius: 7rpx;
 }
 .tag-remove {
   position: absolute;
-  right: -15*1rpx;
-  top: -15*1rpx;
-  width: 29*1rpx;
-  height: 29*1rpx;
+  right: -15 * 1rpx;
+  top: -15 * 1rpx;
+  width: 29 * 1rpx;
+  height: 29 * 1rpx;
 }
 .addbtn {
-  width: 119*1rpx;
+  width: 119 * 1rpx;
   text-align: center;
-  height: 56*1rpx;
-  line-height: 56*1rpx;
+  height: 56 * 1rpx;
+  line-height: 56 * 1rpx;
   background-color: transparent;
   padding: 0;
-  font-size: 30*1rpx;
-  color: #ff8000;
-  border-radius: 5*1rpx;
-  border: solid 1px #ff8000;
+  font-size: 30 * 1rpx;
+  color: #ff4919;
+  border-radius: 5 * 1rpx;
+  border: solid 1px #ff4919;
 }
 .main-container {
-  width: 750*1rpx;
+  width: 750 * 1rpx;
 }
 .main-item {
-  width: 750*1rpx;
+  width: 750 * 1rpx;
 }
 .photo-item {
-  width: 330*1rpx;
-  margin-bottom: 30*1rpx;
+  width: 330 * 1rpx;
+  margin-bottom: 30 * 1rpx;
 }
 .photo-item-txt {
-  font-size: 30*1rpx;
+  font-size: 30 * 1rpx;
   color: #282828;
-  padding-top: 30*1rpx;
+  padding-top: 30 * 1rpx;
 }
 .photo-item-img {
-  width: 330*1rpx;
-  height: 330*1rpx;
+  width: 330 * 1rpx;
+  height: 330 * 1rpx;
 }
 .photos {
   flex-wrap: wrap;
@@ -273,20 +274,20 @@ export default class extends wepy.page {
 }
 .btn2 {
   color: #ffffff;
-  background-color: #ff8000;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
 }
 .btn1 {
-  color: #ff8000;
-  border-top: solid 1px #ff8000;
+  color: #ff4919;
+  border-top: solid 1px #ff4919;
   background-color: transparent;
 }
 .btn1,
 .btn2 {
-  height: 100*1rpx;
+  height: 100 * 1rpx;
   display: inline-block;
-  font-size: 36*1rpx;
+  font-size: 36 * 1rpx;
   border-radius: 0;
-  line-height: 100*1rpx;
+  line-height: 100 * 1rpx;
   text-align: center;
   flex: 1;
 }
@@ -297,13 +298,13 @@ export default class extends wepy.page {
   right: 0;
 }
 .pic-item {
-  margin-right: 5*1rpx;
-  margin-bottom: 5*1rpx;
+  margin-right: 5 * 1rpx;
+  margin-bottom: 5 * 1rpx;
 }
 .pic-item,
 .pic-item-img {
-  width: 168*1rpx;
-  height: 168*1rpx;
+  width: 168 * 1rpx;
+  height: 168 * 1rpx;
   position: relative;
 }
 .img-area {
@@ -315,29 +316,29 @@ export default class extends wepy.page {
   position: absolute;
   right: 0;
   top: 0;
-  width: 40*1rpx;
-  height: 40*1rpx;
+  width: 40 * 1rpx;
+  height: 40 * 1rpx;
 }
 .toolbar {
   text-align: center;
-  font-size: 29*1rpx;
+  font-size: 29 * 1rpx;
   position: relative;
-  padding: 47*1rpx 0 0 0;
+  padding: 47 * 1rpx 0 0 0;
 }
 .toolbar .flex-con {
-  padding-bottom: 20*1rpx;
+  padding-bottom: 20 * 1rpx;
 }
 .active {
-  color: #ff8000;
-  font-size: 31*1rpx;
+  color: #ff4919;
+  font-size: 31 * 1rpx;
 }
 .footer-hr {
-  width: 129*1rpx;
+  width: 129 * 1rpx;
   height: 3px;
-  background-color: #ff8000;
+  background-color: #ff4919;
   position: absolute;
   bottom: 0;
-  left: 124*1rpx;
+  left: 124 * 1rpx;
 }
 </style>
 

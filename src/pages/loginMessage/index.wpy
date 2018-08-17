@@ -25,7 +25,7 @@
             canIUse: true,
             appid: 'wx6a8d8aa65a3d743e',
             extraData: {},
-            envVersion: 'release',
+            envVersion: 'rel ease',
             path: 'pages/home/index'
         },
         onLoad (options){
@@ -97,7 +97,7 @@
             margin-top: 77*1rpx;
             display: block;
             color: #fff;
-            background-color: #ff8000;
+            background-color: #ff4919;
             border-radius: 10*1rpx;
             height: 90*1rpx;
             line-height: 90*1rpx;
@@ -108,7 +108,7 @@
         button {
             margin-top: 77*1rpx;
             color: #fff;
-            background-color: #ff8000;
+            background-color: #ff4919;
             border-radius: 10*1rpx;
             border: none;
             padding: 30*1rpx 0;

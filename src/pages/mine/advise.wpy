@@ -5,23 +5,25 @@ view.form-area
         input(placeholder="留下您的邮箱，我们会回复你的哦~" @input="setField('email')")
         view.pic-list
             image.pic-item(src="{{img_src||'/imgs/updatepic.png'}}" @tap="selectPic")
-    button.btn-primary.fixed-btn(type="default" @tap="doSubmit" hover-class="tapmode") 提交反馈
+    button.fixed-btn(type="default" @tap="doSubmit" hover-class="tapmode") 提交反馈
 </template>
 <script>
 import wepy from "wepy";
 import baseMixin from "../../mixins/base";
-export default class  extends wepy.page {
+export default class extends wepy.page {
   config = {
-    navigationBarTitleText: "意见反馈"
+    navigationBarTitleText: "意见反馈",
+    navigationBarBackgroundColor: "#3d70f7",
+    backgroundColor: "#f4f4f4",
+    navigationBarTextStyle: "white"
   };
   mixins = [baseMixin];
   data = {
-    img_src : ''
+    img_src: ""
   };
   methods = {
     setField(name, e) {
       this[name] = e.detail.value.trim();
-
     },
     selectPic() {
       wx.chooseImage({
@@ -31,30 +33,28 @@ export default class  extends wepy.page {
         success: res => {
           // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
           var tempFilePaths = res.tempFilePaths;
-          this.showLoading('正在上传...');
+          this.showLoading("正在上传...");
           wx.uploadFile({
-            url: this.absUrl('/services/uploader/uploadImg'), //仅为示例，非真实的接口地址
+            url: this.absUrl("/services/uploader/uploadImg"), //仅为示例，非真实的接口地址
             filePath: tempFilePaths[0],
-            name: "_file_",            
-            complete:()=> {
+            name: "_file_",
+            complete: () => {
               this.hideLoading();
             },
             success: res => {
               var data = res.data;
               //do something
-              if(typeof data == 'string'){
-                  try{
-                      data = JSON.parse(data)
-                  }catch(e){
-                    
-                  }
+              if (typeof data == "string") {
+                try {
+                  data = JSON.parse(data);
+                } catch (e) {}
               }
-              if(data.status ==1){
-                 this.img_src = this.absUrl(data.info)
-                 this._img_src = data.info  
-                 this.$apply()
-              }else{
-                  this.$alert(data.info)
+              if (data.status == 1) {
+                this.img_src = this.absUrl(data.info);
+                this._img_src = data.info;
+                this.$apply();
+              } else {
+                this.$alert(data.info);
               }
             }
           });
@@ -68,18 +68,23 @@ export default class  extends wepy.page {
       if (!this.email) {
         return this.$alert("请输入您的邮箱地址");
       }
-      this.showLoading()
-      this.$post('/shopapi/shop/feedback',{
-          content:this.content,
-          contact:this.email,
-          img_srcs:this._img_src || ''
-      },info=>{
-          this.$alert('提交成功，感谢您的反馈！','',()=>{
-              wx.navigateBack()
-          })
-      },()=>{
-          this.hideLoading()
-      })
+      this.showLoading();
+      this.$post(
+        "/shopapi/shop/feedback",
+        {
+          content: this.content,
+          contact: this.email,
+          img_srcs: this._img_src || ""
+        },
+        info => {
+          this.$alert("提交成功，感谢您的反馈！", "", () => {
+            wx.navigateBack();
+          });
+        },
+        () => {
+          this.hideLoading();
+        }
+      );
     }
   };
 }
@@ -97,6 +102,9 @@ button.fixed-btn {
   line-height: 98rpx;
   right: 0;
   bottom: 0;
+  background-image: linear-gradient(90deg, #35abfe 0%, #3d70f7 100%);
+  font-size: 36rpx;
+  color: #ffffff;
 }
 .pic-list {
   padding-top: 35rpx;
